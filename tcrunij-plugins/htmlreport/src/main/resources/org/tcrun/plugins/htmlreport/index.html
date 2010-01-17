@@ -22,27 +22,30 @@
 						for(var i in results['results'])
 						{
 							var result = results['results'][i]
-                                                        var screenshotlinks = ""
+                                                        var screenshotlinks = "<div id=result-" + ((i*1)+1) + "-screenshots style=\"display: none;\">"
                                                         for (var j in result["screenshots"])
                                                         {
                                                             var screenshotname = result["screenshots"][j].split("/")[1]
-                                                            screenshotlinks = screenshotlinks + "<div><a href=" + result["screenshots"][j] + " target=\"_blank\">" + screenshotname  +"</a></div>"
+                                                            screenshotlinks = screenshotlinks + "<a href=" + result["screenshots"][j] + " target=\"_blank\">" + screenshotname  +"</a></div>"
                                                         }
-                                                        var htmlsourcelinks = ""
+                                                        screenshotlinks = screenshotlinks + "</div>"
+                                                        var htmlsourcelinks = "<div id=result-" + ((i*1)+1) + "-htmllinks style=\"display: none;\">"
                                                         for (var k in result["htmlSourceFiles"])
                                                         {
                                                             var htmlsourcename = result["htmlSourceFiles"][k].split("/")[1]
                                                             htmlsourcelinks = htmlsourcelinks + "<div><a href=" + result["htmlSourceFiles"][k] + " target=\"_blank\">" + htmlsourcename +"</a></div>"
                                                         }
+                                                        htmlsourcelinks = htmlsourcelinks + "</div>"
 
 							$("#results-list").append("<li class=\"" + result['result'] + "-block\">" +
-								screenshotlinks + htmlsourcelinks + "<a href=\"#\" id=\"result-" + ((i*1)+1) + "\" class=\"result-name\">" +
+								"<a href=\"#\" id=\"result-" + ((i*1)+1) + "\" class=\"result-name\">" +
 								result["name"] + "</a><div class=\"" + result['result'] +
 								"\">" + result['result'] + "<image src=\"images/" +
 								result['result'] + ".png\" class=\"result-image\" /></div>" +
-								"<div class=\"clear\"></div>" +
+								"<div class=\"clear\"></div>" + htmlsourcelinks + screenshotlinks +
 								"<pre id=\"result-" + ((i*1)+1) + "-log-file\" class=\"log-file\">" +
-								"</pre><hr /></li>")
+								"</pre><hr />" + 
+                                                                "</li>")
 							$("pre#result-" + ((i*1)+1) + "-log-file").data("log-file", result['log']).data("initialized", "false").hide()
 							if(counts[result['result']])
 							{
@@ -90,7 +93,24 @@
 						var chart = new google.visualization.PieChart(document.getElementById('results-chart'))
 						chart.draw(data, {width: 600, height: 300, is3D: true, title: results['title'], colors: ['green', 'red', '#ffa500', '#9a9a9a', '#0000aa']});
 						$(".result-name").click(function () {
+                                                        var sslinks = document.getElementById(this.id + "-screenshots").style.display;
+                                                        var htlinks = document.getElementById(this.id + "-htmllinks").style.display;
 							var logfile = "#" + this.id + "-log-file"
+         
+                                                        if(sslinks == 'none')
+                                                        {
+                                                            document.getElementById(this.id + "-screenshots").style.display = 'block';
+                                                        } else
+                                                        {
+                                                            document.getElementById(this.id + "-screenshots").style.display = 'none';
+                                                        }
+                                                        if(htlinks == 'none')
+                                                        {
+                                                            document.getElementById(this.id + "-htmllinks").style.display = 'block';
+                                                        } else
+                                                        {
+                                                            document.getElementById(this.id + "-htmllinks").style.display = 'none';
+                                                        }
 							if($(logfile).is(":visible"))
 							{
 								$(logfile).hide(500)
