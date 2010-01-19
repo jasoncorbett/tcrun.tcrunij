@@ -26,7 +26,7 @@
                                                         for (var j in result["screenshots"])
                                                         {
                                                             var screenshotname = result["screenshots"][j].split("/")[1]
-                                                            screenshotlinks = screenshotlinks + "<a href=" + result["screenshots"][j] + " target=\"_blank\">" + screenshotname  +"</a></div>"
+                                                            screenshotlinks = screenshotlinks + "<div><a href=" + result["screenshots"][j] + " target=\"_blank\">" + screenshotname  +"</a></div>"
                                                         }
                                                         screenshotlinks = screenshotlinks + "</div>"
                                                         var htmlsourcelinks = "<div id=result-" + ((i*1)+1) + "-htmllinks style=\"display: none;\">"
@@ -42,7 +42,7 @@
 								result["name"] + "</a><div class=\"" + result['result'] +
 								"\">" + result['result'] + "<image src=\"images/" +
 								result['result'] + ".png\" class=\"result-image\" /></div>" +
-								"<div class=\"clear\"></div>" + htmlsourcelinks + screenshotlinks +
+								"<div class=\"clear\"></div>" + screenshotlinks + htmlsourcelinks  +
 								"<pre id=\"result-" + ((i*1)+1) + "-log-file\" class=\"log-file\">" +
 								"</pre><hr />" + 
                                                                 "</li>")
