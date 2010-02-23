@@ -26,7 +26,6 @@ public class PluginManager implements IPluginManager
 	public void initialize(IRuntimeInformation info)
 	{
 		m_runtime_info = info;
-		scan();
 	}
 
 	public <T extends IPlugin> List<T> getPluginsFor(Class<T> clazz)
@@ -42,12 +41,7 @@ public class PluginManager implements IPluginManager
 		return retval;
 	}
 
-	protected void scan()
-	{
-
-	}
-
-	protected <T extends IPlugin> void addPlugin(Class<T> plugin_interface, T implementation)
+	public <T extends IPlugin> void addPlugin(Class<T> plugin_interface, T implementation)
 	{
 		synchronized(PluginManager.class)
 		{
