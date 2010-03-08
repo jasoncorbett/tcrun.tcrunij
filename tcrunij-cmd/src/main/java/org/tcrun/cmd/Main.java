@@ -35,6 +35,7 @@ public class Main
 		// Parse the command line
 		List<ICommandLineOptionPlugin> option_plugins = plugin_manager.getPluginsFor(ICommandLineOptionPlugin.class);
 		Options options = new Options();
+		options.addOption("h", "help", false, "This help message.");
 		for(ICommandLineOptionPlugin plugin: option_plugins)
 		{
 			plugin.addToCommandLineParser(options);
@@ -53,11 +54,19 @@ public class Main
 			System.exit(1);
 		}
 
+		if(cmdline.hasOption("h"))
+		{
+			HelpFormatter help = new HelpFormatter();
+			help.printHelp("tcrunij [options]", options);
+			System.exit(0);
+		}
+
 		List<ICommandLineConsumerPlugin> cmdline_plugins = plugin_manager.getPluginsFor(ICommandLineConsumerPlugin.class);
 		for(ICommandLineConsumerPlugin plugin : cmdline_plugins)
 		{
 			plugin.consumeCommandLineOptions(cmdline);
 		}
+
 
 
 		System.out.println("You've reached the end of tcrunij.  Bye.");
