@@ -2,9 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.google.code.tcrun.tcrunij.cmd;
+package org.tcrun.cmd;
 
-import com.google.code.tcrun.tcrunij.api.IRuntimeInformation;
+import org.tcrun.api.IRuntimeInformation;
 
 /**
  *

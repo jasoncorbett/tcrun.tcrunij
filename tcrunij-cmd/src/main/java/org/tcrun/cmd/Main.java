@@ -2,13 +2,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.google.code.tcrun.tcrunij.cmd;
+package org.tcrun.cmd;
 
-import com.google.code.tcrun.tcrunij.api.IPluginManager;
-import com.google.code.tcrun.tcrunij.api.PluginManagerFactory;
-import com.google.code.tcrun.tcrunij.plugins.apis.cmd.ICommandLineOptionPlugin;
-import com.google.code.tcrun.tcrunij.plugins.apis.cmd.ICommandLineConsumerPlugin;
-import com.google.code.tcrun.tcrunij.api.IRuntimeInformation;
+import org.tcrun.api.IPluginManager;
+import org.tcrun.api.PluginManagerFactory;
+import org.tcrun.plugins.apis.cmd.ICommandLineOptionPlugin;
+import org.tcrun.plugins.apis.cmd.ICommandLineConsumerPlugin;
+import org.tcrun.api.IRuntimeInformation;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.cli.Options;
@@ -60,7 +60,7 @@ public class Main
 		}
 
 
-		System.out.println("You've reached the end of tcrunij.  Bye.");
+		System.out.println("You've reached the end of   Bye.");
 		System.exit(0);
 	}
 }

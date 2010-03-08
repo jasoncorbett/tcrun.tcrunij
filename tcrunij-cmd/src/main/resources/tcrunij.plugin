@@ -1,1 +1,1 @@
-com.google.code.tcrun.tcrunij.cmd.CommandLineTestCaseConfigurationPlugin
+org.tcrun.cmd.CommandLineTestCaseConfigurationPlugin

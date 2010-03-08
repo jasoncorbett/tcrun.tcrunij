@@ -2,13 +2,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.google.code.tcrun.tcrunij.cmd;
+package org.tcrun.cmd;
 
-import com.google.code.tcrun.tcrunij.api.IPlugin;
-import com.google.code.tcrun.tcrunij.api.IPluginManager;
-import com.google.code.tcrun.tcrunij.api.IPluginScanner;
-import com.google.code.tcrun.tcrunij.api.IRuntimeInformation;
-import com.google.code.tcrun.tcrunij.api.ImplementsPlugin;
+import org.tcrun.api.IPlugin;
+import org.tcrun.api.IPluginManager;
+import org.tcrun.api.IPluginScanner;
+import org.tcrun.api.IRuntimeInformation;
+import org.tcrun.api.ImplementsPlugin;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
@@ -39,7 +39,7 @@ public class ClassPathResourceScanner implements IPluginScanner
 	 * This is the default name of the resource name that is searched for
 	 * in the classpath.  Every file with this name is loaded.
 	 */
-	public static final String DEFAULT_RESOURCE_NAME = "tcrunij.plugin";
+	public static final String DEFAULT_RESOURCE_NAME = "plugin";
 	private String m_resource_name;
 	private ClassLoader m_class_loader;
 

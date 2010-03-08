@@ -2,11 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.google.code.tcrun.tcrunij.cmd;
+package org.tcrun.cmd;
 
-import com.google.code.tcrun.tcrunij.plugins.apis.cmd.ICommandLineConsumerPlugin;
-import com.google.code.tcrun.tcrunij.plugins.apis.cmd.ICommandLineOptionPlugin;
-import com.google.code.tcrun.tcrunij.api.ImplementsPlugin;
+import org.tcrun.plugins.apis.cmd.ICommandLineConsumerPlugin;
+import org.tcrun.plugins.apis.cmd.ICommandLineOptionPlugin;
+import org.tcrun.api.ImplementsPlugin;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
