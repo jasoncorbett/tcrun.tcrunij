@@ -27,6 +27,7 @@
 	<modules>
 		<module>tcrunij-api</module>
 		<module>tcrunij-cmd</module>
+		<module>tcrunij-nix</module>
 	</modules>
 
 	<build>
@@ -63,17 +64,17 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>[1.5.10,)</version>
+			<version>[1.5.10,1.6)</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-ext</artifactId>
-			<version>[1.5.10,)</version>
+			<version>[1.5.10,1.6)</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-nop</artifactId>
-			<version>[1.5.10,)</version>
+			<version>[1.5.10,1.6)</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

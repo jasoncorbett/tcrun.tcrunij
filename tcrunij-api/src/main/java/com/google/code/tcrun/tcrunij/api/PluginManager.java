@@ -41,7 +41,7 @@ public class PluginManager implements IPluginManager
 		return retval;
 	}
 
-	public <T extends IPlugin> void addPlugin(Class<T> plugin_interface, T implementation)
+	public void addPlugin(Class<?> plugin_interface, Object implementation)
 	{
 		synchronized(PluginManager.class)
 		{
@@ -50,7 +50,7 @@ public class PluginManager implements IPluginManager
 				m_plugins.get(plugin_interface).add(implementation);
 			} else
 			{
-				List<T> plugin_list = new Vector<T>();
+				List<Object> plugin_list = new Vector<Object>();
 				plugin_list.add(implementation);
 				m_plugins.put(plugin_interface, plugin_list);
 			}

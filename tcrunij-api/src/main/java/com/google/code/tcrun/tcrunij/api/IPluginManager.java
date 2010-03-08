@@ -18,5 +18,5 @@ public interface IPluginManager
 
 	public <T extends IPlugin> List<T> getPluginsFor(Class<T> clazz);
 
-	public <T extends IPlugin> void addPlugin(Class<T> plugin_interface, T implementation);
+	public void addPlugin(Class<?> plugin_interface, Object implementation);
 }
