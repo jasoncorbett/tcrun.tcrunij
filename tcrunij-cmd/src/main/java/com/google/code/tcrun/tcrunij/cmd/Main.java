@@ -6,8 +6,8 @@ package com.google.code.tcrun.tcrunij.cmd;
 
 import com.google.code.tcrun.tcrunij.api.IPluginManager;
 import com.google.code.tcrun.tcrunij.api.PluginManagerFactory;
-import com.google.code.tcrun.tcrunij.api.ICommandLineOptionPlugin;
-import com.google.code.tcrun.tcrunij.api.ICommandLineConsumerPlugin;
+import com.google.code.tcrun.tcrunij.plugins.apis.cmd.ICommandLineOptionPlugin;
+import com.google.code.tcrun.tcrunij.plugins.apis.cmd.ICommandLineConsumerPlugin;
 import com.google.code.tcrun.tcrunij.api.IRuntimeInformation;
 import java.util.logging.Level;
 import java.util.logging.Logger;

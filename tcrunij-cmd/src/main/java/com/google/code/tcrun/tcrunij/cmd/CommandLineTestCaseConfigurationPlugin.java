@@ -4,8 +4,8 @@
  */
 package com.google.code.tcrun.tcrunij.cmd;
 
-import com.google.code.tcrun.tcrunij.api.ICommandLineConsumerPlugin;
-import com.google.code.tcrun.tcrunij.api.ICommandLineOptionPlugin;
+import com.google.code.tcrun.tcrunij.plugins.apis.cmd.ICommandLineConsumerPlugin;
+import com.google.code.tcrun.tcrunij.plugins.apis.cmd.ICommandLineOptionPlugin;
 import com.google.code.tcrun.tcrunij.api.ImplementsPlugin;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.OptionBuilder;

@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.google.code.tcrun</groupId>
+	<groupId>org.tcrun</groupId>
 	<artifactId>tcrunij</artifactId>
 	<packaging>pom</packaging>
 	<version>${tcrunij.major}.${tcrunij.minor}.${tcrunij.patch}-${tcrunij.buildid}</version>
@@ -12,7 +12,7 @@
 		<tcrunij.minor>0</tcrunij.minor>
 		<tcrunij.patch>0</tcrunij.patch>
 		<tcrunij.buildid>SNAPSHOT</tcrunij.buildid>
-		<netbeans.hint.useExternalMaven>false</netbeans.hint.useExternalMaven>
+		<netbeans.hint.useExternalMaven>true</netbeans.hint.useExternalMaven>
 	</properties>
 
 	<profiles>
@@ -26,6 +26,8 @@
 
 	<modules>
 		<module>tcrunij-api</module>
+        <module>tcrunij-plugin-apis</module>
+        <module>tcrunij-plugins</module>
 		<module>tcrunij-cmd</module>
 		<module>tcrunij-nix</module>
 	</modules>
