@@ -39,4 +39,4 @@ fi
 
 export CLASSPATH
 
-"${JAVA}" -Dlogback.configurationFile=conf/logging-config.xml com.google.code.tcrun.tcrunij.cmd.Main "$@"
+"${JAVA}" -Dlogback.configurationFile=conf/logging-config.xml org.tcrun.cmd.Main "$@"

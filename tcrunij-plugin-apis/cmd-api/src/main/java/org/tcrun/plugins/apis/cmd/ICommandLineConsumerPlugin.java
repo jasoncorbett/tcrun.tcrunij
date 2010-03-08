@@ -3,9 +3,9 @@
  * and open the template in the editor.
  */
 
-package com.google.code.tcrun.tcrunij.plugins.apis.cmd;
+package org.tcrun.plugins.apis.cmd;
 
-import com.google.code.tcrun.tcrunij.api.IPlugin;
+import org.tcrun.api.IPlugin;
 import org.apache.commons.cli.CommandLine;
 
 /**
