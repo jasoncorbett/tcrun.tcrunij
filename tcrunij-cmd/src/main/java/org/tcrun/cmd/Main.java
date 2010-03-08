@@ -60,7 +60,7 @@ public class Main
 		}
 
 
-		System.out.println("You've reached the end of   Bye.");
+		System.out.println("You've reached the end of tcrunij.  Bye.");
 		System.exit(0);
 	}
 }

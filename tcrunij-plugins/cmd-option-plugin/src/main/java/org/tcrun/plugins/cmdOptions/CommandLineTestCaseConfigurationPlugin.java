@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.tcrun.cmd;
+package org.tcrun.plugins.cmdOptions;
 
 import org.tcrun.plugins.apis.cmd.ICommandLineConsumerPlugin;
 import org.tcrun.plugins.apis.cmd.ICommandLineOptionPlugin;

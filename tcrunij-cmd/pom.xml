@@ -20,5 +20,10 @@
 			<artifactId>tcrunij-api</artifactId>
 			<version>${tcrunij.major}.${tcrunij.minor}.${tcrunij.patch}-${tcrunij.buildid}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.tcrun.plugins.apis</groupId>
+			<artifactId>cmd-api</artifactId>
+			<version>${tcrunij.major}.${tcrunij.minor}.${tcrunij.patch}-${tcrunij.buildid}</version>
+		</dependency>
 	</dependencies>
 </project>

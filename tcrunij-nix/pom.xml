@@ -52,6 +52,11 @@
 			<version>${tcrunij.major}.${tcrunij.minor}.${tcrunij.patch}-${tcrunij.buildid}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.tcrun.plugins</groupId>
+			<artifactId>cmd-option-plugin</artifactId>
+			<version>${tcrunij.major}.${tcrunij.minor}.${tcrunij.patch}-${tcrunij.buildid}</version>
+		</dependency>
+		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<version>[0.9.18,0.10)</version>

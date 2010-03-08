@@ -2,21 +2,21 @@
 	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.google.code.tcrun.plugins</groupId>
-		<artifactId>tcrunij-plugin-apis</artifactId>
+		<groupId>org.tcrun.plugins</groupId>
+		<artifactId>tcrunij-plugins</artifactId>
 		<version>${tcrunij.major}.${tcrunij.minor}.${tcrunij.patch}-${tcrunij.buildid}</version>
 	</parent>
 
 
-	<groupId>com.google.code.tcrun.plugins.apis</groupId>
-	<artifactId>cmd-api</artifactId>
+	<groupId>org.tcrun.plugins</groupId>
+	<artifactId>cmd-option-plugin</artifactId>
 	<packaging>jar</packaging>
 	<version>${tcrunij.major}.${tcrunij.minor}.${tcrunij.patch}-${tcrunij.buildid}</version>
-	<name>TCRunIJ Command Line Plugin API</name>
+	<name>TCRunIJ Command Line Options Plugin</name>
 
 	<dependencies>
 		<dependency>
-			<groupId>com.google.code.tcrun.plugins.apis</groupId>
+			<groupId>org.tcrun.plugins.apis</groupId>
 			<artifactId>cmd-api</artifactId>
 			<version>${tcrunij.major}.${tcrunij.minor}.${tcrunij.patch}-${tcrunij.buildid}</version>
 		</dependency>

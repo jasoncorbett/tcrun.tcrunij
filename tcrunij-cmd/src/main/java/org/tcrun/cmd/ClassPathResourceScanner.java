@@ -39,7 +39,7 @@ public class ClassPathResourceScanner implements IPluginScanner
 	 * This is the default name of the resource name that is searched for
 	 * in the classpath.  Every file with this name is loaded.
 	 */
-	public static final String DEFAULT_RESOURCE_NAME = "plugin";
+	public static final String DEFAULT_RESOURCE_NAME = "tcrunij.plugin";
 	private String m_resource_name;
 	private ClassLoader m_class_loader;
 
