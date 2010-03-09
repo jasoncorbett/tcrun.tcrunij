@@ -5,7 +5,7 @@
 package org.tcrun.tcapi;
 
 /**
- * This interface is for defining what a test case should look like.
+ * This interface is to define what a test case should look like.
  * @author jjones
  */
 public interface ITestCase
