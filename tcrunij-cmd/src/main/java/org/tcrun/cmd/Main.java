@@ -9,14 +9,15 @@ import org.tcrun.api.PluginManagerFactory;
 import org.tcrun.plugins.apis.cmd.ICommandLineOptionPlugin;
 import org.tcrun.plugins.apis.cmd.ICommandLineConsumerPlugin;
 import org.tcrun.api.IRuntimeInformation;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
-import java.util.List;
 import org.apache.commons.cli.HelpFormatter;
+import org.slf4j.MDC;
+import java.util.List;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 /**
  *
@@ -26,6 +27,22 @@ public class Main
 {
 	public static void main(String[] args)
 	{
+		// Initialize logging parameters
+		String runid = System.getProperty("TESTRUNID");
+		if(runid == null)
+		{
+			runid = System.getenv("TESTRUNID");
+		}
+
+		// this is not an else if on purpose, because after the first if runid may still be null.
+		if(runid == null)
+		{
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+			runid = format.format(new Date());
+		}
+		// this is usable from within logging
+		MDC.put("TestRunId", runid);
+
 		// Initialize plugins
 		IPluginManager plugin_manager = PluginManagerFactory.getPluginManager();
 		ClassPathResourceScanner classpath_scanner = new ClassPathResourceScanner();
