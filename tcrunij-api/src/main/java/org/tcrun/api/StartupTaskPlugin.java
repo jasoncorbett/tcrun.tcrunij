@@ -6,7 +6,7 @@ package org.tcrun.api;
  *
  * @author jcorbett
  */
-public interface StartupTaskPlugin
+public interface StartupTaskPlugin extends Plugin
 {
 	public void onStartup(TCRunContext context) throws StartupError;
 }

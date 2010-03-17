@@ -16,16 +16,16 @@ import java.util.Vector;
 public class DefaultPluginManager implements PluginManager
 {
 	private Map<Class, List> m_plugins;
-	private RuntimeInformation m_runtime_info;
+	private TCRunContext m_context;
 
 	public DefaultPluginManager()
 	{
 		m_plugins = new HashMap<Class, List>();
 	}
 
-	public void initialize(RuntimeInformation info)
+	public void initialize(TCRunContext info)
 	{
-		m_runtime_info = info;
+		m_context = info;
 	}
 
 	public <T extends Plugin> List<T> getPluginsFor(Class<T> clazz)
