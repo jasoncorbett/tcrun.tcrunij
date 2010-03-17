@@ -4,8 +4,8 @@
  */
 package org.tcrun.plugins.cmdOptions;
 
-import org.tcrun.plugins.apis.cmd.ICommandLineConsumerPlugin;
-import org.tcrun.plugins.apis.cmd.ICommandLineOptionPlugin;
+import org.tcrun.plugins.apis.cmd.CommandLineConsumerPlugin;
+import org.tcrun.plugins.apis.cmd.CommandLineOptionPlugin;
 import org.tcrun.api.ImplementsPlugin;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.OptionBuilder;
@@ -15,8 +15,8 @@ import org.apache.commons.cli.Options;
  *
  * @author jcorbett
  */
-@ImplementsPlugin({ICommandLineConsumerPlugin.class, ICommandLineOptionPlugin.class})
-public class CommandLineTestCaseConfigurationPlugin implements ICommandLineConsumerPlugin, ICommandLineOptionPlugin
+@ImplementsPlugin({CommandLineConsumerPlugin.class, CommandLineOptionPlugin.class})
+public class CommandLineTestCaseConfigurationPlugin implements CommandLineConsumerPlugin, CommandLineOptionPlugin
 {
 
 	public void consumeCommandLineOptions(CommandLine options)

@@ -4,7 +4,7 @@
  */
 package org.tcrun.plugins.apis.cmd;
 
-import org.tcrun.api.IPlugin;
+import org.tcrun.api.Plugin;
 import org.apache.commons.cli.Options;
 
 
@@ -12,7 +12,7 @@ import org.apache.commons.cli.Options;
  *
  * @author jcorbett
  */
-public interface ICommandLineOptionPlugin extends IPlugin
+public interface CommandLineOptionPlugin extends Plugin
 {
 	void addToCommandLineParser(Options options);
 }

@@ -5,14 +5,14 @@
 
 package org.tcrun.plugins.apis.cmd;
 
-import org.tcrun.api.IPlugin;
+import org.tcrun.api.Plugin;
 import org.apache.commons.cli.CommandLine;
 
 /**
  * A plugin that will get called when all the command line options are passed.
  * @author jcorbett
  */
-public interface ICommandLineConsumerPlugin extends IPlugin
+public interface CommandLineConsumerPlugin extends Plugin
 {
 	void consumeCommandLineOptions(CommandLine options);
 }

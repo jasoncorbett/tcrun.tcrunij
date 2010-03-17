@@ -4,13 +4,13 @@
  */
 package org.tcrun.cmd;
 
-import org.tcrun.api.IRuntimeInformation;
+import org.tcrun.api.RuntimeInformation;
 
 /**
  *
  * @author jcorbett
  */
-public class BasicRuntimeInfo implements IRuntimeInformation
+public class BasicRuntimeInfo implements RuntimeInformation
 {
 
 	public String getRuntimeBasePath()

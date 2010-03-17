@@ -13,7 +13,7 @@ package org.tcrun.api;
  *
  * @author jcorbett
  */
-public interface IPluginScanner
+public interface PluginScanner
 {
-	public void scan(IPluginManager manager, IRuntimeInformation runtime_info);
+	public void scan(PluginManager manager, RuntimeInformation runtime_info);
 }

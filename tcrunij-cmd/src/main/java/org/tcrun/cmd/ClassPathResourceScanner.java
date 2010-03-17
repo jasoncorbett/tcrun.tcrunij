@@ -4,10 +4,10 @@
  */
 package org.tcrun.cmd;
 
-import org.tcrun.api.IPlugin;
-import org.tcrun.api.IPluginManager;
-import org.tcrun.api.IPluginScanner;
-import org.tcrun.api.IRuntimeInformation;
+import org.tcrun.api.Plugin;
+import org.tcrun.api.PluginManager;
+import org.tcrun.api.PluginScanner;
+import org.tcrun.api.RuntimeInformation;
 import org.tcrun.api.ImplementsPlugin;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -26,12 +26,12 @@ import org.slf4j.ext.XLoggerFactory;
  * implementations.
  *
  * Each class is checked for any interfaces it implements that are
- * subclasses of the IPlugin interface.  An instance is then created,
+ * subclasses of the Plugin interface.  An instance is then created,
  * and it is added for each plugin interface it implements.
  *
  * @author jcorbett
  */
-public class ClassPathResourceScanner implements IPluginScanner
+public class ClassPathResourceScanner implements PluginScanner
 {
 	private static XLogger logger = XLoggerFactory.getXLogger(ClassPathResourceScanner.class);
 
@@ -60,7 +60,7 @@ public class ClassPathResourceScanner implements IPluginScanner
 		m_class_loader = class_loader;
 	}
 
-	public void scan(IPluginManager manager, IRuntimeInformation runtime_info)
+	public void scan(PluginManager manager, RuntimeInformation runtime_info)
 	{
 		// with the manager, we're more interested in the classname of the plugin manager than 
 		// it's toString method
@@ -123,12 +123,12 @@ public class ClassPathResourceScanner implements IPluginScanner
 		if(isPlugin(plugin))
 		{
 			ImplementsPlugin plugin_list = plugin.getAnnotation(ImplementsPlugin.class);
-			for(Class<? extends IPlugin> plugin_type : plugin_list.value())
+			for(Class<? extends Plugin> plugin_type : plugin_list.value())
 			{
 				if(plugin_type.isAssignableFrom(plugin))
 				{
 					// only add it as a plugin if they actually implement the plugin
-					// T is a class (interface) that extends IPlugin, so is plugin_type
+					// T is a class (interface) that extends Plugin, so is plugin_type
 					retval.add((Class<?>)plugin_type);
 				}
 			}

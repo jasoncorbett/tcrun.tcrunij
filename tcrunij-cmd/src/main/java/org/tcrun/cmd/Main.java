@@ -4,11 +4,11 @@
  */
 package org.tcrun.cmd;
 
-import org.tcrun.api.IPluginManager;
+import org.tcrun.api.PluginManager;
 import org.tcrun.api.PluginManagerFactory;
-import org.tcrun.plugins.apis.cmd.ICommandLineOptionPlugin;
-import org.tcrun.plugins.apis.cmd.ICommandLineConsumerPlugin;
-import org.tcrun.api.IRuntimeInformation;
+import org.tcrun.plugins.apis.cmd.CommandLineOptionPlugin;
+import org.tcrun.plugins.apis.cmd.CommandLineConsumerPlugin;
+import org.tcrun.api.RuntimeInformation;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
@@ -44,16 +44,16 @@ public class Main
 		MDC.put("TestRunId", runid);
 
 		// Initialize plugins
-		IPluginManager plugin_manager = PluginManagerFactory.getPluginManager();
+		PluginManager plugin_manager = PluginManagerFactory.getPluginManager();
 		ClassPathResourceScanner classpath_scanner = new ClassPathResourceScanner();
-		IRuntimeInformation info = new BasicRuntimeInfo();
+		RuntimeInformation info = new BasicRuntimeInfo();
 		classpath_scanner.scan(plugin_manager, info);
 
 		// Parse the command line
-		List<ICommandLineOptionPlugin> option_plugins = plugin_manager.getPluginsFor(ICommandLineOptionPlugin.class);
+		List<CommandLineOptionPlugin> option_plugins = plugin_manager.getPluginsFor(CommandLineOptionPlugin.class);
 		Options options = new Options();
 		options.addOption("h", "help", false, "This help message.");
-		for(ICommandLineOptionPlugin plugin: option_plugins)
+		for(CommandLineOptionPlugin plugin: option_plugins)
 		{
 			plugin.addToCommandLineParser(options);
 		}
@@ -78,8 +78,8 @@ public class Main
 			System.exit(0);
 		}
 
-		List<ICommandLineConsumerPlugin> cmdline_plugins = plugin_manager.getPluginsFor(ICommandLineConsumerPlugin.class);
-		for(ICommandLineConsumerPlugin plugin : cmdline_plugins)
+		List<CommandLineConsumerPlugin> cmdline_plugins = plugin_manager.getPluginsFor(CommandLineConsumerPlugin.class);
+		for(CommandLineConsumerPlugin plugin : cmdline_plugins)
 		{
 			plugin.consumeCommandLineOptions(cmdline);
 		}

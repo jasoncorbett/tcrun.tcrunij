@@ -14,5 +14,5 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 public @interface ImplementsPlugin
 {
-	Class<? extends IPlugin>[] value();
+	Class<? extends Plugin>[] value();
 }

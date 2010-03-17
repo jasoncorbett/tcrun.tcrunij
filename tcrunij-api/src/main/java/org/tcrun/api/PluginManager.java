@@ -4,56 +4,19 @@
  */
 package org.tcrun.api;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Vector;
 
 /**
+ * A plugin manager keeps track of what plugins are available.  You can get an instance
+ * of a plugin manager by using the PluginManagerFactory.
  *
  * @author jcorbett
  */
-public class PluginManager implements IPluginManager
+public interface PluginManager
 {
-	private Map<Class, List> m_plugins;
-	private IRuntimeInformation m_runtime_info;
+	public void initialize(RuntimeInformation runtime_information);
 
-	public PluginManager()
-	{
-		m_plugins = new HashMap<Class, List>();
-	}
+	public <T extends Plugin> List<T> getPluginsFor(Class<T> clazz);
 
-	public void initialize(IRuntimeInformation info)
-	{
-		m_runtime_info = info;
-	}
-
-	public <T extends IPlugin> List<T> getPluginsFor(Class<T> clazz)
-	{
-		List<T> retval = new Vector<T>();
-		synchronized(PluginManager.class)
-		{
-			if(m_plugins.containsKey(clazz))
-			{
-				retval.addAll(m_plugins.get(clazz));
-			}
-		}
-		return retval;
-	}
-
-	public void addPlugin(Class<?> plugin_interface, Object implementation)
-	{
-		synchronized(PluginManager.class)
-		{
-			if(m_plugins.containsKey(plugin_interface))
-			{
-				m_plugins.get(plugin_interface).add(implementation);
-			} else
-			{
-				List<Object> plugin_list = new Vector<Object>();
-				plugin_list.add(implementation);
-				m_plugins.put(plugin_interface, plugin_list);
-			}
-		}
-	}
+	public void addPlugin(Class<?> plugin_interface, Object implementation);
 }
