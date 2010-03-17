@@ -9,6 +9,8 @@ import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import org.slf4j.MDC;
+import org.slf4j.ext.XLogger;
+import org.slf4j.ext.XLoggerFactory;
 import org.tcrun.api.Result;
 import org.tcrun.api.TCRunContext;
 
@@ -25,6 +27,8 @@ public class DefaultTCRunContext implements TCRunContext
 	private ConcurrentMap<String, String> m_testCaseConfig;
 	private String m_testRunId;
 	private List<Result> m_resultList;
+
+	private static XLogger logger = XLoggerFactory.getXLogger(DefaultTCRunContext.class);
 
 	public DefaultTCRunContext() throws URISyntaxException
 	{
@@ -44,9 +48,12 @@ public class DefaultTCRunContext implements TCRunContext
 		// this is usable from within logging
 		MDC.put("TestRunId", m_testRunId);
 
+		logger.debug("Looking for root of tcrunij directory based on location of tcrunij-api jar file.");
 		// get the location of the tcrunij-api jar file, then get the parent directory (lib), and get the parent
 		// of that (tcrunij root)
+		// thanks to http://stackoverflow.com/questions/320542/how-to-get-the-path-of-a-running-jar-file
 		m_tcrunRoot = (new File(TCRunContext.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath())).getParentFile().getParentFile();
+		logger.debug("TCRunIJ Home should be in '{}'", m_tcrunRoot);
 		m_tcrunConfig = new ConcurrentHashMap<String, String>();
 		m_testCaseConfig = new ConcurrentHashMap<String, String>();
 		m_resultList = new Vector<Result>();
