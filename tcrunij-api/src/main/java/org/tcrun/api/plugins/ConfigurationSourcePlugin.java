@@ -1,4 +1,7 @@
-package org.tcrun.api;
+package org.tcrun.api.plugins;
+
+import org.tcrun.api.Plugin;
+import org.tcrun.api.TCRunContext;
 
 /**
  * A plugin that is responsible for loading configuration into the context.  This could be test case configuration
@@ -7,7 +10,7 @@ package org.tcrun.api;
  *
  * @author jcorbett
  */
-public interface ConfigurationSourcePlugin
+public interface ConfigurationSourcePlugin extends Plugin
 {
 	public void loadConfiguration(TCRunContext context);
 }

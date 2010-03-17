@@ -6,16 +6,16 @@ package org.tcrun.cmd;
 
 import org.tcrun.api.PluginManager;
 import org.tcrun.api.PluginManagerFactory;
-import org.tcrun.plugins.apis.cmd.CommandLineOptionPlugin;
-import org.tcrun.plugins.apis.cmd.CommandLineConsumerPlugin;
+import org.tcrun.api.plugins.CommandLineOptionPlugin;
+import org.tcrun.api.plugins.CommandLineConsumerPlugin;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.apache.commons.cli.HelpFormatter;
 import java.util.List;
-import org.tcrun.api.StartupError;
-import org.tcrun.api.StartupTaskPlugin;
+import org.tcrun.api.plugins.StartupError;
+import org.tcrun.api.plugins.StartupTaskPlugin;
 import org.tcrun.api.TCRunContext;
 
 /**

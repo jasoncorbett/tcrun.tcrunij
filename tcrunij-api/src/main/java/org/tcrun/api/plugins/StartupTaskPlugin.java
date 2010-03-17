@@ -1,4 +1,7 @@
-package org.tcrun.api;
+package org.tcrun.api.plugins;
+
+import org.tcrun.api.Plugin;
+import org.tcrun.api.TCRunContext;
 
 /**
  * A startup task is a generic task that get's executed on startup, and can stop the tcrunij from running any tests.

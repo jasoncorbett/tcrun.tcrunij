@@ -1,4 +1,4 @@
-package org.tcrun.api;
+package org.tcrun.api.plugins;
 
 /**
  * An exception that can be thrown by a startup task.  It should contain a end user descriptive reason for not allowing

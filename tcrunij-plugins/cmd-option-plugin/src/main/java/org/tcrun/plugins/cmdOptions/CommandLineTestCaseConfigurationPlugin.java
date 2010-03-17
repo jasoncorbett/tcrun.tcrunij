@@ -4,8 +4,8 @@
  */
 package org.tcrun.plugins.cmdOptions;
 
-import org.tcrun.plugins.apis.cmd.CommandLineConsumerPlugin;
-import org.tcrun.plugins.apis.cmd.CommandLineOptionPlugin;
+import org.tcrun.api.plugins.CommandLineConsumerPlugin;
+import org.tcrun.api.plugins.CommandLineOptionPlugin;
 import org.tcrun.api.ImplementsPlugin;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.OptionBuilder;
