@@ -3,16 +3,17 @@
  * and open the template in the editor.
  */
 package org.tcrun.plugins.cmdOptions;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.tcrun.api.ImplementsPlugin;
 import org.tcrun.api.TCRunContext;
-import org.tcrun.plugins.apis.cmd.CommandLineOptionPlugin;
-import org.tcrun.plugins.apis.cmd.CommandLineConsumerPlugin;
-import org.tcrun.api.StartupTaskPlugin;
-import org.tcrun.api.StartupError;
+import org.tcrun.api.plugins.CommandLineOptionPlugin;
+import org.tcrun.api.plugins.CommandLineConsumerPlugin;
+import org.tcrun.api.plugins.StartupTaskPlugin;
+import org.tcrun.api.plugins.StartupError;
 
 /**
  *
