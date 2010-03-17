@@ -26,6 +26,7 @@
 
 	<modules>
 		<module>tcrunij-api</module>
+		<module>tcrunij-tcapi</module>
         <module>tcrunij-plugins</module>
 		<module>tcrunij-cmd</module>
 		<module>tcrunij-nix</module>

@@ -5,9 +5,10 @@
 package org.tcrun.api;
 
 /**
- *
+ * This interface is for identifying plugins as plugins.
  * @author jcorbett
  */
-public interface ITestPlugin extends Plugin
+public interface Plugin
 {
+	public String getPluginName();
 }

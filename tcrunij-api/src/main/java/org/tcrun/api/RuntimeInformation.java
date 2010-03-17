@@ -8,7 +8,7 @@ package org.tcrun.api;
  *
  * @author jcorbett
  */
-public interface IRuntimeInformation
+public interface RuntimeInformation
 {
 	public String getRuntimeBasePath();
 

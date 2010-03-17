@@ -15,12 +15,12 @@ import org.junit.Before;
  */
 public class PluginManagerTest
 {
-	private PluginManager manager = null;
+	private DefaultPluginManager manager = null;
 
 	@Before
 	public void setup()
 	{
-		manager = new PluginManager();
+		manager = new DefaultPluginManager();
 	}
 
 	@Test

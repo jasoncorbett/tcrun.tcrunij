@@ -12,7 +12,7 @@
 	<artifactId>tcrunij-cmd</artifactId>
 	<packaging>jar</packaging>
 	<version>${tcrunij.major}.${tcrunij.minor}.${tcrunij.patch}-${tcrunij.buildid}</version>
-	<name>TCRunIJ Command Line</name>
+	<name>TCRunIJ Main</name>
 
 	<dependencies>
 		<dependency>

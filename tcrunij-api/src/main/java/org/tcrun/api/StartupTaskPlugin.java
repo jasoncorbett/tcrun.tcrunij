@@ -1,0 +1,12 @@
+package org.tcrun.api;
+
+/**
+ * A startup task is a generic task that get's executed on startup, and can stop the tcrunij from running any tests.
+ * These plugins get's run after the command line is parsed and configuration is loaded.
+ *
+ * @author jcorbett
+ */
+public interface StartupTaskPlugin
+{
+	public void onStartup(TCRunContext context) throws StartupError;
+}

@@ -11,22 +11,22 @@ package org.tcrun.api;
  */
 public class PluginManagerFactory
 {
-	static private IPluginManager s_plugin_manager = null;
+	static private PluginManager s_plugin_manager = null;
 
-	static public IPluginManager getPluginManager()
+	static public PluginManager getPluginManager()
 	{
 		synchronized(PluginManagerFactory.class)
 		{
 			if(s_plugin_manager == null)
 			{
-				s_plugin_manager = new PluginManager();
+				s_plugin_manager = new DefaultPluginManager();
 			}
 		}
 
 		return s_plugin_manager;
 	}
 
-	static protected void setPluginManager(IPluginManager plugin_manager)
+	static protected void setPluginManager(PluginManager plugin_manager)
 	{
 		synchronized(PluginManagerFactory.class)
 		{

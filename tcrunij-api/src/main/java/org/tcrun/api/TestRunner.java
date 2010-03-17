@@ -5,10 +5,9 @@
 package org.tcrun.api;
 
 /**
- * This interface is for identifying plugins as plugins.
+ *
  * @author jcorbett
  */
-public interface IPlugin
+public interface TestRunner
 {
-	public String getPluginName();
 }
