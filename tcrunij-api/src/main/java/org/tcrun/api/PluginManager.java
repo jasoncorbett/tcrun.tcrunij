@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface PluginManager
 {
-	public void initialize(RuntimeInformation runtime_information);
+	public void initialize(TCRunContext context);
 
 	public <T extends Plugin> List<T> getPluginsFor(Class<T> clazz);
 

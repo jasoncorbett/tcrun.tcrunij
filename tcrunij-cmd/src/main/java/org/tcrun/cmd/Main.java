@@ -8,16 +8,15 @@ import org.tcrun.api.PluginManager;
 import org.tcrun.api.PluginManagerFactory;
 import org.tcrun.plugins.apis.cmd.CommandLineOptionPlugin;
 import org.tcrun.plugins.apis.cmd.CommandLineConsumerPlugin;
-import org.tcrun.api.RuntimeInformation;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.apache.commons.cli.HelpFormatter;
-import org.slf4j.MDC;
 import java.util.List;
-import java.util.Date;
-import java.text.SimpleDateFormat;
+import org.tcrun.api.StartupError;
+import org.tcrun.api.StartupTaskPlugin;
+import org.tcrun.api.TCRunContext;
 
 /**
  *
@@ -27,32 +26,17 @@ public class Main
 {
 	public static void main(String[] args)
 	{
-		// Initialize logging parameters
-		String runid = System.getProperty("TESTRUNID");
-		if(runid == null)
-		{
-			runid = System.getenv("TESTRUNID");
-		}
-
-		// this is not an else if on purpose, because after the first if runid may still be null.
-		if(runid == null)
-		{
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-			runid = format.format(new Date());
-		}
-		// this is usable from within logging
-		MDC.put("TestRunId", runid);
+		// Get Context
+		TCRunContext context = TCRunContextFactory.getNewContext();
 
 		// Initialize plugins
 		PluginManager plugin_manager = PluginManagerFactory.getPluginManager();
 		ClassPathResourceScanner classpath_scanner = new ClassPathResourceScanner();
-		RuntimeInformation info = new BasicRuntimeInfo();
-		classpath_scanner.scan(plugin_manager, info);
+		classpath_scanner.scan(plugin_manager, context);
 
 		// Parse the command line
 		List<CommandLineOptionPlugin> option_plugins = plugin_manager.getPluginsFor(CommandLineOptionPlugin.class);
 		Options options = new Options();
-		options.addOption("h", "help", false, "This help message.");
 		for(CommandLineOptionPlugin plugin: option_plugins)
 		{
 			plugin.addToCommandLineParser(options);
@@ -71,17 +55,23 @@ public class Main
 			System.exit(1);
 		}
 
-		if(cmdline.hasOption("h"))
-		{
-			HelpFormatter help = new HelpFormatter();
-			help.printHelp("tcrunij [options]", options);
-			System.exit(0);
-		}
-
 		List<CommandLineConsumerPlugin> cmdline_plugins = plugin_manager.getPluginsFor(CommandLineConsumerPlugin.class);
 		for(CommandLineConsumerPlugin plugin : cmdline_plugins)
 		{
 			plugin.consumeCommandLineOptions(cmdline);
+		}
+
+		List<StartupTaskPlugin> startup_tasks = plugin_manager.getPluginsFor(StartupTaskPlugin.class);
+		for(StartupTaskPlugin plugin : startup_tasks)
+		{
+			try
+			{
+				plugin.onStartup(context);
+			} catch(StartupError error)
+			{
+				System.err.println(error.getMessage());
+				System.exit(1);
+			}
 		}
 
 

@@ -7,7 +7,6 @@ package org.tcrun.cmd;
 import org.tcrun.api.Plugin;
 import org.tcrun.api.PluginManager;
 import org.tcrun.api.PluginScanner;
-import org.tcrun.api.RuntimeInformation;
 import org.tcrun.api.ImplementsPlugin;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -18,6 +17,7 @@ import java.util.List;
 import java.util.Vector;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
+import org.tcrun.api.TCRunContext;
 
 /**
  * Scan for plugins by looking for a plain text file in the classpath.
@@ -60,11 +60,11 @@ public class ClassPathResourceScanner implements PluginScanner
 		m_class_loader = class_loader;
 	}
 
-	public void scan(PluginManager manager, RuntimeInformation runtime_info)
+	public void scan(PluginManager manager, TCRunContext p_context)
 	{
 		// with the manager, we're more interested in the classname of the plugin manager than 
 		// it's toString method
-		logger.entry(manager.getClass(), runtime_info);
+		logger.entry(manager.getClass(), p_context);
 		try
 		{
 			logger.debug("Looking for plugin resource files with the name '{}'.", m_resource_name);

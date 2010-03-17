@@ -15,5 +15,5 @@ package org.tcrun.api;
  */
 public interface PluginScanner
 {
-	public void scan(PluginManager manager, RuntimeInformation runtime_info);
+	public void scan(PluginManager manager, TCRunContext context);
 }
