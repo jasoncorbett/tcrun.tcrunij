@@ -4,15 +4,19 @@
  */
 package org.tcrun.tcapi;
 
+import java.util.Map;
+
 /**
  * This interface is to define what a test case should look like.
  * @author jjones
  */
 public interface ITestCase
 {
-	public void tcSetup();
+	public void tcSetup(Map<String, String> configuration) throws Exception;
 
-        public void doTest();
+        public void doTest() throws Exception;
 
-        public void tcCleanUp();
+        public void tcCleanUp() throws Exception;
+
+	public void handleException(Exception e);
 }
