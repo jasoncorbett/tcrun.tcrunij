@@ -17,6 +17,6 @@ public interface BeforeTestListRunnerPlugin extends Plugin
 	 * @param p_testplan The test plan that is about to be executed.
 	 * @throws StartupError You can throw a StartupError to stop execution, please provide a simple end user reason.
 	 */
-	public void beforTestPlanExecution(TCRunContext p_context, TestListRunnerPlugin p_testplan) throws StartupError;
+	public void beforTestListRunnerExecutes(TCRunContext p_context, TestListRunnerPlugin p_testlistrunner) throws StartupError;
 
 }

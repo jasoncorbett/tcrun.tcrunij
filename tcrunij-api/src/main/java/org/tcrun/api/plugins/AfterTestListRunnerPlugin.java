@@ -17,5 +17,5 @@ public interface AfterTestListRunnerPlugin extends Plugin
 	 * @param p_context The tcrun context (which also provides the results list).
 	 * @param p_testplan The test list runner which has finished.
 	 */
-	public void afterTestPlanHasExecuted(TCRunContext p_context, TestListRunnerPlugin p_testlistrunner);
+	public void afterTestListRunnerHasExecuted(TCRunContext p_context, TestListRunnerPlugin p_testlistrunner);
 }
