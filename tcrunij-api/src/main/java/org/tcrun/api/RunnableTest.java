@@ -1,6 +1,6 @@
 package org.tcrun.api;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * An object representing all information needed to understand the test.  This means a list of attributes, the test id
@@ -16,7 +16,7 @@ public interface RunnableTest
 	 *
 	 * @return A Map containing the attributes for a test.
 	 */
-	public Map<String, String> getTestAttributes();
+	public List<TestCaseAttribute> getTestAttributes();
 
 	/**
 	 * A test id is a string that uniquely identifies the test from a loading perspective.  An example could be a
