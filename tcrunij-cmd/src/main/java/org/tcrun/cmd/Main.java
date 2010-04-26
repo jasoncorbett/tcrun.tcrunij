@@ -4,6 +4,7 @@
  */
 package org.tcrun.cmd;
 
+import java.util.Collections;
 import org.tcrun.api.PluginManager;
 import org.tcrun.api.PluginManagerFactory;
 import org.tcrun.api.plugins.CommandLineOptionPlugin;
@@ -14,13 +15,21 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.apache.commons.cli.HelpFormatter;
 import java.util.List;
+import java.util.Vector;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
+import org.tcrun.api.RunnableTest;
 import org.tcrun.api.plugins.StartupError;
 import org.tcrun.api.plugins.StartupTaskPlugin;
 import org.tcrun.api.TCRunContext;
+import org.tcrun.api.plugins.AfterTestCasePlugin;
+import org.tcrun.api.plugins.BeforeTestCasePlugin;
+import org.tcrun.api.plugins.BeforeTestListRunnerPlugin;
 import org.tcrun.api.plugins.ConfigurationOverridePlugin;
 import org.tcrun.api.plugins.ConfigurationSourcePlugin;
+import org.tcrun.api.plugins.TestListPlugin;
+import org.tcrun.api.plugins.TestListRunnerPlugin;
+import org.tcrun.api.plugins.TestLoaderPlugin;
 
 /**
  *
@@ -125,6 +134,89 @@ public class Main
 			logger.debug("Done calling onStartup() on plugin class '{}'.", plugin.getClass().getCanonicalName());
 		}
 		logger.debug("Done looping through startup task plugins.");
+
+		// Get a list of test loader plugins
+		List<TestLoaderPlugin> test_loaders = plugin_manager.getPluginsFor(TestLoaderPlugin.class);
+		logger.debug("There are '{}' test loaders.", test_loaders.size());
+
+		// Get a list of test list plugins
+		List<TestListPlugin> test_list_plugins = plugin_manager.getPluginsFor(TestListPlugin.class);
+		logger.debug("There are '{}' test list plugins, looping through them all.", test_list_plugins.size());
+		List<RunnableTest> test_list = new Vector<RunnableTest>();
+		for(TestListPlugin plugin : test_list_plugins)
+		{
+			// call each test list plugin
+			logger.debug("Calling getTests() on test list plugin '{}' with class name of '{}'.", plugin.getPluginName(), plugin.getClass().getCanonicalName());
+			List<RunnableTest> tests = plugin.getTests(context, test_loaders);
+			if(tests == null || tests.size() == 0)
+			{
+				logger.info("Test List Plugin '{}' returned no tests.", plugin.getPluginName());
+			} else
+			{
+				logger.info("Test List Plugin '{}' returned '{}' tests.", plugin.getPluginName(), tests.size());
+				test_list.addAll(tests);
+			}
+			logger.debug("Done calling getTests() on test list plugin with class name '{}'.", plugin.getClass().getCanonicalName());
+		}
+		logger.debug("Done looping through all '{}' test list plugin(s).", test_list_plugins.size());
+		logger.info("There are '{}' test(s) total to be run.", test_list.size());
+
+		// Get a list of Test List Runners
+
+		List<TestListRunnerPlugin> test_list_runners = plugin_manager.getPluginsFor(TestListRunnerPlugin.class);
+		TestListRunnerPlugin list_runner = null;
+		logger.debug("There are '{}' test_list_runners, there can be only one.", test_list_runners.size());
+		if(test_list_runners.size() > 1)
+		{
+			// Sort the list of test list runners
+			logger.debug("Sorting the list to find the one with the highest importance rating.");
+			Collections.sort(test_list_runners, new CompareByImportanceRating());
+			list_runner = test_list_runners.get(test_list_runners.size() - 1);
+
+		} else if(test_list_runners.size() == 1)
+		{
+			logger.debug("There is only 1 test list runner plugin, choosing it as the runner.");
+			list_runner = test_list_runners.get(0);
+		} else
+		{
+			logger.error("There are no Test List Runner plugins, there must be something wrong with the installation.");
+			System.err.println("There are no Test List Runner plugins, there must be something wrong with the installation.");
+			System.exit(1);
+		}
+		logger.info("The test list runner is '{}' implemented by class '{}'.", list_runner.getPluginName(), list_runner.getClass().getCanonicalName());
+
+		// Initialize and call the top test list runner
+		logger.debug("Initializing the list runner.");
+		list_runner.initialize(context);
+		logger.debug("Adding all '{}' test(s) to be run to the test list runner.", test_list.size());
+		list_runner.addTests(test_list);
+
+		List<BeforeTestListRunnerPlugin> before_test_list_runner_plugins = plugin_manager.getPluginsFor(BeforeTestListRunnerPlugin.class);
+		logger.debug("There are '{}' BeforeTestListRunner plugins, looping through them all.", before_test_list_runner_plugins.size());
+		for(BeforeTestListRunnerPlugin plugin : before_test_list_runner_plugins)
+		{
+			logger.debug("Calling beforeTestListRunnerExecutes() on plugin class '{}'.", plugin.getClass().getCanonicalName());
+			try
+			{
+				plugin.beforTestListRunnerExecutes(context, list_runner);
+			} catch(StartupError error)
+			{
+				// warn and above go to the console, we don't need that.
+				logger.info("BeforeTestListRunner plugin '" + plugin.getPluginName() + "' with a class name of '" + plugin.getClass().getCanonicalName() + "' threw a startup error, exiting tcrunij.", error);
+				System.err.println(error.getMessage());
+				System.exit(1);
+			}
+			logger.debug("Done calling beforeTestListRunnerExecutes() on plugin class '{}'.", plugin.getClass().getCanonicalName());
+		}
+		logger.debug("Done looping through BeforeTestListRunner plugins.");
+
+		logger.debug("Gathering before and after test case plugins.");
+		List<BeforeTestCasePlugin> before_tc_plugins = plugin_manager.getPluginsFor(BeforeTestCasePlugin.class);
+		List<AfterTestCasePlugin> after_tc_plugins = plugin_manager.getPluginsFor(AfterTestCasePlugin.class);
+		logger.debug("There are '{}' before test case plugins and '{}' after test case plugins.", before_tc_plugins.size(), after_tc_plugins.size());
+		logger.info("Calling runTests on test list runner '{}' implemented by class '{}'.", list_runner.getPluginName(), list_runner.getClass().getCanonicalName());
+		list_runner.runTests(before_tc_plugins, after_tc_plugins);
+		logger.info("Done calling runTests on test list runner.");
 
 
 
