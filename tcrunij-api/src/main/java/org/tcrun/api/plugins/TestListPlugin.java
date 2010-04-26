@@ -1,6 +1,7 @@
 package org.tcrun.api.plugins;
 
 import java.util.List;
+import org.tcrun.api.Plugin;
 import org.tcrun.api.RunnableTest;
 import org.tcrun.api.TCRunContext;
 
@@ -11,7 +12,7 @@ import org.tcrun.api.TCRunContext;
  *
  * @author jcorbett
  */
-public interface TestListPlugin
+public interface TestListPlugin extends Plugin
 {
 	/**
 	 * Get a list of runnable tests from a list of loaders.

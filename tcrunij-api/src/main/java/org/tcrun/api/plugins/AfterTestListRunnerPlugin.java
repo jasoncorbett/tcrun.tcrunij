@@ -1,5 +1,6 @@
 package org.tcrun.api.plugins;
 
+import org.tcrun.api.Plugin;
 import org.tcrun.api.TCRunContext;
 
 /**
@@ -8,7 +9,7 @@ import org.tcrun.api.TCRunContext;
  *
  * @author jcorbett
  */
-public interface AfterTestListRunnerPlugin
+public interface AfterTestListRunnerPlugin extends Plugin
 {
 	/**
 	 * This method is called after the test list runner has finished executing and has given up control.

@@ -1,5 +1,6 @@
 package org.tcrun.api.plugins;
 
+import org.tcrun.api.Plugin;
 import org.tcrun.api.TCRunContext;
 import org.tcrun.api.TestRunner;
 
@@ -9,7 +10,7 @@ import org.tcrun.api.TestRunner;
  *
  * @author jcorbett
  */
-public interface BeforeTestCasePlugin
+public interface BeforeTestCasePlugin extends Plugin
 {
 	public void beforeTestExecutes(TCRunContext p_context, TestRunner p_testrunner);
 }

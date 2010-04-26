@@ -1,5 +1,6 @@
 package org.tcrun.api.plugins;
 
+import org.tcrun.api.Plugin;
 import org.tcrun.api.TCRunContext;
 import org.tcrun.api.TestRunner;
 
@@ -9,7 +10,7 @@ import org.tcrun.api.TestRunner;
  *
  * @author jcorbett
  */
-public interface AfterTestCasePlugin
+public interface AfterTestCasePlugin extends Plugin
 {
 	/**
 	 * After a test runner has finished a test, this method will be called.

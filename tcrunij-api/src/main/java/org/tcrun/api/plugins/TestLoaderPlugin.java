@@ -5,6 +5,7 @@
 
 package org.tcrun.api.plugins;
 
+import org.tcrun.api.Plugin;
 import org.tcrun.api.RunnableTest;
 import org.tcrun.api.TCRunContext;
 
@@ -23,7 +24,7 @@ import org.tcrun.api.TCRunContext;
  *
  * @author jcorbett
  */
-public interface TestLoaderPlugin extends Iterable<RunnableTest>
+public interface TestLoaderPlugin extends Iterable<RunnableTest>, Plugin
 {
 	public void initialize(TCRunContext p_context);
 }
