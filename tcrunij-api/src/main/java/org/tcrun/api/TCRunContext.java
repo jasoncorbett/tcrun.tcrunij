@@ -56,8 +56,17 @@ public interface TCRunContext
 	public File getTCRunRoot();
 
 	/**
+	 * Add a result to the list.  This method will call all appropriate plugins (in particular result watcher
+	 * plugins).
+	 * 
+	 * @param result The result to add to the list of results.
+	 */
+	public void addResult(Result result);
+
+	/**
 	 * Retrieve the list of results for this test run.  The result list will be a synchronized one so you don't need
-	 * to do your own synchronization.
+	 * to do your own synchronization.  Don't use this to add results to the list, use the addResult method as
+	 * adding via the list won't call result watchers.
 	 *
 	 * @return A synchronized list holding the results of the test run.
 	 */

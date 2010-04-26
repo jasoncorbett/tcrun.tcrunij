@@ -11,8 +11,11 @@ import java.util.concurrent.ConcurrentMap;
 import org.slf4j.MDC;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
+import org.tcrun.api.PluginManager;
+import org.tcrun.api.PluginManagerFactory;
 import org.tcrun.api.Result;
 import org.tcrun.api.TCRunContext;
+import org.tcrun.api.plugins.ResultWatcherPlugin;
 
 /**
  * This is the default implimentation of the tcrun context.  The only special thing it does, is find
@@ -82,5 +85,21 @@ public class DefaultTCRunContext implements TCRunContext
 	public List<Result> getResultList()
 	{
 		return m_resultList;
+	}
+
+	public void addResult(Result result)
+	{
+		logger.entry(result);
+		PluginManager plugin_manager = PluginManagerFactory.getPluginManager();
+		List<ResultWatcherPlugin> result_watchers = plugin_manager.getPluginsFor(ResultWatcherPlugin.class);
+		logger.debug("There are '{}' result watchers, calling each one for result from test class '{}' with status '{}'.", new Object[] {result_watchers.size(), result.getTest().getTestRunner().getTestClass(), result.getStatus()});
+		for(ResultWatcherPlugin plugin : result_watchers)
+		{
+			logger.debug("Calling result watcher '{}' (class: '{}').", plugin.getPluginName(), plugin.getClass().getCanonicalName());
+			plugin.onResultFiled(result);
+			logger.debug("Done calling result watcher '{}' (class: '{}').", plugin.getPluginName(), plugin.getClass().getCanonicalName());
+		}
+		logger.debug("Done calling result watchers, adding result to list.");
+		m_resultList.add(result);
 	}
 }
