@@ -1,6 +1,7 @@
 package org.tcrun.api.plugins;
 
 import java.util.List;
+import org.tcrun.api.Plugin;
 import org.tcrun.api.TCRunContext;
 import org.tcrun.api.TestCaseAttribute;
 
@@ -9,7 +10,7 @@ import org.tcrun.api.TestCaseAttribute;
  *
  * @author jcorbett
  */
-public interface AttributeProviderPlugin
+public interface AttributeProviderPlugin extends Plugin
 {
 	/**
 	 * Get attributes of the test based on it's class.  The test id (provided by the test loader) is given here so
