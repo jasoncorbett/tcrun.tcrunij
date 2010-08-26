@@ -148,7 +148,7 @@ public class Main
 			// call each test list plugin
 			logger.debug("Calling getTests() on test list plugin '{}' with class name of '{}'.", plugin.getPluginName(), plugin.getClass().getCanonicalName());
 			List<RunnableTest> tests = plugin.getTests(context, test_loaders);
-			if(tests == null || tests.size() == 0)
+			if(tests == null || tests.isEmpty())
 			{
 				logger.info("Test List Plugin '{}' returned no tests.", plugin.getPluginName());
 			} else

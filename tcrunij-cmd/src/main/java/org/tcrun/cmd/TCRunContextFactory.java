@@ -1,7 +1,5 @@
 package org.tcrun.cmd;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.tcrun.api.TCRunContext;
