@@ -12,9 +12,9 @@
 			<appender name="RuntimeLog-${TestRunId}" class="ch.qos.logback.core.FileAppender">
 				<File>results/${TestRunId}/testrun.log</File>
 				<Append>false</Append>
-				<layout class="ch.qos.logback.classic.PatternLayout">
-					<Pattern>[%d{HH:mm:ss.SSS}|%-5level|%logger{36}]: %msg%n</Pattern>
-				</layout>
+				<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+					<pattern>[%d{HH:mm:ss.SSS}|%-5level|%logger{36}]: %msg%n</pattern>
+				</encoder>
 			</appender>
 		</sift>
 	</appender>
@@ -23,9 +23,9 @@
 		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
 			<level>WARN</level>
 		</filter>
-		<layout class="ch.qos.logback.classic.PatternLayout">
-			<Pattern>[%d{HH:mm:ss.SSS}|%-5level|%logger{36}]: %msg%n</Pattern>
-		</layout>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>[%d{HH:mm:ss.SSS}|%-5level|%logger{36}]: %msg%n</pattern>
+		</encoder>
 	</appender>
 
 	<root level="debug">
