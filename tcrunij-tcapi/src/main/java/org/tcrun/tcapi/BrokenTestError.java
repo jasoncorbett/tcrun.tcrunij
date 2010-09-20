@@ -2,17 +2,16 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package org.tcrun.tcapi;
 
 /**
  *
- * @author jaron
+ * @author jcorbett
  */
-public enum Results {
-    PASS,
-    FAIL,
-    SCRIPT_ERROR,
-    NOT_EXECUTED
-
+public class BrokenTestError extends Exception
+{
+	public BrokenTestError(String message)
+	{
+		super(message);
+	}
 }

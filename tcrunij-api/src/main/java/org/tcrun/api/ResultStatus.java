@@ -9,6 +9,7 @@ public enum ResultStatus
 {
     PASS,
     FAIL,
-    ERROR,
+    BROKEN_TEST,
+    NOT_TESTED,
     SKIPPED
 }

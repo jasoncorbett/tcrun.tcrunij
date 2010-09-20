@@ -4,14 +4,14 @@
 	<parent>
 		<groupId>org.tcrun</groupId>
 		<artifactId>tcrunij</artifactId>
-		<version>${tcrunij.major}.${tcrunij.minor}.${tcrunij.patch}-${tcrunij.buildid}</version>
+		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
 
 	<groupId>org.tcrun</groupId>
 	<artifactId>tcrunij-nix</artifactId>
 	<packaging>pom</packaging>
-	<version>${tcrunij.major}.${tcrunij.minor}.${tcrunij.patch}-${tcrunij.buildid}</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>TCRunIJ Packaging for *NIX systems</name>
 	<description>Packaging of TCRunIJ to run on all *nix systems (with bourne shell), including OS X.</description>
 
@@ -44,17 +44,27 @@
 		<dependency>
 			<groupId>org.tcrun</groupId>
 			<artifactId>tcrunij-api</artifactId>
-			<version>${tcrunij.major}.${tcrunij.minor}.${tcrunij.patch}-${tcrunij.buildid}</version>
+			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.tcrun</groupId>
 			<artifactId>tcrunij-cmd</artifactId>
-			<version>${tcrunij.major}.${tcrunij.minor}.${tcrunij.patch}-${tcrunij.buildid}</version>
+			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.tcrun.plugins</groupId>
 			<artifactId>cmd-option-plugin</artifactId>
-			<version>${tcrunij.major}.${tcrunij.minor}.${tcrunij.patch}-${tcrunij.buildid}</version>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.tcrun.plugins</groupId>
+			<artifactId>tcapi-plugin</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.tcrun.plugins</groupId>
+			<artifactId>basic-plugins</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
