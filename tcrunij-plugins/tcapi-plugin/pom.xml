@@ -9,16 +9,21 @@
 
 
 	<groupId>org.tcrun.plugins</groupId>
-	<artifactId>cmd-option-plugin</artifactId>
+	<artifactId>tcapi-plugin</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0.0-SNAPSHOT</version>
-	<name>TCRunIJ Command Line Options Plugin</name>
-	<description>Standard TCRunIJ command line option plugins.</description>
+	<name>TCRunIJ TCApi Plugin</name>
+	<description>Allows TCRunIJ to run TCAPI based tests.</description>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.tcrun</groupId>
 			<artifactId>tcrunij-api</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.tcrun</groupId>
+			<artifactId>tcrunij-tcapi</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		<!-- Netbeans doesn't like to include it just because it's a dependency of tcrunij-api -->

@@ -1,16 +1,14 @@
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.tcrun</groupId>
 	<artifactId>tcrunij</artifactId>
 	<packaging>pom</packaging>
-	<version>${tcrunij.major}.${tcrunij.minor}.${tcrunij.patch}-${tcrunij.buildid}</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>TCRunIJ</name>
 
 	<properties>
-		<tcrunij.major>1</tcrunij.major>
-		<tcrunij.minor>0</tcrunij.minor>
-		<tcrunij.patch>0</tcrunij.patch>
 		<tcrunij.buildid>SNAPSHOT</tcrunij.buildid>
 		<netbeans.hint.useExternalMaven>true</netbeans.hint.useExternalMaven>
 	</properties>
@@ -27,12 +25,28 @@
 	<modules>
 		<module>tcrunij-api</module>
 		<module>tcrunij-tcapi</module>
-        <module>tcrunij-plugins</module>
+		<module>tcrunij-plugins</module>
 		<module>tcrunij-cmd</module>
 		<module>tcrunij-nix</module>
 	</modules>
 
+	<distributionManagement>
+		<repository>
+			<id>tcrun-maven-repo</id>
+			<url>scpexe://maven.tcrun.org/home/tcrunadmin/maven.tcrun.org/</url>
+		</repository>
+	</distributionManagement>
+
+
 	<build>
+		<extensions>
+      <!-- Enabling the use of FTP -->
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ssh-external</artifactId>
+				<version>1.0-beta-6</version>
+			</extension>
+		</extensions>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
