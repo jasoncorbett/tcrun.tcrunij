@@ -4,9 +4,13 @@
  */
 package org.tcrun.tcapi;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
+import org.tcrun.api.TestCaseStep;
+import org.tcrun.api.TestWithSteps;
 import org.tcrun.tcapi.assertlib.AssertionFailure;
 import org.tcrun.tcapi.assertlib.Check;
 
@@ -14,9 +18,11 @@ import org.tcrun.tcapi.assertlib.Check;
  *
  * @author jcorbett
  */
-public abstract class AbstractSimpleTestCase implements SimpleTestCase
+public abstract class AbstractSimpleTestCase implements SimpleTestCase, TestWithSteps
 {
 	protected Map<String, String> tcinfo;
+
+	protected List<TestCaseStep> steps;
 
 	protected XLogger tclog;
 
@@ -28,6 +34,7 @@ public abstract class AbstractSimpleTestCase implements SimpleTestCase
 		tcinfo = configuration;
 		tclog = XLoggerFactory.getXLogger("test." + this.getClass().getName());
 		check = new Check(tclog);
+		steps = new ArrayList<TestCaseStep>();
 		setup();
 	}
 
@@ -94,5 +101,23 @@ public abstract class AbstractSimpleTestCase implements SimpleTestCase
 		}
 
 		return retval;
+	}
+
+	public void step(String name)
+	{
+		step(name, "no expected result given.");
+	}
+
+	public void step(String name, String expectedResult)
+	{
+		tclog.info("Step {} Description: {}", steps.size() + 1, name);
+		tclog.info("Step {} Expected Result: {}", steps.size() + 1, expectedResult);
+		steps.add(new BasicTestCaseStep(name, expectedResult));
+	}
+
+	@Override
+	public List<TestCaseStep> getTestSteps()
+	{
+		return steps;
 	}
 }

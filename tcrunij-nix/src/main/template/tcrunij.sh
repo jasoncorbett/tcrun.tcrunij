@@ -39,4 +39,15 @@ fi
 
 export CLASSPATH
 
+TESTRUNID=`date |sed -e 's/ /-/g' -e 's/:/-/g'`
+
+export TESTRUNID
+
 "${JAVA}" -Dlogback.configurationFile=conf/logging-config.xml org.tcrun.cmd.Main "$@"
+
+if [ -L "${TCRUNIJ_HOME}/results/last" ]
+then
+	rm -f "${TCRUNIJ_HOME}/results/last"
+fi
+
+ln -s "${TCRUNIJ_HOME}/results/${TESTRUNID}" "${TCRUNIJ_HOME}/results/last"

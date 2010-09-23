@@ -8,6 +8,10 @@
 	<dependencySets>
 		<dependencySet>
 			<outputDirectory>/lib</outputDirectory>
+			<excludes>
+				<exclude>*hamcrest-all*</exclude>
+				<exclude>*junit:jar:3*</exclude>
+			</excludes>
 		</dependencySet>
 	</dependencySets>
 	<fileSets>

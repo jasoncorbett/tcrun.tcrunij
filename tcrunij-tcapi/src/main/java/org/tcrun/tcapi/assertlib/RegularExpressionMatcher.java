@@ -29,13 +29,13 @@ public class RegularExpressionMatcher extends TypeSafeMatcher<String>
 	@Override
 	public void describeTo(Description description)
 	{
-		description.appendText("matches regular expression ").appendValue(pattern);
+		description.appendText("a string matching regular expression ").appendValue(pattern);
 	}
 
 	@Override
 	public boolean matchesSafely(String item)
 	{
-		return pattern.matcher(item).matches();
+		return pattern.matcher(item).find();
 	}
 
 	@Factory
