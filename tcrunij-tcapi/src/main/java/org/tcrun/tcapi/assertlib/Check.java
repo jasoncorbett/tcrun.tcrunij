@@ -16,14 +16,14 @@ public class Check
 		m_test_case_logger = p_test_case_logger;
 	}
 
-	public <T> void that(T actual, Matcher<T> matcher) throws AssertionFailure
+	public <T> void that(T actual, Matcher<? extends T> matcher) throws AssertionFailure
 	{
 		if(matcher.matches(actual))
 		{
-			m_test_case_logger.info("Successful Check: actual: '{}' expected: {}", actual, StringDescription.asString(matcher));
+			m_test_case_logger.info("Successful Check: actual value is '{}', expected value {}", actual, StringDescription.asString(matcher));
 		} else
 		{
-			throw new AssertionFailure("Actual: '" + actual + "', Expected: '" + StringDescription.asString(matcher));
+			throw new AssertionFailure("Actual value is '" + actual + "', expected value '" + StringDescription.asString(matcher));
 		}
 	}
 }

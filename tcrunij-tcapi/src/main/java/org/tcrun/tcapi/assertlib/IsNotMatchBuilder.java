@@ -1,5 +1,9 @@
 package org.tcrun.tcapi.assertlib;
 
+import org.hamcrest.Matcher;
+import org.hamcrest.core.Is;
+import org.hamcrest.core.IsNot;
+
 /**
  *
  * @author jcorbett
@@ -7,8 +11,8 @@ package org.tcrun.tcapi.assertlib;
 public class IsNotMatchBuilder extends IsMatchBuilder
 {
 	@Override
-	protected boolean isNegativeMatch()
+	protected <T> Matcher<T> wrapper(Matcher<T> matcher)
 	{
-		return true;
+		return new Is<T>(new IsNot<T>(matcher));
 	}
 }

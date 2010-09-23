@@ -65,7 +65,7 @@ public class BasicTestListPlugin implements TestListPlugin, CommandLineOptionPlu
 			         .isRequired(false)
 				 .withDescription("Specify a test by it's id.")
 				 .withArgName("ID")
-				 .hasArg(true)
+				 .hasArgs()
 				 .create());
 	}
 

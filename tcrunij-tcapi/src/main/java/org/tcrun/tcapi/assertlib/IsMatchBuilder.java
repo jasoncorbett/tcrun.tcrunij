@@ -8,18 +8,19 @@ import java.util.Collection;
 import java.util.regex.Pattern;
 import org.hamcrest.Matcher;
 import org.hamcrest.core.IsEqual;
-import org.hamcrest.core.IsNot;
 import org.hamcrest.core.IsNull;
 import org.hamcrest.core.StringContains;
 import org.hamcrest.core.StringStartsWith;
 import org.hamcrest.core.StringEndsWith;
 import org.hamcrest.core.IsInstanceOf;
+import org.hamcrest.core.IsSame;
 import org.hamcrest.text.IsEmptyString;
 import org.hamcrest.text.IsEqualIgnoringCase;
 import org.hamcrest.text.IsEqualIgnoringWhiteSpace;
 import org.hamcrest.text.StringContainsInOrder;
 import org.hamcrest.collection.IsEmptyCollection;
 import org.hamcrest.collection.IsEmptyIterable;
+import org.hamcrest.core.Is;
 /**
  * Static factory for matchers.
  * @author jcorbett
@@ -28,128 +29,92 @@ public class IsMatchBuilder
 {
 	public static final IsNotMatchBuilder Not = new IsNotMatchBuilder();
 
-	protected boolean isNegativeMatch()
+	protected <T> Matcher<T> wrapper(Matcher<T> matcher)
 	{
-		return false;
+		return new Is<T>(matcher);
 	}
 
 	public Matcher<Object> Null()
 	{
-		if(isNegativeMatch())
-			return new IsNot<Object>(new IsNull<Object>());
-		else
-			return new IsNull<Object>();
+		return wrapper(new IsNull<Object>());
 	}
 
 	public Matcher<Boolean> True()
 	{
-		if(isNegativeMatch())
-			return new IsNot<Boolean>(new IsEqual<Boolean>(Boolean.TRUE));
-		else
-			return new IsEqual<Boolean>(Boolean.TRUE);
+		return wrapper(new IsEqual<Boolean>(Boolean.TRUE));
 	}
-
 
 	public Matcher<Boolean> False()
 	{
-		if(isNegativeMatch())
-			return new IsNot<Boolean>(new IsEqual<Boolean>(Boolean.FALSE));
-		else
-			return new IsEqual<Boolean>(Boolean.FALSE);
+		return wrapper(new IsEqual<Boolean>(Boolean.FALSE));
 	}
 
 	public Matcher<String> EmptyString()
 	{
-		if(isNegativeMatch())
-			return new IsNot<String>(new IsEmptyString());
-		else
-			return new IsEmptyString();
+		return wrapper(new IsEmptyString());
 	}
 
 	public Matcher<Collection<Object>> EmptyCollection()
 	{
-		if(isNegativeMatch())
-			return new IsNot<Collection<Object>>(new IsEmptyCollection<Object>());
-		else
-			return new IsEmptyCollection<Object>();
+		return wrapper(new IsEmptyCollection<Object>());
 	}
 
 	public Matcher<Iterable<Object>> EmptyIterable()
 	{
-		if(isNegativeMatch())
-			return new IsNot<Iterable<Object>>(new IsEmptyIterable<Object>());
-		else
-			return new IsEmptyIterable<Object>();
+		return wrapper(new IsEmptyIterable<Object>());
 	}
 
-	public Matcher<String> StringEqualsIgnoreingCase(String expected)
+	public Matcher<String> EqualToIgnoringCase(String expected)
 	{
-		if(isNegativeMatch())
-			return new IsNot<String>(new IsEqualIgnoringCase(expected));
-		else
-			return new IsEqualIgnoringCase(expected);
+		return wrapper(new IsEqualIgnoringCase(expected));
 	}
 
-	public Matcher<String> StringEqualsIgnoringWhitespace(String expected)
+	public Matcher<String> EqualToIgnoringWhitespace(String expected)
 	{
-		if(isNegativeMatch())
-			return new IsNot<String>(new IsEqualIgnoringWhiteSpace(expected));
-		else
-			return new IsEqualIgnoringWhiteSpace(expected);
+		return wrapper(new IsEqualIgnoringWhiteSpace(expected));
 	}
 
 	public Matcher<String> StringContainingAllSubstringsInOrder(Iterable<String> expected)
 	{
-		if(isNegativeMatch())
-			return new IsNot<String>(new StringContainsInOrder(expected));
-		else
-			return new StringContainsInOrder(expected);
+		return wrapper(new StringContainsInOrder(expected));
 	}
 
 	public Matcher<String> StringContaining(String expected)
 	{
-		if(isNegativeMatch())
-			return new IsNot<String>(new StringContains(expected));
-		else
-			return new StringContains(expected);
+		return wrapper(new StringContains(expected));
 	}
 
 	public Matcher<String> StringStartingWith(String expected)
 	{
-		if(isNegativeMatch())
-			return new IsNot<String>(new StringStartsWith(expected));
-		else
-			return new StringStartsWith(expected);
+		return wrapper(new StringStartsWith(expected));
 	}
 
 	public Matcher<String> StringEndingWith(String expected)
 	{
-		if(isNegativeMatch())
-			return new IsNot<String>(new StringEndsWith(expected));
-		else
-			return new StringEndsWith(expected);
+		return wrapper(new StringEndsWith(expected));
 	}
 
 	public Matcher<String> StringMatchingRegex(String expected)
 	{
-		if(isNegativeMatch())
-			return new IsNot<String>(new RegularExpressionMatcher(expected));
-		else
-			return new RegularExpressionMatcher(expected);
+		return wrapper(new RegularExpressionMatcher(expected));
 	}
 	public Matcher<String> StringMatchingRegex(Pattern expected)
 	{
-		if(isNegativeMatch())
-			return new IsNot<String>(new RegularExpressionMatcher(expected));
-		else
-			return new RegularExpressionMatcher(expected);
+		return wrapper(new RegularExpressionMatcher(expected));
 	}
 
 	public Matcher<Object> InstanceOf(Class<?> expected)
 	{
-		if(isNegativeMatch())
-			return new IsNot<Object>(new IsInstanceOf(expected));
-		else
-			return new IsInstanceOf(expected);
+		return wrapper(new IsInstanceOf(expected));
+	}
+
+	public Matcher<Object> EqualTo(Object expected)
+	{
+		return wrapper(new IsEqual<Object>(expected));
+	}
+
+	public Matcher<Object> SameAs(Object expected)
+	{
+		return wrapper(new IsSame<Object>(expected));
 	}
 }
