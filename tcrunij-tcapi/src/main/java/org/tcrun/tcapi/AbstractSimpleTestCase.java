@@ -29,7 +29,7 @@ public abstract class AbstractSimpleTestCase implements SimpleTestCase, TestWith
 	protected Check check;
 
 	@Override
-	public final void tcSetup(Map<String, String> configuration) throws Exception
+	public void tcSetup(Map<String, String> configuration) throws Exception
 	{
 		tcinfo = configuration;
 		tclog = XLoggerFactory.getXLogger("test." + this.getClass().getName());
@@ -60,7 +60,7 @@ public abstract class AbstractSimpleTestCase implements SimpleTestCase, TestWith
 	public abstract TestResult test() throws Exception;
 
 	@Override
-	public final void tcCleanUp() throws Exception
+	public void tcCleanUp() throws Exception
 	{
 		cleanup();
 	}
