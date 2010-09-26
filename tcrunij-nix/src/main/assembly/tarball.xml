@@ -11,6 +11,7 @@
 			<excludes>
 				<exclude>*hamcrest-all*</exclude>
 				<exclude>*junit:jar:3*</exclude>
+				<exclude>*htmlunit*:jar:2.7*</exclude>
 			</excludes>
 		</dependencySet>
 	</dependencySets>
