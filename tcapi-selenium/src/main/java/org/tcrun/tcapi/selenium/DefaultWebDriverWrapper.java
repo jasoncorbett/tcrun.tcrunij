@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
@@ -42,6 +43,11 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		    name.equalsIgnoreCase("InternetExplorer"))
 		{
 			return new InternetExplorerDriver();
+		}
+
+		if (name.equalsIgnoreCase("Chrome"))
+		{
+			return new ChromeDriver();
 		}
 
 		throw new IllegalArgumentException("Browser driver with name '" + name + "' not supported yet.");
