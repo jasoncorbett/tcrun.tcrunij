@@ -1,6 +1,7 @@
 package org.tcrun.tcapi.selenium;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
+import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import java.util.Calendar;
 import java.util.Date;
 import org.openqa.selenium.NoSuchElementException;
@@ -8,6 +9,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.support.ui.Select;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 
@@ -184,4 +186,37 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 			throw new IllegalStateException("Unable to create instance of page class " + page.getName() + ".", ex);
 		}
 	}
+
+	@Override
+	public void selectByOptionText(PageElement selectList, String option)
+	{
+		selectByOptionText(selectList, option, timeout);
+	}
+
+	@Override
+	public void selectByOptionText(PageElement selectList, String option, int timeout)
+	{
+		logger.debug("Selecting option with display text '{}' of select list '{}' found by '{}' waiting a max timeout of {} seconds.", new Object[] {option, selectList.getName(), selectList.getFinder(), timeout});
+		checkForElementExists(selectList, timeout);
+		Select selectInput = new Select(driver.findElement(selectList.getFinder()));
+		selectInput.deselectAll();
+		selectInput.selectByVisibleText(option);
+	}
+
+	@Override
+	public void selectByOptionValue(PageElement selectList, String optionValue)
+	{
+		selectByOptionValue(selectList, optionValue, timeout);
+	}
+
+	@Override
+	public void selectByOptionValue(PageElement selectList, String optionValue, int timeout)
+	{
+		logger.debug("Selecting option with value '{}' of select list '{}' found by '{}' waiting a max timeout of {} seconds.", new Object[] {optionValue, selectList.getName(), selectList.getFinder(), timeout});
+		checkForElementExists(selectList, timeout);
+		Select selectInput = new Select(driver.findElement(selectList.getFinder()));
+		selectInput.deselectAll();
+		selectInput.selectByValue(optionValue);
+	}
+
 }

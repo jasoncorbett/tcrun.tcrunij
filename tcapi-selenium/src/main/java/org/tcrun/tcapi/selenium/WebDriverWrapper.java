@@ -22,6 +22,14 @@ public interface WebDriverWrapper
 
 	public String getText(PageElement locator, int timeout);
 
+	public void selectByOptionText(PageElement selectList, String option);
+
+	public void selectByOptionText(PageElement selectList, String option, int timeout);
+
+	public void selectByOptionValue(PageElement selectList, String optionValue);
+
+	public void selectByOptionValue(PageElement selectList, String optionValue, int timeout);
+
 	public String getPageTitle();
 
 	public void goTo(String url);
