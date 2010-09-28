@@ -28,7 +28,7 @@
 		<module>tcapi-selenium</module>
 		<module>tcrunij-plugins</module>
 		<module>tcrunij-cmd</module>
-		<module>tcrunij-nix</module>
+		<module>tcrunij-packaging</module>
 	</modules>
 
 	<distributionManagement>
