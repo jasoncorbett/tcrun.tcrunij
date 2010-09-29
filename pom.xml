@@ -13,15 +13,6 @@
 		<netbeans.hint.useExternalMaven>true</netbeans.hint.useExternalMaven>
 	</properties>
 
-	<profiles>
-		<profile>
-			<id>hudson</id>
-			<properties>
-				<tcrunij.buildid>${env.BUILD_NUMBER}</tcrunij.buildid>
-			</properties>
-		</profile>
-	</profiles>
-
 	<modules>
 		<module>tcrunij-api</module>
 		<module>tcrunij-tcapi</module>
