@@ -8,6 +8,6 @@ package org.tcrun.api;
  */
 public interface TestCaseFilter
 {
-	public enum FilterResult { ACCEPT, REJECT };
+	public enum FilterResult { ACCEPT, REJECT, UNKNOWN };
 	public FilterResult filterTestCase(RunnableTest testcase);
 }
