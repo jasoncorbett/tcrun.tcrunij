@@ -42,7 +42,10 @@ public class PageElement
 		Calendar endTime = Calendar.getInstance();
 		endTime.add(Calendar.SECOND, timeout);
 		boolean exists = false;
-		while(Calendar.getInstance().before(endTime) && !exists)
+                // Fixing Issue #17 - Need to be able to pass in a timeout of 0, or have no timeout to the PageElement.exists function
+                // We need to ensure this executes at least once such as in
+                // the case of the timeout being zero
+		do
 		{
 			try
 			{
@@ -62,7 +65,7 @@ public class PageElement
 				{
 				}
 			}
-		}
+		} while(Calendar.getInstance().before(endTime) && !exists);
 		return exists;
 	}
 }
