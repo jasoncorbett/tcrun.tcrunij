@@ -205,7 +205,6 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		logger.debug("Selecting option with display text '{}' of select list '{}' found by '{}' waiting a max timeout of {} seconds.", new Object[] {option, selectList.getName(), selectList.getFinder(), timeout});
 		checkForElementExists(selectList, timeout);
 		Select selectInput = new Select(driver.findElement(selectList.getFinder()));
-		selectInput.deselectAll();
 		selectInput.selectByVisibleText(option);
 	}
 
@@ -221,7 +220,6 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		logger.debug("Selecting option with value '{}' of select list '{}' found by '{}' waiting a max timeout of {} seconds.", new Object[] {optionValue, selectList.getName(), selectList.getFinder(), timeout});
 		checkForElementExists(selectList, timeout);
 		Select selectInput = new Select(driver.findElement(selectList.getFinder()));
-		selectInput.deselectAll();
 		selectInput.selectByValue(optionValue);
 	}
 
