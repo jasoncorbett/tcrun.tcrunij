@@ -2,3 +2,4 @@ org.tcrun.plugins.basic.BasicTestListPlugin
 org.tcrun.plugins.basic.BasicPrintStatusPlugin
 org.tcrun.plugins.basic.BasicLogSeparatorPlugin
 org.tcrun.plugins.basic.BasicTestCaseEnvironment
+org.tcrun.plugins.basic.BasicFilterPlugin
