@@ -1,11 +1,11 @@
 package org.tcrun.tcapi.selenium;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
-import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import java.util.Calendar;
 import java.util.Date;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
@@ -68,33 +68,38 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		this.timeout = timeout;
 	}
 
-	public void checkForElementExists(PageElement locator, int timeout)
+	public WebElement getElement(PageElement locator, int timeout)
 	{
-		if(!locator.exists(driver, timeout))
+		WebElement element = null;
+		try
 		{
-			logger.error("Element with name {} and locator {} was not found after {} seconds.", new Object[] {locator.getName(), locator.getFinder(), timeout});
+			element = locator.getElement(driver, timeout);
+		} catch(NoSuchElementException ex)
+		{
+			logger.error("Element with name {} and found {} was not found after {} seconds.", new Object[] {locator.getName(), locator.getFindByDescription(), timeout});
 			logger.error("Current page URL: {}", driver.getCurrentUrl());
 			logger.error("Current page title: {}", driver.getTitle());
 			logger.error("Current page source: {}", driver.getPageSource());
-			throw new NoSuchElementException("Couldn't find element with locator " + locator.getFinder());
+			throw ex;
 		}
+		return element;
 	}
 
 	public void click(PageElement locator)
 	{
+		logger.debug("Clicking on element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
 		click(locator, timeout);
 	}
 
 	public void click(PageElement locator, int timeout)
 	{
-		checkForElementExists(locator, timeout);
-		driver.findElement(locator.getFinder()).click();
+		getElement(locator, timeout).click();
 	}
 
 	public void type(PageElement locator, String text, int timeout)
 	{
-		checkForElementExists(locator, timeout);
-		driver.findElement(locator.getFinder()).sendKeys(text);
+		logger.debug("Typing text '{}' in element with name '{}' and found '{}'.", new Object[] {text, locator.getName(), locator.getFindByDescription()});
+		getElement(locator, timeout).sendKeys(text);
 	}
 
 	public void type(PageElement locator, String text)
@@ -104,18 +109,20 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 
 	public String getText(PageElement locator)
 	{
+		logger.debug("Getting text from element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
 		return getText(locator, timeout);
 	}
 
 	public String getText(PageElement locator, int timeout)
 	{
-		checkForElementExists(locator, timeout);
-		return driver.findElement(locator.getFinder()).getText();
+
+		return getElement(locator, timeout).getText();
 	}
 
 	@Override
 	public String getPageTitle()
 	{
+		logger.debug("Getting current page title.");
 		return driver.getTitle();
 	}
 
@@ -140,7 +147,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	@Override
 	public void waitForPage(Class<? extends SelfAwarePage> page, int timeout)
 	{
-		logger.debug("Waiting for page '{}'.", page.getName());
+		logger.debug("Waiting for page '{}' a max of {} seconds.", page.getName(), timeout);
 		try
 		{
 			SelfAwarePage page_instance = page.newInstance();
@@ -203,8 +210,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	public void selectByOptionText(PageElement selectList, String option, int timeout)
 	{
 		logger.debug("Selecting option with display text '{}' of select list '{}' found by '{}' waiting a max timeout of {} seconds.", new Object[] {option, selectList.getName(), selectList.getFinder(), timeout});
-		checkForElementExists(selectList, timeout);
-		Select selectInput = new Select(driver.findElement(selectList.getFinder()));
+		Select selectInput = new Select(getElement(selectList, timeout));
 		selectInput.selectByVisibleText(option);
 	}
 
@@ -218,8 +224,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	public void selectByOptionValue(PageElement selectList, String optionValue, int timeout)
 	{
 		logger.debug("Selecting option with value '{}' of select list '{}' found by '{}' waiting a max timeout of {} seconds.", new Object[] {optionValue, selectList.getName(), selectList.getFinder(), timeout});
-		checkForElementExists(selectList, timeout);
-		Select selectInput = new Select(driver.findElement(selectList.getFinder()));
+		Select selectInput = new Select(getElement(selectList, timeout));
 		selectInput.selectByValue(optionValue);
 	}
 
