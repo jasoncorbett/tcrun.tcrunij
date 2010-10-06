@@ -24,6 +24,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	private int timeout;
 	private static XLogger logger = XLoggerFactory.getXLogger("test." + DefaultWebDriverWrapper.class.getName());
 
+
 	public static WebDriver getDriverFromBrowserName(String name)
 	{
 		if (name.equalsIgnoreCase("ff") ||
