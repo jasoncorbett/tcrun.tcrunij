@@ -23,10 +23,12 @@ import org.tcrun.api.plugins.StartupError;
 import org.tcrun.api.plugins.StartupTaskPlugin;
 import org.tcrun.api.TCRunContext;
 import org.tcrun.api.plugins.AfterTestCasePlugin;
+import org.tcrun.api.plugins.AfterTestListRunnerPlugin;
 import org.tcrun.api.plugins.BeforeTestCasePlugin;
 import org.tcrun.api.plugins.BeforeTestListRunnerPlugin;
 import org.tcrun.api.plugins.ConfigurationOverridePlugin;
 import org.tcrun.api.plugins.ConfigurationSourcePlugin;
+import org.tcrun.api.plugins.ShutdownTaskPlugin;
 import org.tcrun.api.plugins.TestListPlugin;
 import org.tcrun.api.plugins.TestListRunnerPlugin;
 import org.tcrun.api.plugins.TestLoaderPlugin;
@@ -218,9 +220,27 @@ public class Main
 		list_runner.runTests(before_tc_plugins, after_tc_plugins);
 		logger.info("Done calling runTests on test list runner.");
 
+		List<AfterTestListRunnerPlugin> aftertlr_plugins = plugin_manager.getPluginsFor(AfterTestListRunnerPlugin.class);
+		logger.debug("There are '{}' after test list plugins, looping through them all.", aftertlr_plugins.size());
+		for(AfterTestListRunnerPlugin plugin : aftertlr_plugins)
+		{
+			logger.debug("Calling afterTestListRunnerHasExecuted(context, list_runner) on plugin '{}' with class '{}'.", plugin.getPluginName(), plugin.getClass().getName());
+			plugin.afterTestListRunnerHasExecuted(context, list_runner);
+			logger.debug("Done calling afterTestListRunnerHasExecuted(context, list_runner) on plugin '{}' with class '{}'.", plugin.getPluginName(), plugin.getClass().getName());
+		}
+		logger.debug("Done looping through after test list runner plugins.");
+
+		List<ShutdownTaskPlugin> shutdown_tasks = plugin_manager.getPluginsFor(ShutdownTaskPlugin.class);
+		logger.debug("There are '{}' shutdown task plugins, looping through them all.", shutdown_tasks.size());
+		for(ShutdownTaskPlugin plugin : shutdown_tasks)
+		{
+			logger.debug("Calling onShutdown() on plugin '{}' with class '{}'.", plugin.getPluginName(), plugin.getClass().getCanonicalName());
+			plugin.onShutdown(context);
+			logger.debug("Done calling onShutdown() on plugin '{}' with class '{}'.", plugin.getPluginName(), plugin.getClass().getCanonicalName());
+		}
+		logger.debug("Done looping through shutdown task plugins.");
 
 
-		System.out.println("You've reached the end of tcrunij.  Bye.");
 		System.exit(0);
 	}
 }
