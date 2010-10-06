@@ -43,7 +43,7 @@ TESTRUNID=`date |sed -e 's/ /-/g' -e 's/:/-/g'`
 
 export TESTRUNID
 
-"${JAVA}" -Dlogback.configurationFile=conf/logging-config.xml org.tcrun.cmd.Main "$@"
+"${JAVA}" ${JAVA_OPTS} -Dlogback.configurationFile=conf/logging-config.xml org.tcrun.cmd.Main "$@"
 
 if [ -L "${TCRUNIJ_HOME}/results/last" ]
 then
