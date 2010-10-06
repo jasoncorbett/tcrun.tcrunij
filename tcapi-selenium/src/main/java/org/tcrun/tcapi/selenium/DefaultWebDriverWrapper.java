@@ -183,12 +183,31 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		}
 	}
 
+        @Override
 	public <T> void handlePage(Class<? extends SelfAwarePage<T>> page, T context)
 	{
 		try
 		{
 			SelfAwarePage<T> page_instance = page.newInstance();
 			page_instance.handlePage(this, context);
+		} catch(InstantiationException ex)
+		{
+			logger.error("Unable to create instance of page class " + page.getName() + ".", ex);
+			throw new IllegalStateException("Unable to create instance of page class " + page.getName() + ".", ex);
+		} catch(IllegalAccessException ex)
+		{
+			logger.error("Unable to create instance of page class " + page.getName() + ".", ex);
+			throw new IllegalStateException("Unable to create instance of page class " + page.getName() + ".", ex);
+		}
+	}
+
+        @Override
+        public boolean isCurrentPage(Class<? extends SelfAwarePage> page)
+	{
+		try
+		{
+			SelfAwarePage page_instance = page.newInstance();
+			return page_instance.isCurrentPage(this);
 		} catch(InstantiationException ex)
 		{
 			logger.error("Unable to create instance of page class " + page.getName() + ".", ex);

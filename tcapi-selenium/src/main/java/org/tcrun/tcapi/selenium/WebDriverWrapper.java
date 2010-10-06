@@ -41,4 +41,6 @@ public interface WebDriverWrapper
 	public void waitForPage(Class<? extends SelfAwarePage> page, int timeout);
 
 	public <T> void handlePage(Class<? extends SelfAwarePage<T>> page, T context);
+
+        public boolean isCurrentPage(Class<? extends SelfAwarePage> page);
 }
