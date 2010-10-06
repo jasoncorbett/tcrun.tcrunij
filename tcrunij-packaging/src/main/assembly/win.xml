@@ -23,6 +23,7 @@
 			<fileMode>0755</fileMode>
 			<includes>
 				<include>tcrunij.bat</include>
+				<include>debug-tcrunij.bat</include>
 				<!--
 				<include>bin</include>
 				-->
@@ -40,6 +41,7 @@
 			<fileMode>0644</fileMode>
 			<excludes>
 				<exclude>tcrunij.sh</exclude>
+				<exclude>debug-tcrunij.sh</exclude>
 				<exclude>*.formatted</exclude>
 				<exclude>*.filtered</exclude>
 			</excludes>
