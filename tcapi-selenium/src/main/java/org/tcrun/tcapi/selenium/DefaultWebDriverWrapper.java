@@ -20,15 +20,15 @@ import org.slf4j.ext.XLoggerFactory;
  */
 public class DefaultWebDriverWrapper implements WebDriverWrapper
 {
+
 	private WebDriver driver;
 	private int timeout;
 	private static XLogger logger = XLoggerFactory.getXLogger("test." + DefaultWebDriverWrapper.class.getName());
 
-
 	public static WebDriver getDriverFromBrowserName(String name)
 	{
-		if (name.equalsIgnoreCase("ff") ||
-		    name.equalsIgnoreCase("firefox"))
+		if (name.equalsIgnoreCase("ff")
+			|| name.equalsIgnoreCase("firefox"))
 		{
 			return new FirefoxDriver();
 		}
@@ -40,8 +40,8 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 			return driver;
 		}
 
-		if (name.equalsIgnoreCase("ie") ||
-		    name.equalsIgnoreCase("InternetExplorer"))
+		if (name.equalsIgnoreCase("ie")
+			|| name.equalsIgnoreCase("InternetExplorer"))
 		{
 			return new InternetExplorerDriver();
 		}
@@ -75,9 +75,12 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		try
 		{
 			element = locator.getElement(driver, timeout);
-		} catch(NoSuchElementException ex)
+		} catch (NoSuchElementException ex)
 		{
-			logger.error("Element with name {} and found {} was not found after {} seconds.", new Object[] {locator.getName(), locator.getFindByDescription(), timeout});
+			logger.error("Element with name {} and found {} was not found after {} seconds.", new Object[]
+				{
+					locator.getName(), locator.getFindByDescription(), timeout
+				});
 			logger.error("Current page URL: {}", driver.getCurrentUrl());
 			logger.error("Current page title: {}", driver.getTitle());
 			logger.error("Current page source: {}", driver.getPageSource());
@@ -99,7 +102,10 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 
 	public void type(PageElement locator, String text, int timeout)
 	{
-		logger.debug("Typing text '{}' in element with name '{}' and found '{}'.", new Object[] {text, locator.getName(), locator.getFindByDescription()});
+		logger.debug("Typing text '{}' in element with name '{}' and found '{}'.", new Object[]
+			{
+				text, locator.getName(), locator.getFindByDescription()
+			});
 		getElement(locator, timeout).sendKeys(text);
 	}
 
@@ -140,13 +146,13 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	}
 
 	@Override
-	public void waitForPage(Class<? extends SelfAwarePage> page)
+	public void waitFor(Class<? extends SelfAwarePage> page)
 	{
-		waitForPage(page, timeout);
+		waitFor(page, timeout);
 	}
 
 	@Override
-	public void waitForPage(Class<? extends SelfAwarePage> page, int timeout)
+	public void waitFor(Class<? extends SelfAwarePage> page, int timeout)
 	{
 		logger.debug("Waiting for page '{}' a max of {} seconds.", page.getName(), timeout);
 		try
@@ -155,16 +161,16 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 			Date start_time = new Date();
 			Calendar end_time = Calendar.getInstance();
 			end_time.add(Calendar.SECOND, timeout);
-			while(Calendar.getInstance().before(end_time) && !page_instance.isCurrentPage(this))
+			while (Calendar.getInstance().before(end_time) && !page_instance.isCurrentPage(this))
 			{
 				try
 				{
 					Thread.sleep(200);
-				} catch(InterruptedException ex)
+				} catch (InterruptedException ex)
 				{
 				}
 			}
-			if(!page_instance.isCurrentPage(this))
+			if (!page_instance.isCurrentPage(this))
 			{
 				logger.error("Waited for page '{}' for {} seconds, but still is not here.", page.getName(), timeout);
 				logger.error("Current page URL: {}", driver.getCurrentUrl());
@@ -172,48 +178,48 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 				logger.error("Current page source: {}", driver.getPageSource());
 				throw new NoSuchElementException("Couldn't find page '" + page.getName() + "' after " + timeout + " seconds.");
 			}
-			logger.info("Found page '{}' after {} seconds.", page.getName(), ((new Date()).getTime() - start_time.getTime()) / 1000 );
-		} catch(InstantiationException ex)
+			logger.info("Found page '{}' after {} seconds.", page.getName(), ((new Date()).getTime() - start_time.getTime()) / 1000);
+		} catch (InstantiationException ex)
 		{
 			logger.error("Unable to create instance of page class " + page.getName() + ".", ex);
 			throw new IllegalStateException("Unable to create instance of page class " + page.getName() + ".", ex);
-		} catch(IllegalAccessException ex)
+		} catch (IllegalAccessException ex)
 		{
 			logger.error("Unable to create instance of page class " + page.getName() + ".", ex);
 			throw new IllegalStateException("Unable to create instance of page class " + page.getName() + ".", ex);
 		}
 	}
 
-        @Override
+	@Override
 	public <T> void handlePage(Class<? extends SelfAwarePage<T>> page, T context)
 	{
 		try
 		{
 			SelfAwarePage<T> page_instance = page.newInstance();
 			page_instance.handlePage(this, context);
-		} catch(InstantiationException ex)
+		} catch (InstantiationException ex)
 		{
 			logger.error("Unable to create instance of page class " + page.getName() + ".", ex);
 			throw new IllegalStateException("Unable to create instance of page class " + page.getName() + ".", ex);
-		} catch(IllegalAccessException ex)
+		} catch (IllegalAccessException ex)
 		{
 			logger.error("Unable to create instance of page class " + page.getName() + ".", ex);
 			throw new IllegalStateException("Unable to create instance of page class " + page.getName() + ".", ex);
 		}
 	}
 
-        @Override
-        public boolean isCurrentPage(Class<? extends SelfAwarePage> page)
+	@Override
+	public boolean isCurrentPage(Class<? extends SelfAwarePage> page)
 	{
 		try
 		{
 			SelfAwarePage page_instance = page.newInstance();
 			return page_instance.isCurrentPage(this);
-		} catch(InstantiationException ex)
+		} catch (InstantiationException ex)
 		{
 			logger.error("Unable to create instance of page class " + page.getName() + ".", ex);
 			throw new IllegalStateException("Unable to create instance of page class " + page.getName() + ".", ex);
-		} catch(IllegalAccessException ex)
+		} catch (IllegalAccessException ex)
 		{
 			logger.error("Unable to create instance of page class " + page.getName() + ".", ex);
 			throw new IllegalStateException("Unable to create instance of page class " + page.getName() + ".", ex);
@@ -229,7 +235,10 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	@Override
 	public void selectByOptionText(PageElement selectList, String option, int timeout)
 	{
-		logger.debug("Selecting option with display text '{}' of select list '{}' found by '{}' waiting a max timeout of {} seconds.", new Object[] {option, selectList.getName(), selectList.getFinder(), timeout});
+		logger.debug("Selecting option with display text '{}' of select list '{}' found by '{}' waiting a max timeout of {} seconds.", new Object[]
+			{
+				option, selectList.getName(), selectList.getFinder(), timeout
+			});
 		Select selectInput = new Select(getElement(selectList, timeout));
 		selectInput.selectByVisibleText(option);
 	}
@@ -243,9 +252,57 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	@Override
 	public void selectByOptionValue(PageElement selectList, String optionValue, int timeout)
 	{
-		logger.debug("Selecting option with value '{}' of select list '{}' found by '{}' waiting a max timeout of {} seconds.", new Object[] {optionValue, selectList.getName(), selectList.getFinder(), timeout});
+		logger.debug("Selecting option with value '{}' of select list '{}' found by '{}' waiting a max timeout of {} seconds.", new Object[]
+			{
+				optionValue, selectList.getName(), selectList.getFinder(), timeout
+			});
 		Select selectInput = new Select(getElement(selectList, timeout));
 		selectInput.selectByValue(optionValue);
 	}
 
+	@Override
+	public void waitFor(PageElement element)
+	{
+		waitFor(element, timeout);
+	}
+
+	@Override
+	public void waitFor(PageElement element, int timeout)
+	{
+		logger.debug("Waiting for element '{}' a max of {} seconds.", element.getName(), timeout);
+		Date start_time = new Date();
+		getElement(element, timeout);
+		logger.info("Found element '{}' after {} seconds.", element.getName(), ((new Date()).getTime() - start_time.getTime()) / 1000);
+	}
+
+	@Override
+	public boolean exists(PageElement element)
+	{
+		return element.exists(driver, 0);
+	}
+
+	@Override
+	public boolean exists(Class<? extends SelfAwarePage> page)
+	{
+				logger.debug("Checking for existence of page '{}'.", page.getName());
+		try
+		{
+			SelfAwarePage page_instance = page.newInstance();
+			if (!page_instance.isCurrentPage(this))
+			{
+				logger.debug("Checked for page '{}' , but it does not exist.", page.getName());
+				return false;
+			}
+			logger.info("Found page '{}'.", page.getName());
+			return true;
+		} catch (InstantiationException ex)
+		{
+			logger.error("Unable to create instance of page class " + page.getName() + ".", ex);
+			throw new IllegalStateException("Unable to create instance of page class " + page.getName() + ".", ex);
+		} catch (IllegalAccessException ex)
+		{
+			logger.error("Unable to create instance of page class " + page.getName() + ".", ex);
+			throw new IllegalStateException("Unable to create instance of page class " + page.getName() + ".", ex);
+		}
+	}
 }
