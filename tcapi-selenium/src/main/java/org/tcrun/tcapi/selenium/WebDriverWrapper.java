@@ -8,6 +8,7 @@ import org.openqa.selenium.WebDriver;
  */
 public interface WebDriverWrapper
 {
+
 	public void setDefaultTimeout(int timeout);
 
 	public void click(PageElement locator);
@@ -36,11 +37,19 @@ public interface WebDriverWrapper
 
 	public WebDriver getDriver();
 
-	public void waitForPage(Class<? extends SelfAwarePage> page);
+	public void waitFor(Class<? extends SelfAwarePage> page);
 
-	public void waitForPage(Class<? extends SelfAwarePage> page, int timeout);
+	public void waitFor(Class<? extends SelfAwarePage> page, int timeout);
+
+	public void waitFor(PageElement element);
+
+	public void waitFor(PageElement element, int timeout);
+
+	public boolean exists(PageElement element);
+
+	public boolean exists(Class<? extends SelfAwarePage> page);
 
 	public <T> void handlePage(Class<? extends SelfAwarePage<T>> page, T context);
 
-        public boolean isCurrentPage(Class<? extends SelfAwarePage> page);
+	public boolean isCurrentPage(Class<? extends SelfAwarePage> page);
 }
