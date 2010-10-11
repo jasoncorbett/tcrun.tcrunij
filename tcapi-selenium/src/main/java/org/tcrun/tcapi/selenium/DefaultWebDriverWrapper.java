@@ -34,34 +34,39 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	private int timeout;
 	private static XLogger logger = XLoggerFactory.getXLogger("test." + DefaultWebDriverWrapper.class.getName());
 
-    public static WebDriver getDriverFromBrowserName(String name, String remote) throws MalformedURLException 
-    {
-        URL remoteUrl = new URL("http://" + remote + ":4444/wd/hub");
-        Capabilities caps = null;
-        if (name.equalsIgnoreCase("ff") ||
-            name.equalsIgnoreCase("firefox"))
-        {
-            caps = DesiredCapabilities.firefox();
-        }
-        
-        if (name.equalsIgnoreCase("headless"))
-        {
-            caps = DesiredCapabilities.htmlUnit();
-        }
-        
-        if (name.equalsIgnoreCase("ie") ||
-            name.equalsIgnoreCase("internetExplorer"))
-        {
-            caps = DesiredCapabilities.internetExplorer();
-        }
-        
-        return new RemoteWebDriver(remoteUrl, caps);
-    }
+	public static WebDriver getDriverFromBrowserName(String name, String remote) throws MalformedURLException
+	{
+		URL remoteUrl = new URL("http://" + remote + ":4444/wd/hub");
+		Capabilities caps = null;
+		if (name.equalsIgnoreCase("ff")
+		|| name.equalsIgnoreCase("firefox"))
+		{
+			caps = DesiredCapabilities.firefox();
+		}
+
+		if (name.equalsIgnoreCase("headless"))
+		{
+			caps = DesiredCapabilities.htmlUnit();
+		}
+
+		if (name.equalsIgnoreCase("ie")
+		|| name.equalsIgnoreCase("internetExplorer"))
+		{
+			caps = DesiredCapabilities.internetExplorer();
+		}
+
+		if (name.equalsIgnoreCase("chrome"))
+		{
+			caps = DesiredCapabilities.chrome();
+		}
+
+		return new RemoteWebDriver(remoteUrl, caps);
+	}
 
 	public static WebDriver getDriverFromBrowserName(String name)
 	{
 		if (name.equalsIgnoreCase("ff")
-			|| name.equalsIgnoreCase("firefox"))
+		|| name.equalsIgnoreCase("firefox"))
 		{
 			return new FirefoxDriver();
 		}
@@ -74,7 +79,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		}
 
 		if (name.equalsIgnoreCase("ie")
-			|| name.equalsIgnoreCase("InternetExplorer"))
+		|| name.equalsIgnoreCase("InternetExplorer"))
 		{
 			return new InternetExplorerDriver();
 		}
@@ -111,9 +116,9 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		} catch (NoSuchElementException ex)
 		{
 			logger.error("Element with name {} and found {} was not found after {} seconds.", new Object[]
-				{
-					locator.getName(), locator.getFindByDescription(), timeout
-				});
+			{
+				locator.getName(), locator.getFindByDescription(), timeout
+			});
 			logger.error("Current page URL: {}", driver.getCurrentUrl());
 			logger.error("Current page title: {}", driver.getTitle());
 			logger.error("Current page source: {}", driver.getPageSource());
@@ -136,9 +141,9 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	public void type(PageElement locator, String text, int timeout)
 	{
 		logger.debug("Typing text '{}' in element with name '{}' and found '{}'.", new Object[]
-			{
-				text, locator.getName(), locator.getFindByDescription()
-			});
+		{
+			text, locator.getName(), locator.getFindByDescription()
+		});
 		getElement(locator, timeout).sendKeys(text);
 	}
 
@@ -170,7 +175,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	@Override
 	public String getAttribute(PageElement locator, int timeout, String attribute)
 	{
-                logger.debug("Getting attribute '" + attribute + "' from element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
+		logger.debug("Getting attribute '" + attribute + "' from element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
 		return getElement(locator, timeout).getAttribute(attribute);
 	}
 
@@ -284,9 +289,9 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	public void selectByOptionText(PageElement selectList, String option, int timeout)
 	{
 		logger.debug("Selecting option with display text '{}' of select list '{}' found by '{}' waiting a max timeout of {} seconds.", new Object[]
-			{
-				option, selectList.getName(), selectList.getFinder(), timeout
-			});
+		{
+			option, selectList.getName(), selectList.getFinder(), timeout
+		});
 		Select selectInput = new Select(getElement(selectList, timeout));
 		selectInput.selectByVisibleText(option);
 	}
@@ -301,9 +306,9 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	public void selectByOptionValue(PageElement selectList, String optionValue, int timeout)
 	{
 		logger.debug("Selecting option with value '{}' of select list '{}' found by '{}' waiting a max timeout of {} seconds.", new Object[]
-			{
-				optionValue, selectList.getName(), selectList.getFinder(), timeout
-			});
+		{
+			optionValue, selectList.getName(), selectList.getFinder(), timeout
+		});
 		Select selectInput = new Select(getElement(selectList, timeout));
 		selectInput.selectByValue(optionValue);
 	}
@@ -332,7 +337,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	@Override
 	public boolean exists(Class<? extends SelfAwarePage> page)
 	{
-				logger.debug("Checking for existence of page '{}'.", page.getName());
+		logger.debug("Checking for existence of page '{}'.", page.getName());
 		try
 		{
 			SelfAwarePage page_instance = page.newInstance();
