@@ -1,5 +1,6 @@
 package org.tcrun.plugins.basic;
 
+import java.util.List;
 import org.tcrun.api.RunnableTest;
 import org.tcrun.api.TestCaseFilter;
 
@@ -9,9 +10,16 @@ import org.tcrun.api.TestCaseFilter;
  */
 public class AllInclusiveTestCaseFilter implements TestCaseFilter
 {
+
 	@Override
-	public FilterResult filterTestCase(RunnableTest testcase)
+	public void filterTests(List<RunnableTest> toberun, List<RunnableTest> available)
 	{
-		return FilterResult.ACCEPT;
+		toberun.addAll(available);
+	}
+
+	@Override
+	public String describeFilter()
+	{
+		return "Filter which includes all tests.";
 	}
 }

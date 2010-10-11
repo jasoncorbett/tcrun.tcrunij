@@ -28,6 +28,7 @@ import org.tcrun.api.plugins.BeforeTestCasePlugin;
 import org.tcrun.api.plugins.BeforeTestListRunnerPlugin;
 import org.tcrun.api.plugins.ConfigurationOverridePlugin;
 import org.tcrun.api.plugins.ConfigurationSourcePlugin;
+import org.tcrun.api.plugins.FilterListPlugin;
 import org.tcrun.api.plugins.ShutdownTaskPlugin;
 import org.tcrun.api.plugins.TestListPlugin;
 import org.tcrun.api.plugins.TestListRunnerPlugin;
@@ -141,6 +142,10 @@ public class Main
 		List<TestLoaderPlugin> test_loaders = plugin_manager.getPluginsFor(TestLoaderPlugin.class);
 		logger.debug("There are '{}' test loaders.", test_loaders.size());
 
+		// Get a list of Filter list plugins
+		List<FilterListPlugin> filterlist_plugins = plugin_manager.getPluginsFor(FilterListPlugin.class);
+		logger.debug("There are '{}' filter list plugins.", filterlist_plugins.size());
+
 		// Get a list of test list plugins
 		List<TestListPlugin> test_list_plugins = plugin_manager.getPluginsFor(TestListPlugin.class);
 		logger.debug("There are '{}' test list plugins, looping through them all.", test_list_plugins.size());
@@ -149,7 +154,7 @@ public class Main
 		{
 			// call each test list plugin
 			logger.debug("Calling getTests() on test list plugin '{}' with class name of '{}'.", plugin.getPluginName(), plugin.getClass().getCanonicalName());
-			List<RunnableTest> tests = plugin.getTests(context, test_loaders);
+			List<RunnableTest> tests = plugin.getTests(context, test_loaders, filterlist_plugins);
 			if(tests == null || tests.isEmpty())
 			{
 				logger.info("Test List Plugin '{}' returned no tests.", plugin.getPluginName());
