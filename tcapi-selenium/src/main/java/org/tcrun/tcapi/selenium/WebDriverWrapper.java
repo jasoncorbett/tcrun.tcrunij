@@ -23,6 +23,10 @@ public interface WebDriverWrapper
 
 	public String getText(PageElement locator, int timeout);
 
+	public String getAttribute(PageElement locator, String attribute);
+
+	public String getAttribute(PageElement locator, int timeout, String attribute);
+
 	public void selectByOptionText(PageElement selectList, String option);
 
 	public void selectByOptionText(PageElement selectList, String option, int timeout);

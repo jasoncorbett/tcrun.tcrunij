@@ -114,16 +114,31 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		type(locator, text, timeout);
 	}
 
+	@Override
 	public String getText(PageElement locator)
 	{
 		logger.debug("Getting text from element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
 		return getText(locator, timeout);
 	}
 
+	@Override
 	public String getText(PageElement locator, int timeout)
 	{
 
 		return getElement(locator, timeout).getText();
+	}
+
+	@Override
+	public String getAttribute(PageElement locator, String attribute)
+	{
+		return getAttribute(locator, timeout, attribute);
+	}
+
+	@Override
+	public String getAttribute(PageElement locator, int timeout, String attribute)
+	{
+                logger.debug("Getting attribute '" + attribute + "' from element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
+		return getElement(locator, timeout).getAttribute(attribute);
 	}
 
 	@Override
