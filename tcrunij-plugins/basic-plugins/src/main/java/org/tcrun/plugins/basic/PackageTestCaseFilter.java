@@ -1,5 +1,6 @@
 package org.tcrun.plugins.basic;
 
+import java.util.List;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.tcrun.api.RunnableTest;
@@ -31,12 +32,22 @@ public class PackageTestCaseFilter implements TestCaseFilter
 	}
 
 	@Override
-	public FilterResult filterTestCase(RunnableTest testcase)
+	public void filterTests(List<RunnableTest> toberun, List<RunnableTest> available)
 	{
-		logger.debug("Checking test case with package name '{}' against '{}'", testcase.getTestRunner().getTestClass().getPackage().getName(), packageName);
-		if(testcase.getTestRunner().getTestClass().getPackage().getName().startsWith(packageName))
-			return FilterResult.ACCEPT;
-		else
-			return FilterResult.UNKNOWN;
+		for(RunnableTest possible : available)
+		{
+			if(possible.getTestRunner().getTestClass().getPackage().getName().startsWith(packageName))
+			{
+				logger.debug("Found test {} that is in package {}.", possible.getTestId(), packageName);
+				toberun.add(possible);
+			}
+		}
 	}
+
+	@Override
+	public String describeFilter()
+	{
+		return "Filter looking for tests inside a package or sub package of " + packageName + ".";
+	}
+
 }

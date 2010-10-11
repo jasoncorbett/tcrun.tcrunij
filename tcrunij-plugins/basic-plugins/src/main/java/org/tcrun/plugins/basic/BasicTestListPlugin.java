@@ -1,22 +1,14 @@
 package org.tcrun.plugins.basic;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.OptionBuilder;
-import org.apache.commons.cli.Options;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.tcrun.api.ImplementsPlugin;
-import org.tcrun.api.PluginManager;
-import org.tcrun.api.PluginManagerFactory;
 import org.tcrun.api.RunnableTest;
 import org.tcrun.api.TCRunContext;
 import org.tcrun.api.TestCaseFilter;
-import org.tcrun.api.plugins.CommandLineConsumerPlugin;
-import org.tcrun.api.plugins.CommandLineOptionPlugin;
-import org.tcrun.api.plugins.FilterPlugin;
+import org.tcrun.api.plugins.FilterListPlugin;
 import org.tcrun.api.plugins.TestListPlugin;
 import org.tcrun.api.plugins.TestLoaderPlugin;
 
@@ -24,8 +16,8 @@ import org.tcrun.api.plugins.TestLoaderPlugin;
  *
  * @author jcorbett
  */
-@ImplementsPlugin({TestListPlugin.class, CommandLineOptionPlugin.class, CommandLineConsumerPlugin.class})
-public class BasicTestListPlugin implements TestListPlugin, CommandLineOptionPlugin, CommandLineConsumerPlugin
+@ImplementsPlugin(TestListPlugin.class)
+public class BasicTestListPlugin implements TestListPlugin
 {
 	private static XLogger logger = XLoggerFactory.getXLogger(BasicTestListPlugin.class);
 
@@ -39,10 +31,12 @@ public class BasicTestListPlugin implements TestListPlugin, CommandLineOptionPlu
 		m_filters = new ArrayList<TestCaseFilter>();
 	}
 
-	public List<RunnableTest> getTests(TCRunContext p_context, List<TestLoaderPlugin> p_loaders)
+	@Override
+	public List<RunnableTest> getTests(TCRunContext p_context, List<TestLoaderPlugin> p_loaders, List<FilterListPlugin> p_filterlists)
 	{
 		logger.debug("There are '{}' test loader plugins, going through each one.", p_loaders.size());
-		List<RunnableTest> retval = new ArrayList<RunnableTest>();
+		List<RunnableTest> available = new ArrayList<RunnableTest>();
+		List<RunnableTest> toberun = new ArrayList<RunnableTest>();
 
 		for(TestLoaderPlugin plugin : p_loaders)
 		{
@@ -50,109 +44,36 @@ public class BasicTestListPlugin implements TestListPlugin, CommandLineOptionPlu
 			plugin.initialize(p_context);
 			for(RunnableTest test : plugin)
 			{
-				TestCaseFilter.FilterResult in_or_out = TestCaseFilter.FilterResult.UNKNOWN;
+				available.add(test);
+			}
+			logger.debug("There are now {} available tests.", available.size());
+		}
 
-				for(TestCaseFilter filter : m_filters)
-				{
-					logger.debug("Checking test '{}' against filter '{}'.", test.getTestId(), filter.getClass().getName());
-					TestCaseFilter.FilterResult result = filter.filterTestCase(test);
-					if(result == TestCaseFilter.FilterResult.ACCEPT)
-						in_or_out = result;
-					if(result == TestCaseFilter.FilterResult.REJECT)
-					{
-						in_or_out = result;
-						break;
-					}
-				}
-
-				if(in_or_out == TestCaseFilter.FilterResult.ACCEPT)
-				{
-					logger.debug("Found test '{}' from plugin '{}'.", test.getTestId(), plugin.getPluginName());
-					retval.add(test);
-				}
+		List<TestCaseFilter> filters = new ArrayList<TestCaseFilter>();
+		logger.debug("Looping through {} filter list plugins to get a list of filters.", p_filterlists.size());
+		for(FilterListPlugin plugin : p_filterlists)
+		{
+			logger.debug("Calling getFilters on plugin with name '{}' and class name '{}'.", plugin.getPluginName(), plugin.getClass().getName());
+			List<TestCaseFilter> filters_from_plugin = plugin.getFilters(p_context);
+			if(filters_from_plugin != null)
+			{
+				logger.debug("Recieved {} filters from plugin '{}'.", filters_from_plugin.size(), plugin.getPluginName());
+				filters.addAll(filters_from_plugin);
 			}
 		}
-		logger.debug("Returning '{}' tests.", retval.size());
-		return retval;
+		logger.debug("There are a total of {} filters that need to be run.", filters.size());
+		for(TestCaseFilter filter : filters)
+		{
+			logger.debug("Calling filterTests for a filter describing itself as '{}'.", filter.describeFilter());
+			filter.filterTests(toberun, available);
+			logger.debug("There are now {} tests to be run.", toberun.size());
+		}
+		logger.debug("Returning '{}' tests.", toberun.size());
+		return toberun;
 	}
 
 	public String getPluginName()
 	{
 		return "Basic Test List Plugin";
-	}
-
-	public void addToCommandLineParser(Options options)
-	{
-		options.addOption(OptionBuilder.withLongOpt("id")
-			         .isRequired(false)
-				 .withDescription("Specify a test by it's id, this is the same as -f id:<ID>.")
-				 .withArgName("ID")
-				 .hasArgs()
-				 .create());
-		options.addOption(OptionBuilder.hasArgs()
-		                 .withArgName("FILTER")
-				 .withDescription("Add test cases that match FILTER")
-				 .withLongOpt("filter")
-				 .create("f"));
-		options.addOption(OptionBuilder.withLongOpt("all")
-		                 .hasArg(false)
-				 .withDescription("Include all tests")
-				 .create("a"));
-	}
-
-	public void consumeCommandLineOptions(CommandLine options)
-	{
-		if(options.hasOption("a"))
-		{
-			m_filters.add(new AllInclusiveTestCaseFilter());
-		}
-
-		String[] ids = options.getOptionValues("id");
-		if(ids == null || ids.length < 1)
-		{
-			logger.debug("There are no test ids to load.");
-		}
-		else
-		{
-			for(String id : ids)
-			{
-				m_filters.add(new TestCaseIdFilter("id:" + id));
-			}
-			logger.debug("There are '{}' test id filters from the --id option.", m_filters.size());
-		}
-
-		String[] filters = options.getOptionValues("filter");
-		if(filters == null || filters.length < 1)
-		{
-			logger.debug("There are no test case filters passed in through the command line.");
-		} else
-		{
-			logger.debug("Getting a list of FilterPlugins from PluginManager");
-			PluginManager pluginmgr = PluginManagerFactory.getPluginManager();
-			List<FilterPlugin> filterPlugins = pluginmgr.getPluginsFor(FilterPlugin.class);
-			logger.debug("There are '{}' FilterPlugins.", filterPlugins.size());
-			for(String filter : filters)
-			{
-				TestCaseFilter filterObj = null;
-				logger.debug("Looking for a test case filter for '{}'", filter);
-				for(FilterPlugin plugin : filterPlugins)
-				{
-					logger.debug("Calling parseFilterString(\"{}\") for plugin '{}' with class name '{}'.", new Object[] {filter, plugin.getPluginName(), plugin.getClass().getName()});
-					filterObj = plugin.parseFilterString(filter);
-					if(filterObj != null)
-					{
-						logger.debug("Found TestCaseFilter '{}' for filter '{}'.", filterObj.getClass().getName(), filter);
-						break;
-					}
-				}
-				if(filterObj == null)
-				{
-					logger.warn("Unknown filter '{}' will be unused.", filter);
-				} else
-				{
-					m_filters.add(filterObj);
-				}
-			}
-		}
 	}
 }
