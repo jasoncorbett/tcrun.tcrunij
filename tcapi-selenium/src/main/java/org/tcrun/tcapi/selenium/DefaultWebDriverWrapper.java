@@ -1,15 +1,24 @@
 package org.tcrun.tcapi.selenium;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.Select;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
@@ -24,6 +33,30 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	private WebDriver driver;
 	private int timeout;
 	private static XLogger logger = XLoggerFactory.getXLogger("test." + DefaultWebDriverWrapper.class.getName());
+
+    public static WebDriver getDriverFromBrowserName(String name, String remote) throws MalformedURLException 
+    {
+        URL remoteUrl = new URL("http://" + remote + ":4444/wd/hub");
+        Capabilities caps = null;
+        if (name.equalsIgnoreCase("ff") ||
+            name.equalsIgnoreCase("firefox"))
+        {
+            caps = DesiredCapabilities.firefox();
+        }
+        
+        if (name.equalsIgnoreCase("headless"))
+        {
+            caps = DesiredCapabilities.htmlUnit();
+        }
+        
+        if (name.equalsIgnoreCase("ie") ||
+            name.equalsIgnoreCase("internetExplorer"))
+        {
+            caps = DesiredCapabilities.internetExplorer();
+        }
+        
+        return new RemoteWebDriver(remoteUrl, caps);
+    }
 
 	public static WebDriver getDriverFromBrowserName(String name)
 	{
