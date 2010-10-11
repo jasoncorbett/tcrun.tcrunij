@@ -91,12 +91,12 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 
 	public void click(PageElement locator)
 	{
-		logger.debug("Clicking on element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
 		click(locator, timeout);
 	}
 
 	public void click(PageElement locator, int timeout)
 	{
+		logger.debug("Clicking on element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
 		getElement(locator, timeout).click();
 	}
 
