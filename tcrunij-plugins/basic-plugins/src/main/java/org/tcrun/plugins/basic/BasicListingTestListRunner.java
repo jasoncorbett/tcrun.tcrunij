@@ -8,6 +8,7 @@ import org.apache.commons.cli.Options;
 import org.tcrun.api.ImplementsPlugin;
 import org.tcrun.api.RunnableTest;
 import org.tcrun.api.TCRunContext;
+import org.tcrun.api.annotations.TestName;
 import org.tcrun.api.plugins.AfterTestCasePlugin;
 import org.tcrun.api.plugins.BeforeTestCasePlugin;
 import org.tcrun.api.plugins.CommandLineConsumerPlugin;
@@ -66,7 +67,13 @@ public class BasicListingTestListRunner implements TestListRunnerPlugin, Command
 		int counter = 0;
 		for(RunnableTest test : tests)
 		{
-			System.out.println(++counter + " - id:" + test.getTestId());
+			if(test.getTestRunner().getTestClass().isAnnotationPresent(TestName.class))
+			{
+				System.out.println(++counter + " - id:" + test.getTestId() + ", name:" + test.getTestRunner().getTestClass().getAnnotation(TestName.class).value());
+			} else
+			{
+				System.out.println(++counter + " - id:" + test.getTestId());
+			}
 		}
 		System.out.println("------------------------------------------------------------");
 		System.out.println("Total: " + tests.size() + " test(s).");

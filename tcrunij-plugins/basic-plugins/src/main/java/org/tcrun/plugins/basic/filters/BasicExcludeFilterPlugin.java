@@ -1,4 +1,4 @@
-package org.tcrun.plugins.basic;
+package org.tcrun.plugins.basic.filters;
 
 import org.tcrun.api.ImplementsPlugin;
 import org.tcrun.api.TestCaseFilter;

@@ -7,10 +7,14 @@ package org.tcrun.tcapi;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.tcrun.api.TestCaseStep;
+import org.tcrun.api.TestWithName;
 import org.tcrun.api.TestWithSteps;
+import org.tcrun.api.TestWithUUID;
+import org.tcrun.api.annotations.TestName;
 import org.tcrun.tcapi.assertlib.AssertionFailure;
 import org.tcrun.tcapi.assertlib.Check;
 
@@ -18,7 +22,7 @@ import org.tcrun.tcapi.assertlib.Check;
  *
  * @author jcorbett
  */
-public abstract class AbstractSimpleTestCase implements SimpleTestCase, TestWithSteps
+public abstract class AbstractSimpleTestCase implements SimpleTestCase, TestWithSteps, TestWithName, TestWithUUID
 {
 	protected Map<String, String> tcinfo;
 
@@ -63,6 +67,9 @@ public abstract class AbstractSimpleTestCase implements SimpleTestCase, TestWith
 	}
 
 	public abstract TestResult test() throws Exception;
+
+	@Override
+	public abstract UUID getTestUUID();
 
 	@Override
 	public final void tcCleanUp() throws Exception
@@ -129,5 +136,18 @@ public abstract class AbstractSimpleTestCase implements SimpleTestCase, TestWith
 	public List<TestCaseStep> getTestSteps()
 	{
 		return steps;
+	}
+
+	@Override
+	public String getTestName()
+	{
+		String retval = this.getClass().getName();
+
+		if(this.getClass().isAnnotationPresent(TestName.class))
+		{
+			retval = this.getClass().getAnnotation(TestName.class).value();
+		}
+
+		return retval;
 	}
 }
