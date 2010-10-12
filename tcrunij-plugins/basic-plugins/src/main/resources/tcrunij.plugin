@@ -6,3 +6,4 @@ org.tcrun.plugins.basic.BasicFilterPlugin
 org.tcrun.plugins.basic.CommandLineOptionFilterListPlugin
 org.tcrun.plugins.basic.BasicTestPlanPlugin
 org.tcrun.plugins.basic.BasicExcludeFilterPlugin
+org.tcrun.plugins.basic.BasicListingTestListRunner
