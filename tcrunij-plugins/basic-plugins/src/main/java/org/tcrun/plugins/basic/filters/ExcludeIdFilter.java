@@ -1,4 +1,4 @@
-package org.tcrun.plugins.basic;
+package org.tcrun.plugins.basic.filters;
 
 import java.util.ArrayList;
 import java.util.List;

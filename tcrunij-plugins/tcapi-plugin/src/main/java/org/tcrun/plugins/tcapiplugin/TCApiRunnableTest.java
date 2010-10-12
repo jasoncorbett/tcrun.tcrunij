@@ -1,5 +1,6 @@
 package org.tcrun.plugins.tcapiplugin;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,8 @@ public class TCApiRunnableTest implements RunnableTest, TestRunner
 
 		// make a copy of the test configuration passed in, no surprise changes, only diliberate ones
 		test_configuration = new HashMap<String, String>(p_context.getTestCaseConfiguration());
+
+		m_attributes = new ArrayList<TestCaseAttribute>();
 
 		PluginManager plugin_manager = PluginManagerFactory.getPluginManager();
 		s_logger.debug("Initializing attributes for test '{}' by going through AttributeProviderPlugins.", p_test.getCanonicalName());

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.tcrun.plugins.basic;
+package org.tcrun.plugins.basic.filters;
 
 import org.tcrun.api.ImplementsPlugin;
 import org.tcrun.api.TestCaseFilter;
@@ -23,6 +23,8 @@ public class BasicFilterPlugin implements FilterPlugin
 			return new TestCaseIdFilter(p_filterString);
 		else if(PackageTestCaseFilter.isFilterFor(p_filterString))
 			return new PackageTestCaseFilter(p_filterString);
+		else if(GroupFilter.isFilterFor(p_filterString))
+			return new GroupFilter(p_filterString);
 		return null;
 	}
 

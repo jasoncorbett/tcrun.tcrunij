@@ -4,6 +4,8 @@
  */
 package org.tcrun.plugins.basic;
 
+import org.tcrun.plugins.basic.filters.AllInclusiveTestCaseFilter;
+import org.tcrun.plugins.basic.filters.TestCaseIdFilter;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.cli.CommandLine;
