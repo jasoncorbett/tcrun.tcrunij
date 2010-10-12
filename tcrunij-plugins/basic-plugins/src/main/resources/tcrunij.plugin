@@ -5,3 +5,4 @@ org.tcrun.plugins.basic.BasicTestCaseEnvironment
 org.tcrun.plugins.basic.BasicFilterPlugin
 org.tcrun.plugins.basic.CommandLineOptionFilterListPlugin
 org.tcrun.plugins.basic.BasicTestPlanPlugin
+org.tcrun.plugins.basic.BasicExcludeFilterPlugin
