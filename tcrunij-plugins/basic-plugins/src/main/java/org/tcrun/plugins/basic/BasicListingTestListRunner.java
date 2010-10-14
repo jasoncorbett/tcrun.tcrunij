@@ -8,6 +8,7 @@ import org.apache.commons.cli.Options;
 import org.tcrun.api.ImplementsPlugin;
 import org.tcrun.api.RunnableTest;
 import org.tcrun.api.TCRunContext;
+import org.tcrun.api.TestCaseAttribute;
 import org.tcrun.api.annotations.TestName;
 import org.tcrun.api.plugins.AfterTestCasePlugin;
 import org.tcrun.api.plugins.BeforeTestCasePlugin;
@@ -67,12 +68,11 @@ public class BasicListingTestListRunner implements TestListRunnerPlugin, Command
 		int counter = 0;
 		for(RunnableTest test : tests)
 		{
-			if(test.getTestRunner().getTestClass().isAnnotationPresent(TestName.class))
+			System.out.println(++counter + " - id:" + test.getTestId());
+			int indent = Integer.toString(counter).length() + 3;
+			for(TestCaseAttribute attr : test.getTestAttributes())
 			{
-				System.out.println(++counter + " - id:" + test.getTestId() + ", name:" + test.getTestRunner().getTestClass().getAnnotation(TestName.class).value());
-			} else
-			{
-				System.out.println(++counter + " - id:" + test.getTestId());
+				System.out.printf("%" + indent + "s%s:%s%n", " ", attr.getName(), attr.getValue());
 			}
 		}
 		System.out.println("------------------------------------------------------------");
