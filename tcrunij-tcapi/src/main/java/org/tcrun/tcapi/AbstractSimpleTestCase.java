@@ -43,10 +43,22 @@ public abstract class AbstractSimpleTestCase implements SimpleTestCase, TestWith
 		setup();
 	}
 
+	/**
+	 * This method can be used by frameworks to setup for a test case.  it is called before setup, but if you choose
+	 * to override, call super.frameworkSetup() please.
+	 *
+	 * @throws Exception tcrunij catches any exceptions thrown, so you don't have to surround your code with try/catch.
+	 */
 	public void frameworkSetup() throws Exception
 	{
 	}
 
+	/**
+	 * setup for a test case.  This should only be implemented by the test case, frameworks should override the
+	 * frameworkSetup method.
+	 *
+	 * @throws Exception
+	 */
 	public void setup() throws Exception
 	{
 	}
@@ -66,6 +78,12 @@ public abstract class AbstractSimpleTestCase implements SimpleTestCase, TestWith
 		return retval;
 	}
 
+	/**
+	 * Perform the actual test.
+	 *
+	 * @return
+	 * @throws Exception
+	 */
 	public abstract TestResult test() throws Exception;
 
 	@Override
@@ -93,6 +111,14 @@ public abstract class AbstractSimpleTestCase implements SimpleTestCase, TestWith
 		return false;
 	}
 
+	/**
+	 * Retrieve configuration from the tcinfo variable.  This method will provide information on what key was trying
+	 * to be accessed if the key does not exist.
+	 *
+	 * @param key The name of the configuration you're looking for.
+	 * @return The value assigned to the key provided in the configuration.
+	 * @throws BrokenTestError if the configuration key does not exist, debugging information is provided.
+	 */
 	public String configValue(String key) throws BrokenTestError
 	{
 		if(!tcinfo.containsKey(key))
@@ -105,6 +131,13 @@ public abstract class AbstractSimpleTestCase implements SimpleTestCase, TestWith
 		return retval;
 	}
 
+	/**
+	 * Retrieve configuration from the tcinfo variable, using a default value if the key does not exist.
+	 *
+	 * @param key The name of the configuration you're looking for.
+	 * @param defaultValue The default value to be returned if the key does not exist.
+	 * @return the value of the configuration assigned to the key provided, if it doesn't exist the default value is returned.
+	 */
 	public String configValue(String key, String defaultValue)
 	{
 		String retval = defaultValue;
@@ -120,11 +153,26 @@ public abstract class AbstractSimpleTestCase implements SimpleTestCase, TestWith
 		return retval;
 	}
 
+	/**
+	 * Log a logical step name / description, and record it for use later.  Steps can be printed out to the tester,
+	 * or possibly placed in a database by a plugin.  Using steps can help a manual tester know what you're automation
+	 * is trying to do.
+	 *
+	 * @param name The name or description of the step being performed.
+	 */
 	public void step(String name)
 	{
 		step(name, "no expected result given.");
 	}
 
+	/**
+	 * Log a logical step name / description, and its expected result.  Record it for use later.  Steps can be
+	 * printed out to the tester, or possibly placed in a database by a plugin.  Using steps can help a manual tester
+	 * know what you're automation is trying to do.
+	 *
+	 * @param name The name or description of the logical test step.
+	 * @param expectedResult The expected result of performing the step.
+	 */
 	public void step(String name, String expectedResult)
 	{
 		tclog.info("Step {} Description: {}", steps.size() + 1, name);
