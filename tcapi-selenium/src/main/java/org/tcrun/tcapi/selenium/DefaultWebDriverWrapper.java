@@ -9,8 +9,10 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -19,9 +21,11 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.RenderedRemoteWebElement;
 import org.openqa.selenium.support.ui.Select;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
+import org.slf4j.helpers.MessageFormatter;
 
 /**
  *
@@ -326,6 +330,51 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		Date start_time = new Date();
 		getElement(element, timeout);
 		logger.info("Found element '{}' after {} seconds.", element.getName(), ((new Date()).getTime() - start_time.getTime()) / 1000);
+	}
+
+	@Override
+	public void waitForVisible(PageElement element)
+	{
+		waitForVisible(element, timeout);
+	}
+
+	@Override
+	public void waitForVisible(PageElement element, int timeout)
+	{
+		logger.debug("Waiting a max of {} seconds for element '{}' found by {} to become visible.", new Object[]
+		{
+			timeout, element.getName(), element.getFindByDescription()
+		});
+		Calendar end_time = Calendar.getInstance();
+		Date start_time = end_time.getTime();
+		end_time.add(Calendar.SECOND, timeout);
+		WebElement wdelement = getElement(element, timeout);
+		if (RenderedWebElement.class.isAssignableFrom(wdelement.getClass()))
+		{
+			RenderedWebElement relement = (RenderedWebElement) wdelement;
+			logger.debug("Found element '{}' after {} seconds, waiting for it to become visible.", element.getName(), ((new Date()).getTime() - start_time.getTime()) / 1000);
+			while (!relement.isDisplayed() && (Calendar.getInstance().before(end_time)))
+			{
+				try
+				{
+					Thread.sleep(200);
+				} catch (InterruptedException e)
+				{
+					logger.debug("Caught interrupted exception, while waiting for element, but it shouldn't cause too much trouble: {}", e.getMessage());
+				}
+			}
+			if (!relement.isDisplayed())
+			{
+				throw new ElementNotVisibleException(MessageFormatter.format("Waited {} seconds for element {} found by {} to become visible, and it never happened.", new Object[]
+				{
+					timeout, element.getName(), element.getFindByDescription()
+				}).getMessage());
+			}
+			logger.debug("Element '{}' was found visisble after {} seconds.", element.getName(), ((new Date()).getTime() - start_time.getTime()) / 1000);
+		} else
+		{
+			logger.warn("The current browser doesn't return RenderedWebElements, so I can't check for visibility.  Hopefully that means webdriver won't either.");
+		}
 	}
 
 	@Override
