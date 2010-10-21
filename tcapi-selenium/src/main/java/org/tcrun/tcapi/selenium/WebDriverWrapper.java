@@ -179,6 +179,21 @@ public interface WebDriverWrapper
 	public void waitFor(PageElement element, int timeout);
 
 	/**
+	 * Wait not only for an element to exist, but for an element to be visible.  Use the default timeout.
+	 *
+	 * @param element The element to wait for.
+	 */
+	public void waitForVisible(PageElement element);
+
+	/**
+	 * Wait not only for an element to exist, but for an element to be visible.  Use the timeout provided.
+	 *
+	 * @param element The element to wait for.
+	 * @param timeout The maximum amount of time to wait.
+	 */
+	public void waitForVisible(PageElement element, int timeout);
+
+	/**
 	 * Check for the existence of a web page element.  This is a quick check, no waiting is performed.
 	 *
 	 * @param element The PageElement that describes where to find the element.
