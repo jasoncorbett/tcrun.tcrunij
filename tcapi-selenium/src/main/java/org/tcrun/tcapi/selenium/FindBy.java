@@ -3,6 +3,9 @@ package org.tcrun.tcapi.selenium;
 import org.openqa.selenium.By;
 import org.tcrun.tcapi.selenium.finders.FindByAlt;
 import org.tcrun.tcapi.selenium.finders.FindBySrc;
+import org.tcrun.tcapi.selenium.finders.FindBySrcContains;
+import org.tcrun.tcapi.selenium.finders.FindByHref;
+import org.tcrun.tcapi.selenium.finders.FindByHrefContains;
 
 /**
  *
@@ -32,6 +35,39 @@ public abstract class FindBy extends By
 	public static By alt(String alt)
 	{
 	    return new FindByAlt(alt);
+	}
+
+	/**
+	 * Find an image by part of it's source text.  This is does not have to match exactly.
+	 *
+	 * @param srcContainsValue Part of the text in the src attribute.
+	 * @return a By instance that finds web elements in web driver.
+	 */
+	public static By srcContains(String srcContainsValue)
+	{
+	    return new FindBySrcContains(srcContainsValue);
+	}
+
+	/**
+	 * Find a link by it's href.  This must match exactly.
+	 *
+	 * @param hrefValue The exact value of the href attribute.
+	 * @return a By instance that finds web elements in web driver.
+	 */
+	public static By href(String hrefValue)
+	{
+	    return new FindByHref(hrefValue);
+	}
+
+	/**
+	 * Find a link by part of it's href text.  This is does not have to match exactly.
+	 *
+	 * @param hrefContainsValue Part of the text in the href attribute.
+	 * @return a By instance that finds web elements in web driver.
+	 */
+	public static By hrefContains(String hrefContainsValue)
+	{
+	    return new FindByHrefContains(hrefContainsValue);
 	}
 }
 
