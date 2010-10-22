@@ -1,6 +1,9 @@
 package org.tcrun.tcapi.selenium;
 
+import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.tools.shell.Global;
 import org.tcrun.tcapi.AbstractSimpleTestCase;
+import sun.org.mozilla.javascript.tools.shell.Main;
 
 /**
  *
@@ -44,4 +47,11 @@ public abstract class AbstractSeleniumTest extends AbstractSimpleTestCase
             browser.setDefaultTimeout(30);
         }
     }
+
+	@Override
+	public void setupDebugShell(Global global)
+	{
+		super.setupDebugShell(global);
+		global.defineProperty("browser", browser, ScriptableObject.DONTENUM);
+	}
 }

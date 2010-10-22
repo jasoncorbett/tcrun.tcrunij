@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.tools.shell.Global;
+import org.mozilla.javascript.tools.shell.Main;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.tcrun.api.TestCaseStep;
@@ -102,6 +107,17 @@ public abstract class AbstractSimpleTestCase implements SimpleTestCase, TestWith
 
 	public void cleanup() throws Exception
 	{
+	}
+
+	public void setupDebugShell(Global global)
+	{
+		global.defineProperty("test", this, ScriptableObject.READONLY);
+	}
+
+	public void enterDebugShell()
+	{
+		setupDebugShell(Main.global);
+		Main.exec(new String[] {});
 	}
 
 	@Override
