@@ -3,7 +3,6 @@ package org.tcrun.tcapi.selenium;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.tools.shell.Global;
 import org.tcrun.tcapi.AbstractSimpleTestCase;
-import sun.org.mozilla.javascript.tools.shell.Main;
 
 /**
  *
