@@ -117,6 +117,7 @@ public abstract class AbstractSimpleTestCase implements SimpleTestCase, TestWith
 	public void enterDebugShell()
 	{
 		setupDebugShell(Main.global);
+		Main.shellContextFactory.initApplicationClassLoader(this.getClass().getClassLoader());
 		Main.exec(new String[] {});
 	}
 
