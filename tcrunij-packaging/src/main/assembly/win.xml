@@ -5,6 +5,7 @@
 	<formats>
 		<format>zip</format>
 	</formats>
+	<baseDirectory>tcrunij</baseDirectory>
 	<dependencySets>
 		<dependencySet>
 			<outputDirectory>/lib</outputDirectory>
@@ -22,8 +23,8 @@
 			<outputDirectory>/</outputDirectory>
 			<fileMode>0755</fileMode>
 			<includes>
-				<include>tcrunij.bat</include>
-				<include>debug-tcrunij.bat</include>
+				<include>*.bat</include>
+				<include>*.sh</include>
 				<!--
 				<include>bin</include>
 				-->
@@ -40,8 +41,8 @@
 			<outputDirectory>/</outputDirectory>
 			<fileMode>0644</fileMode>
 			<excludes>
-				<exclude>tcrunij.sh</exclude>
-				<exclude>debug-tcrunij.sh</exclude>
+				<exclude>*.sh</exclude>
+				<exclude>*.bat</exclude>
 				<exclude>*.formatted</exclude>
 				<exclude>*.filtered</exclude>
 			</excludes>
