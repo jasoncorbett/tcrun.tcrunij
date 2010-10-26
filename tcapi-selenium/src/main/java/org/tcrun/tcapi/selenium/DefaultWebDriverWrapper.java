@@ -134,7 +134,6 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
         @Override
 	public void click(PageElement locator)
 	{
-                logger.debug("Clicking on element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
 		click(locator, timeout);
 	}
 
@@ -146,17 +145,29 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	}
 
         @Override
+	public void clear(PageElement locator)
+	{
+		clear(locator, timeout);
+	}
+
+        @Override
+	public void clear(PageElement locator, int timeout)
+	{
+		logger.debug("Clearing the text from element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
+		getElement(locator, timeout).clear();
+	}
+
+        @Override
         public void submit(PageElement locator)
         {
-                logger.debug("Submitting an element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
-		getElement(locator, timeout).submit();
+                submit(locator, timeout);
         }
 
         @Override
 	public void submit(PageElement locator, int timeout)
 	{
 		logger.debug("Submitting an element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
-		getElement(locator, timeout).click();
+		getElement(locator, timeout).submit();
 	}
 
         @Override
