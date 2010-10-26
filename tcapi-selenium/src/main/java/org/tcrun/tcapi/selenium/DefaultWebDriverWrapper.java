@@ -127,17 +127,35 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		return element;
 	}
 
+        @Override
 	public void click(PageElement locator)
 	{
+                logger.debug("Clicking on element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
 		click(locator, timeout);
 	}
 
+        @Override
 	public void click(PageElement locator, int timeout)
 	{
 		logger.debug("Clicking on element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
 		getElement(locator, timeout).click();
 	}
 
+        @Override
+        public void submit(PageElement locator)
+        {
+                logger.debug("Submitting an element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
+		getElement(locator, timeout).submit();
+        }
+
+        @Override
+	public void submit(PageElement locator, int timeout)
+	{
+		logger.debug("Submitting an element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
+		getElement(locator, timeout).click();
+	}
+
+        @Override
 	public void type(PageElement locator, String text, int timeout)
 	{
 		logger.debug("Typing text '{}' in element with name '{}' and found '{}'.", new Object[]
@@ -147,6 +165,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		getElement(locator, timeout).sendKeys(text);
 	}
 
+        @Override
 	public void type(PageElement locator, String text)
 	{
 		type(locator, text, timeout);
