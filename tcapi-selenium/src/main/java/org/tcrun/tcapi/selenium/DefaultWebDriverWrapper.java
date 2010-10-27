@@ -19,6 +19,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.internal.selenesedriver.GetPageSource;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RenderedRemoteWebElement;
@@ -26,6 +27,8 @@ import org.openqa.selenium.support.ui.Select;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.slf4j.helpers.MessageFormatter;
+import java.util.Set;
+import org.openqa.selenium.NoSuchWindowException;
 
 /**
  *
@@ -220,12 +223,40 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		return driver.getTitle();
 	}
 
+        @Override
+        public String getPageSource()
+        {
+                logger.debug("Getting current page html source.");
+                return driver.getPageSource();
+        }
+
+        @Override
+        public String getPageUrl()
+        {
+                logger.debug("Getting current page url.");
+                return driver.getCurrentUrl();
+        }
+
 	@Override
 	public void goTo(String url)
 	{
 		logger.debug("Going to page '{}'.", url);
 		driver.get(url);
 	}
+
+        @Override
+        public void goBack()
+        {
+                logger.debug("Going back in the browser.");
+                driver.navigate().back();
+        }
+
+        @Override
+        public void goForward()
+        {
+                logger.debug("Going forward in the browser.");
+                driver.navigate().forward();
+        }
 
 	public WebDriver getDriver()
 	{
@@ -437,4 +468,44 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 			throw new IllegalStateException("Unable to create instance of page class " + page.getName() + ".", ex);
 		}
 	}
+
+        @Override
+        public String getWindowHandle()
+        {
+                return driver.getWindowHandle();
+        }
+
+        @Override
+	public Set<String> getWindowHandles()
+        {
+                return driver.getWindowHandles();
+        }
+
+        @Override
+	public void switchToWindowByHandle(String windowHandle)
+        {
+                driver.switchTo().window(windowHandle);
+        }
+
+        @Override
+	public void switchToWindowByURL(String windowURL)
+        {
+                String switchToWindowHandle = "";
+                String startWindowHandle = getWindowHandle();
+                logger.debug("Switching to the window with the URL containing '{}'.", windowURL);
+                for (String possibleHandle : getWindowHandles())
+                {
+                        switchToWindowByHandle(startWindowHandle);
+                        if (getPageUrl().contains("help") == true)
+                                switchToWindowHandle = possibleHandle;
+                }
+                if (switchToWindowHandle.isEmpty() == false)
+                        switchToWindowByHandle(switchToWindowHandle);
+                else
+                {
+                        logger.error("Unable to find window with URL containing '{}'.", windowURL);
+		        throw new NoSuchWindowException("Unable to find window with URL containing '{" + windowURL + "}'");
+                }
+
+        }
 }

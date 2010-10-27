@@ -1,6 +1,7 @@
 package org.tcrun.tcapi.selenium;
 
 import org.openqa.selenium.WebDriver;
+import java.util.Set;
 
 /**
  * This is a wrapper api for performing tasks on web driver browsers.  Included in this interface are the methods that
@@ -162,12 +163,36 @@ public interface WebDriverWrapper
 	 */
 	public String getPageTitle();
 
+        /**
+	 * Get the html source of the current page in the browser.
+	 *
+	 * @return The html source of the current page displayed in the browser.
+	 */
+	public String getPageSource();
+
+        /**
+	 * Get the url of the current page in the browser.
+	 *
+	 * @return The url of the current page displayed in the browser.
+	 */
+	public String getPageUrl();
+
 	/**
 	 * Tell the browser to go to a specific URL.
 	 *
 	 * @param url The url that you want the browser to go to.
 	 */
 	public void goTo(String url);
+
+        /**
+	 * Tell the browser to go back.
+	 */
+	public void goBack();
+
+        /**
+	 * Tell the browser to go forward.
+	 */
+	public void goForward();
 
 	/**
 	 * Get the underlying webdriver object.
@@ -251,4 +276,33 @@ public interface WebDriverWrapper
 	public <T> void handlePage(Class<? extends SelfAwarePage<T>> page, T context);
 
 	public boolean isCurrentPage(Class<? extends SelfAwarePage> page);
+
+
+        /**
+	 * Get the browser window handle of the current window.
+	 *
+	 * @return The window handle of the current window.
+	 */
+	public String getWindowHandle();
+
+        /**
+	 * Get a set containing all the browser window handles.
+	 *
+	 * @return A set containing all the browser window handles.
+	 */
+	public Set<String> getWindowHandles();
+
+        /**
+	 * Switch to the browser window using the specified window handle.  The handle can be obtained from getWindowHandle or getWindowHandles
+	 *
+	 * @param windowHandle The handle of the browser window you want to switch to.
+	 */
+	public void switchToWindowByHandle(String windowHandle);
+
+        /**
+	 * Switch to the browser window that contains the specified URL or partial URL.  This is a non waiting function so the window has to exist.
+	 *
+	 * @param windowURL The url or partial url of the browser window you want to switch to.
+	 */
+	public void switchToWindowByURL(String windowURL);
 }
