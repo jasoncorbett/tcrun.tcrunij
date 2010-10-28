@@ -472,37 +472,41 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
         @Override
         public String getWindowHandle()
         {
+                logger.debug("Getting current browser window handle");
                 return driver.getWindowHandle();
         }
 
         @Override
 	public Set<String> getWindowHandles()
         {
+                logger.debug("Getting all browser window handles");
                 return driver.getWindowHandles();
         }
 
         @Override
 	public void switchToWindowByHandle(String windowHandle)
         {
+                logger.debug("Switching to the window with handle '{}'.", windowHandle);
                 driver.switchTo().window(windowHandle);
         }
 
         @Override
 	public void switchToWindowByURL(String windowURL)
         {
-                String switchToWindowHandle = "";
+                String switchToHandle = "";
                 String startWindowHandle = getWindowHandle();
                 logger.debug("Switching to the window with the URL containing '{}'.", windowURL);
                 for (String possibleHandle : getWindowHandles())
                 {
-                        switchToWindowByHandle(startWindowHandle);
+                        switchToWindowByHandle(possibleHandle);
                         if (getPageUrl().contains("help") == true)
-                                switchToWindowHandle = possibleHandle;
+                                switchToHandle = possibleHandle;
                 }
-                if (switchToWindowHandle.isEmpty() == false)
-                        switchToWindowByHandle(switchToWindowHandle);
+                if (switchToHandle.isEmpty() == false)
+                        switchToWindowByHandle(switchToHandle);
                 else
                 {
+                        switchToWindowByHandle(startWindowHandle);
                         logger.error("Unable to find window with URL containing '{}'.", windowURL);
 		        throw new NoSuchWindowException("Unable to find window with URL containing '{" + windowURL + "}'");
                 }
