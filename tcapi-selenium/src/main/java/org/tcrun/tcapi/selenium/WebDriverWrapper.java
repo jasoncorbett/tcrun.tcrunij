@@ -305,4 +305,9 @@ public interface WebDriverWrapper
 	 * @param windowURL The url or partial url of the browser window you want to switch to.
 	 */
 	public void switchToWindowByURL(String windowURL);
+
+        /**
+	 * Closes the current browser window
+	 */
+	public void closeWindow();
 }

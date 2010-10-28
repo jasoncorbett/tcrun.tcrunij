@@ -508,4 +508,10 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
                 }
 
         }
+
+        @Override
+        public void closeWindow()
+        {
+            driver.close();
+        }
 }
