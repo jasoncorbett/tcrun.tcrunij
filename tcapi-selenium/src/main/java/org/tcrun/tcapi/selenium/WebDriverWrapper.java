@@ -1,6 +1,7 @@
 package org.tcrun.tcapi.selenium;
 
 import org.openqa.selenium.WebDriver;
+import java.util.Set;
 
 /**
  * This is a wrapper api for performing tasks on web driver browsers.  Included in this interface are the methods that
@@ -19,6 +20,21 @@ public interface WebDriverWrapper
 	 */
 	public void setDefaultTimeout(int timeout);
 
+        /**
+	 * Clear the text on web page element, waiting a maximum of the default timeout for the element to exist.
+	 *
+	 * @param locator The page element instance that describes how to find the element to clear the text on.
+	 */
+	public void clear(PageElement locator);
+
+	/**
+	 * Clear the text web page element, waiting a maximum of the amount of time passed in for the element to exist.
+	 *
+	 * @param locator The page element instance that describes how to find the element to clear the text on.
+	 * @param timeout The maximum amount of time to wait for the element to exist in seconds.
+	 */
+	public void clear(PageElement locator, int timeout);
+
 	/**
 	 * Click on a web page element, waiting a maximum of the default timeout for the element to exist.
 	 *
@@ -33,6 +49,21 @@ public interface WebDriverWrapper
 	 * @param timeout The maximum amount of time to wait for the element to exist in seconds.
 	 */
 	public void click(PageElement locator, int timeout);
+
+        /**
+	 * Submit a web page element, waiting a maximum of the default timeout for the element to exist.
+	 *
+	 * @param locator The page element instance that describes how to find the element to submit.
+	 */
+	public void submit(PageElement locator);
+
+	/**
+	 * Submit a web page element, waiting a maximum of the amount of time passed in for the element to exist.
+	 *
+	 * @param locator The page element instance that describes how to find the element to submit.
+	 * @param timeout The maximum amount of time to wait for the element to exist in seconds.
+	 */
+	public void submit(PageElement locator, int timeout);
 
 	/**
 	 * Type text on an element in a page, waiting a maximum of the amount of time passed in for the element to exist.
@@ -132,12 +163,36 @@ public interface WebDriverWrapper
 	 */
 	public String getPageTitle();
 
+        /**
+	 * Get the html source of the current page in the browser.
+	 *
+	 * @return The html source of the current page displayed in the browser.
+	 */
+	public String getPageSource();
+
+        /**
+	 * Get the url of the current page in the browser.
+	 *
+	 * @return The url of the current page displayed in the browser.
+	 */
+	public String getPageUrl();
+
 	/**
 	 * Tell the browser to go to a specific URL.
 	 *
 	 * @param url The url that you want the browser to go to.
 	 */
 	public void goTo(String url);
+
+        /**
+	 * Tell the browser to go back.
+	 */
+	public void goBack();
+
+        /**
+	 * Tell the browser to go forward.
+	 */
+	public void goForward();
 
 	/**
 	 * Get the underlying webdriver object.
@@ -221,4 +276,52 @@ public interface WebDriverWrapper
 	public <T> void handlePage(Class<? extends SelfAwarePage<T>> page, T context);
 
 	public boolean isCurrentPage(Class<? extends SelfAwarePage> page);
+
+
+        /**
+	 * Get the browser window handle of the current window.  This is a non-waiting function.
+	 *
+	 * @return The window handle of the current window.
+	 */
+	public String getWindowHandle();
+
+        /**
+	 * Get a set containing all the browser window handles.  This is a non-waiting function.
+	 *
+	 * @return A set containing all the browser window handles.
+	 */
+	public Set<String> getWindowHandles();
+
+        /**
+	 * Switch to the browser window using the specified window handle.  The handle can be obtained from getWindowHandle or getWindowHandles
+	 *
+	 * @param windowHandle The handle of the browser window you want to switch to.
+	 */
+	public void switchToWindowByHandle(String windowHandle);
+
+        /**
+	 * Switch to the browser window that contains the specified URL or partial URL.  Wait a maximum of the default
+	 * timeout for the select list to exist.
+	 * @param windowURL The url or partial url of the browser window you want to switch to.
+	 */
+	public void switchToWindowByURL(String windowURL);
+
+        /**
+	 * Switch to the browser window that contains the specified URL or partial URL.  Wait the specified timeout
+         * for the switch to window to be successful
+	 * @param windowURL The url or partial url of the browser window you want to switch to.
+         * @param timeout The maximum amount of time to wait for the element to exist in seconds.
+	 */
+	public void switchToWindowByURL(String windowURL, int timeout);
+
+        /**
+	 * Closes the current browser window.  This is a non-waiting function.
+	 */
+	public void closeWindow();
+
+        /**
+	 * Closes the the specified browser window.  This is a non-waiting function, the window must currently exist.
+	 * @param windowHandle The windowHandle to switch to and close.  You can use the getWindowHandle function to get this handle.
+         */
+	public void closeWindow(String windowHandle);
 }

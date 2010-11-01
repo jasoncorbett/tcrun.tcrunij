@@ -19,6 +19,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.internal.selenesedriver.GetPageSource;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RenderedRemoteWebElement;
@@ -26,6 +27,9 @@ import org.openqa.selenium.support.ui.Select;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.slf4j.helpers.MessageFormatter;
+import java.util.Set;
+import org.openqa.selenium.NoSuchWindowException;
+import java.util.Calendar;
 
 /**
  *
@@ -131,17 +135,46 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		return element;
 	}
 
+        @Override
 	public void click(PageElement locator)
 	{
 		click(locator, timeout);
 	}
 
+        @Override
 	public void click(PageElement locator, int timeout)
 	{
 		logger.debug("Clicking on element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
 		getElement(locator, timeout).click();
 	}
 
+        @Override
+	public void clear(PageElement locator)
+	{
+		clear(locator, timeout);
+	}
+
+        @Override
+	public void clear(PageElement locator, int timeout)
+	{
+		logger.debug("Clearing the text from element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
+		getElement(locator, timeout).clear();
+	}
+
+        @Override
+        public void submit(PageElement locator)
+        {
+                submit(locator, timeout);
+        }
+
+        @Override
+	public void submit(PageElement locator, int timeout)
+	{
+		logger.debug("Submitting an element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
+		getElement(locator, timeout).submit();
+	}
+
+        @Override
 	public void type(PageElement locator, String text, int timeout)
 	{
 		logger.debug("Typing text '{}' in element with name '{}' and found '{}'.", new Object[]
@@ -151,6 +184,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		getElement(locator, timeout).sendKeys(text);
 	}
 
+        @Override
 	public void type(PageElement locator, String text)
 	{
 		type(locator, text, timeout);
@@ -190,12 +224,40 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		return driver.getTitle();
 	}
 
+        @Override
+        public String getPageSource()
+        {
+                logger.debug("Getting current page html source.");
+                return driver.getPageSource();
+        }
+
+        @Override
+        public String getPageUrl()
+        {
+                logger.debug("Getting current page url.");
+                return driver.getCurrentUrl();
+        }
+
 	@Override
 	public void goTo(String url)
 	{
 		logger.debug("Going to page '{}'.", url);
 		driver.get(url);
 	}
+
+        @Override
+        public void goBack()
+        {
+                logger.debug("Going back in the browser.");
+                driver.navigate().back();
+        }
+
+        @Override
+        public void goForward()
+        {
+                logger.debug("Going forward in the browser.");
+                driver.navigate().forward();
+        }
 
 	public WebDriver getDriver()
 	{
@@ -407,4 +469,79 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 			throw new IllegalStateException("Unable to create instance of page class " + page.getName() + ".", ex);
 		}
 	}
+
+        @Override
+        public String getWindowHandle()
+        {
+                logger.debug("Getting current browser window handle");
+                return driver.getWindowHandle();
+        }
+
+        @Override
+	public Set<String> getWindowHandles()
+        {
+                logger.debug("Getting all browser window handles");
+                return driver.getWindowHandles();
+        }
+
+        @Override
+	public void switchToWindowByHandle(String windowHandle)
+        {
+                logger.debug("Switching to the window with handle '{}'.", windowHandle);
+                driver.switchTo().window(windowHandle);
+        }
+
+        @Override
+	public void switchToWindowByURL(String windowURL)
+        {
+            switchToWindowByURL(windowURL, timeout);
+        }
+
+        @Override
+	public void switchToWindowByURL(String windowURL, int timeout)
+        {
+                Calendar endTime = Calendar.getInstance();
+                endTime.add(Calendar.SECOND, timeout);
+                String switchToHandle = "";
+                String defaultHandle = getWindowHandle();
+                logger.debug("Looking for the window with the URL containing '{}'.", windowURL);
+                while(true)
+                {
+                        if (Calendar.getInstance().after(endTime))
+                        {
+                                logger.error("Unable to find window with URL containing '{}'.", windowURL);
+                                logger.error("Switching back to the default window");
+                                switchToWindowByHandle(defaultHandle);
+                                throw new NoSuchWindowException("Timed out waiting for a known page");
+                        }
+                        for (String possibleHandle : getWindowHandles())
+                        {
+                                switchToWindowByHandle(possibleHandle);
+                                if (getPageUrl().contains(windowURL) == true)
+                                        switchToHandle = possibleHandle;
+                        }
+                        if (switchToHandle.isEmpty() == false)
+                        {
+                                logger.debug("Found the window with the URL containing '{}', switching to it now.", windowURL);
+                                switchToWindowByHandle(switchToHandle);
+                                break;
+                        }
+                }
+
+        }
+
+        @Override
+        public void closeWindow()
+        {
+            logger.debug("Closing current browser window");
+            driver.close();
+        }
+
+        @Override
+        public void closeWindow(String windowHandle)
+        {
+            logger.debug("Closing the the window with handle '{}'.", windowHandle);
+            switchToWindowByHandle(windowHandle);
+            closeWindow();
+        }
 }
