@@ -29,6 +29,7 @@ import org.slf4j.ext.XLoggerFactory;
 import org.slf4j.helpers.MessageFormatter;
 import java.util.Set;
 import org.openqa.selenium.NoSuchWindowException;
+import java.util.Calendar;
 
 /**
  *
@@ -493,22 +494,38 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
         @Override
 	public void switchToWindowByURL(String windowURL)
         {
+            switchToWindowByURL(windowURL, timeout);
+        }
+
+        @Override
+	public void switchToWindowByURL(String windowURL, int timeout)
+        {
+                Calendar endTime = Calendar.getInstance();
+                endTime.add(Calendar.SECOND, timeout);
                 String switchToHandle = "";
-                String startWindowHandle = getWindowHandle();
-                logger.debug("Switching to the window with the URL containing '{}'.", windowURL);
-                for (String possibleHandle : getWindowHandles())
+                String defaultHandle = getWindowHandle();
+                logger.debug("Looking for the window with the URL containing '{}'.", windowURL);
+                while(true)
                 {
-                        switchToWindowByHandle(possibleHandle);
-                        if (getPageUrl().contains("help") == true)
-                                switchToHandle = possibleHandle;
-                }
-                if (switchToHandle.isEmpty() == false)
-                        switchToWindowByHandle(switchToHandle);
-                else
-                {
-                        switchToWindowByHandle(startWindowHandle);
-                        logger.error("Unable to find window with URL containing '{}'.", windowURL);
-		        throw new NoSuchWindowException("Unable to find window with URL containing '{" + windowURL + "}'");
+                        if (Calendar.getInstance().after(endTime))
+                        {
+                                logger.error("Unable to find window with URL containing '{}'.", windowURL);
+                                logger.error("Switching back to the default window");
+                                switchToWindowByHandle(defaultHandle);
+                                throw new NoSuchWindowException("Timed out waiting for a known page");
+                        }
+                        for (String possibleHandle : getWindowHandles())
+                        {
+                                switchToWindowByHandle(possibleHandle);
+                                if (getPageUrl().contains(windowURL) == true)
+                                        switchToHandle = possibleHandle;
+                        }
+                        if (switchToHandle.isEmpty() == false)
+                        {
+                                logger.debug("Found the window with the URL containing '{}', switching to it now.", windowURL);
+                                switchToWindowByHandle(switchToHandle);
+                                break;
+                        }
                 }
 
         }
@@ -516,6 +533,15 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
         @Override
         public void closeWindow()
         {
+            logger.debug("Closing current browser window");
             driver.close();
+        }
+
+        @Override
+        public void closeWindow(String windowHandle)
+        {
+            logger.debug("Closing the the window with handle '{}'.", windowHandle);
+            switchToWindowByHandle(windowHandle);
+            closeWindow();
         }
 }

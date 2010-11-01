@@ -279,14 +279,14 @@ public interface WebDriverWrapper
 
 
         /**
-	 * Get the browser window handle of the current window.
+	 * Get the browser window handle of the current window.  This is a non-waiting function.
 	 *
 	 * @return The window handle of the current window.
 	 */
 	public String getWindowHandle();
 
         /**
-	 * Get a set containing all the browser window handles.
+	 * Get a set containing all the browser window handles.  This is a non-waiting function.
 	 *
 	 * @return A set containing all the browser window handles.
 	 */
@@ -300,14 +300,28 @@ public interface WebDriverWrapper
 	public void switchToWindowByHandle(String windowHandle);
 
         /**
-	 * Switch to the browser window that contains the specified URL or partial URL.  This is a non waiting function so the window has to exist.
-	 *
+	 * Switch to the browser window that contains the specified URL or partial URL.  Wait a maximum of the default
+	 * timeout for the select list to exist.
 	 * @param windowURL The url or partial url of the browser window you want to switch to.
 	 */
 	public void switchToWindowByURL(String windowURL);
 
         /**
-	 * Closes the current browser window
+	 * Switch to the browser window that contains the specified URL or partial URL.  Wait the specified timeout
+         * for the switch to window to be successful
+	 * @param windowURL The url or partial url of the browser window you want to switch to.
+         * @param timeout The maximum amount of time to wait for the element to exist in seconds.
+	 */
+	public void switchToWindowByURL(String windowURL, int timeout);
+
+        /**
+	 * Closes the current browser window.  This is a non-waiting function.
 	 */
 	public void closeWindow();
+
+        /**
+	 * Closes the the specified browser window.  This is a non-waiting function, the window must currently exist.
+	 * @param windowHandle The windowHandle to switch to and close.  You can use the getWindowHandle function to get this handle.
+         */
+	public void closeWindow(String windowHandle);
 }
