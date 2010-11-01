@@ -1,0 +1,156 @@
+/* 
+    Document   : results
+    Created on : Oct 15, 2010, 9:20:53 PM
+    Author     : jcorbett
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+body {
+	padding: 0px;
+	margin: 0px;
+	font-family: sans-serif;
+}
+
+#header {
+	margin: 0px;;
+	padding: 10px 20px 10px 20px;
+	background-color: #393939;
+	color: #ffffff;
+	text-align: left;
+}
+
+#main {
+	margin-top: 5px;
+	margin-left: 20px;
+	padding: 0px;
+}
+
+#results-chart {
+	width: 600px;
+	height: 300px;
+	float: left;
+}
+
+#runtime-info {
+	width: 300px;
+	margin-left: 699px;
+}
+
+#runtime-info-title {
+	background: url("images/small-blue-bar.png") no-repeat;
+	padding-top: 5px;
+	padding-left: 10px;
+	margin: 0px;
+	height: 35px;
+	font-size: 24px;
+	color: #ffffff;
+}
+
+.runtime-info-name {
+	font-weight: bold;
+}
+
+#count-table {
+	margin-left: 20px;
+	border: 1px solid black;
+	padding: 0px;
+	border-collapse: collapse;
+	width: 280px;
+}
+
+#count-table td {
+	border: 1px solid black;
+	padding: 2px;
+}
+
+#results-detail {
+	clear: both;
+	width: 999px;
+	margin: 0px;
+	padding: 0px;
+}
+
+.even {
+	background-color: #e9e9e9;
+}
+
+.table-totals {
+	border-top: 2px solid black;
+	background-color: #e9e9e9;
+}
+
+#individual-results-title {
+	background: url("images/bluebar.png") no-repeat;
+	width: 999px;
+	height: 50px;
+	color: #ffffff;
+	font-size: 35px;
+	padding-top: 7px;
+	padding-left: 15px;
+	margin: 0px;
+}
+
+#results-list {
+	list-style: none;
+	margin-top: 0px;
+	width: 900px;
+}
+
+.result-name {
+	float: left;
+	font-size: 15px;
+	padding-top: 5px;
+	padding-bottom: 0px;
+	text-decoration: none;
+}
+
+.PASS {
+	font-size: 15px;
+	float: right;
+}
+.FAIL {
+	font-size: 15px;
+	font-weight: bold;
+	float: right;
+}
+.BROKEN_TEST {
+	font-size: 15px;
+	font-weight: bold;
+	float: right;
+}
+
+.NOT_TESTED {
+	font-size: 15px;
+	float: right;
+}
+
+.SKIPPED {
+	font-size: 15px;
+	float: right;
+}
+
+#results-filter {
+	background-color: #a9a9a9;
+}
+
+.log-file {
+	font-size: 13px;
+	border: 1px solid black;
+	overflow: auto;
+}
+
+.result-image {
+	width: 20px;
+	height: 20px;
+	margin-left: 10px;
+	padding: 0px;
+}
+
+.results-filter-label {
+	margin-right: 45px;
+}
+
+.clear {
+	clear: both;
+}
