@@ -442,6 +442,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	@Override
 	public boolean exists(PageElement element)
 	{
+                logger.debug("Checking for existence of element '{}'.", element.getName());
 		return element.exists(driver, 0);
 	}
 
