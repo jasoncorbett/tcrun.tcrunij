@@ -185,6 +185,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
         @Override
 	public void type(PageElement locator, String text, int timeout)
 	{
+                clear(locator, timeout);
 		logger.debug("Typing text '{}' in element with name '{}' and found '{}'.", new Object[]
 		{
 			text, locator.getName(), locator.getFindByDescription()
@@ -552,5 +553,20 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
             logger.debug("Closing the the window with handle '{}'.", windowHandle);
             switchToWindowByHandle(windowHandle);
             closeWindow();
+        }
+
+        @Override
+        public boolean isVisible(PageElement locator)
+        {
+            boolean elementVisible = false;
+            logger.debug("Checking visibility on element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
+            
+            WebElement wdelement = getElement(locator, timeout);
+	    if (RenderedWebElement.class.isAssignableFrom(wdelement.getClass()))
+	    {
+	        RenderedWebElement relement = (RenderedWebElement) wdelement;
+	        elementVisible = relement.isDisplayed();
+            }
+            return elementVisible;
         }
 }
