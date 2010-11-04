@@ -30,6 +30,7 @@ import org.slf4j.helpers.MessageFormatter;
 import java.util.Set;
 import org.openqa.selenium.NoSuchWindowException;
 import java.util.Calendar;
+import org.openqa.selenium.firefox.FirefoxProfile;
 
 /**
  *
@@ -77,6 +78,13 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		|| name.equalsIgnoreCase("firefox"))
 		{
 			return new FirefoxDriver();
+		}
+
+		if (name.equalsIgnoreCase("ffwin"))
+		{
+			FirefoxProfile profile = new FirefoxProfile();
+			profile.setPreference("general.useragent.override", "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2.10) Gecko/20100914 Firefox/3.6.10 (.NET CLR 2.0.40607)");
+			return new FirefoxDriver(profile);
 		}
 
 		if (name.equalsIgnoreCase("headless"))
@@ -442,6 +450,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	@Override
 	public boolean exists(PageElement element)
 	{
+                logger.debug("Checking for existence of element '{}'.", element.getName());
 		return element.exists(driver, 0);
 	}
 
