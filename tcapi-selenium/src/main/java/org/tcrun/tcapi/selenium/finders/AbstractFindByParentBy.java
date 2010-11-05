@@ -16,7 +16,7 @@ public abstract class AbstractFindByParentBy extends By
 {
 	public abstract boolean matches(WebElement e);
 
-	public abstract ArrayList<By> getParentBy();
+	public abstract List<By> getParentBy();
 
 	@Override
 	public List<WebElement> findElements(SearchContext context)
