@@ -1,5 +1,8 @@
 package org.tcrun.tcapi.selenium.finders;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -24,9 +27,9 @@ public class FindByValue extends AbstractFindByParentBy
 	}
 
 	@Override
-	public By getParentBy()
+	public ArrayList<By> getParentBy()
 	{
-		return By.tagName("input");
+		return new ArrayList<By>(Arrays.asList(By.tagName("input")));
 	}
 
 	@Override
