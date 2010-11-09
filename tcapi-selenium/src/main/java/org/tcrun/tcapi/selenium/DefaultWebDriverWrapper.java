@@ -558,23 +558,29 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
         @Override
         public boolean isVisible(PageElement locator)
         {
-            boolean elementVisible = false;
+            boolean elementVisible = true;
             logger.debug("Checking visibility on element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
-            
-            WebElement wdelement = getElement(locator, timeout);
-			if (RenderedWebElement.class.isAssignableFrom(wdelement.getClass()))
-			{
-				RenderedWebElement relement = (RenderedWebElement) wdelement;
-				elementVisible = relement.isDisplayed();
+            if (exists(locator) == true)
+            {
+                WebElement wdelement = getElement(locator, timeout);
+                if (RenderedWebElement.class.isAssignableFrom(wdelement.getClass()))
+                {
+                    RenderedWebElement relement = (RenderedWebElement) wdelement;
+                    elementVisible = relement.isDisplayed();
+                }
+                if(elementVisible)
+                {
+                    logger.debug("Found visible element with name '{}' and found '{}'", locator.getName(), locator.getFindByDescription());
+                }
+                else
+                {
+                    logger.debug("Element was NOT VISIBLE with name '{}' and found '{}'", locator.getName(), locator.getFindByDescription());
+                }
             }
-			if(elementVisible)
-			{
-				logger.debug("Found visible element with name '{}' and found '{}'", locator.getName(), locator.getFindByDescription());
-			}
-			else
-			{
-				logger.debug("Element was NOT VISIBLE with name '{}' and found '{}'", locator.getName(), locator.getFindByDescription());
-			}
+            else
+            {
+                elementVisible = false;
+            }
             return elementVisible;
         }
 }
