@@ -6,6 +6,7 @@ import org.tcrun.tcapi.selenium.finders.FindBySrc;
 import org.tcrun.tcapi.selenium.finders.FindBySrcContains;
 import org.tcrun.tcapi.selenium.finders.FindByHref;
 import org.tcrun.tcapi.selenium.finders.FindByHrefContains;
+import org.tcrun.tcapi.selenium.finders.FindByValue;
 
 /**
  *
@@ -78,7 +79,7 @@ public abstract class FindBy extends By
 	 */
 	public static By value(String valueText)
 	{
-	    return new FindByHref(valueText);
+	    return new FindByValue(valueText);
 	}
 }
 
