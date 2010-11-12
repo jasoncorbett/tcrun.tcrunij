@@ -19,6 +19,7 @@ public class PersistentBrowserPlugin implements ShutdownTaskPlugin
 {
 
     public static WebDriverWrapper persistentBrowser = null;
+    public static WebDriverWrapper nonPersistentBrowser = null;
     private static XLogger logger = XLoggerFactory.getXLogger(PersistentBrowserPlugin.class);
 
     @Override
@@ -30,9 +31,10 @@ public class PersistentBrowserPlugin implements ShutdownTaskPlugin
             logger.debug("closing persistent browser");
             persistentBrowser.getDriver().close();
         }
- else
+        if (nonPersistentBrowser != null)
         {
-            logger.debug("browser is not persistent, no need to close");
+            logger.debug("closing the final non-persistent browser window");
+            nonPersistentBrowser.getDriver().close();
         }
     }
 

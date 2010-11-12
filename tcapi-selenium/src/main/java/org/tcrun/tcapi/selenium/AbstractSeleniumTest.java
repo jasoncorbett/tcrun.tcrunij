@@ -36,6 +36,10 @@ public abstract class AbstractSeleniumTest extends AbstractSimpleTestCase
             }
         } else
         {
+            if (PersistentBrowserPlugin.nonPersistentBrowser != null)
+            {
+                PersistentBrowserPlugin.nonPersistentBrowser.getDriver().close();
+            }
             if (tcinfo.containsKey("remote"))
             {
                 browser = new DefaultWebDriverWrapper(DefaultWebDriverWrapper.getDriverFromBrowserName(configValue("browser", "headless"), configValue("remote")));
@@ -44,6 +48,7 @@ public abstract class AbstractSeleniumTest extends AbstractSimpleTestCase
                 browser = new DefaultWebDriverWrapper(configValue("browser", "headless"));
             }
             browser.setDefaultTimeout(30);
+            PersistentBrowserPlugin.nonPersistentBrowser = browser;
         }
     }
 
