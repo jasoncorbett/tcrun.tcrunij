@@ -319,7 +319,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	}
 
 	@Override
-	public <T> void handlePage(Class<? extends SelfAwarePage<T>> page, T context)
+	public <T> void handlePage(Class<? extends SelfAwarePage<T>> page, T context) throws Exception
 	{
 		try
 		{

@@ -273,7 +273,7 @@ public interface WebDriverWrapper
 	 * @param page The page to "handle".
 	 * @param context The context object (type determined by the page class)
 	 */
-	public <T> void handlePage(Class<? extends SelfAwarePage<T>> page, T context);
+	public <T> void handlePage(Class<? extends SelfAwarePage<T>> page, T context) throws Exception;
 
 	public boolean isCurrentPage(Class<? extends SelfAwarePage> page);
 
