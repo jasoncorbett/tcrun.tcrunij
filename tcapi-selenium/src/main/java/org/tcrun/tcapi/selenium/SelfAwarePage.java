@@ -26,5 +26,5 @@ public interface SelfAwarePage<T>
 	 * @param browser The web driver based browser implementation.
 	 * @param context The context in which to handle the elements on the page.
 	 */
-	public void handlePage(WebDriverWrapper browser, T context);
+	public void handlePage(WebDriverWrapper browser, T context) throws Exception;
 }
