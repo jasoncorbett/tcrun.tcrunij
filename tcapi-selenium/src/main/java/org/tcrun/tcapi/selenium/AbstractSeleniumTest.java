@@ -53,4 +53,26 @@ public abstract class AbstractSeleniumTest extends AbstractSimpleTestCase
 		super.setupDebugShell(global);
 		global.defineProperty("browser", browser, ScriptableObject.DONTENUM);
 	}
+
+        @Override
+        public void frameworkCleanup() throws Exception
+        {
+            super.frameworkCleanup();
+            if (browser != null && configValue("browser.persistent", "true").equalsIgnoreCase("false"))
+            {
+                browser.getDriver().close();
+            }
+        }
+        /**
+         * Closes the browser and reopens
+         */
+        public void reopenBrowser() throws Exception
+        {
+            browser.getDriver().quit();
+            if(configValue("browser.persistent", "true").equalsIgnoreCase("true"))
+            {
+                PersistentBrowserPlugin.persistentBrowser = null;
+            }
+            this.frameworkSetup();
+        }
 }

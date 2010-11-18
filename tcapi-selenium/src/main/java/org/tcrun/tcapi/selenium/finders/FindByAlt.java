@@ -1,6 +1,8 @@
 
 package org.tcrun.tcapi.selenium.finders;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -32,8 +34,8 @@ public class FindByAlt extends AbstractFindByParentBy
 	}
 
 	@Override
-	public By getParentBy()
+	public ArrayList<By> getParentBy()
 	{
-		return By.tagName("img");
+		return new ArrayList<By>(Arrays.asList(By.tagName("img"),By.tagName("input")));
 	}
 }
