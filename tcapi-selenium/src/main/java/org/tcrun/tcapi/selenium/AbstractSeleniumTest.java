@@ -60,7 +60,7 @@ public abstract class AbstractSeleniumTest extends AbstractSimpleTestCase
             super.frameworkCleanup();
             if (browser != null && configValue("browser.persistent", "true").equalsIgnoreCase("false"))
             {
-                browser.getDriver().close();
+                browser.getDriver().quit();
             }
         }
         /**
