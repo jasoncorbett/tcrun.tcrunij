@@ -30,10 +30,6 @@ public class PersistentBrowserPlugin implements ShutdownTaskPlugin
             logger.debug("closing persistent browser");
             persistentBrowser.getDriver().close();
         }
- else
-        {
-            logger.debug("browser is not persistent, no need to close");
-        }
     }
 
     @Override

@@ -6,6 +6,7 @@ import org.tcrun.tcapi.selenium.finders.FindBySrc;
 import org.tcrun.tcapi.selenium.finders.FindBySrcContains;
 import org.tcrun.tcapi.selenium.finders.FindByHref;
 import org.tcrun.tcapi.selenium.finders.FindByHrefContains;
+import org.tcrun.tcapi.selenium.finders.FindByValue;
 
 /**
  *
@@ -68,6 +69,17 @@ public abstract class FindBy extends By
 	public static By hrefContains(String hrefContainsValue)
 	{
 	    return new FindByHrefContains(hrefContainsValue);
+	}
+
+        /**
+	 * Find an input by it's value.  This must match exactly.
+	 *
+	 * @param valueText The exact value of the value attribute.
+	 * @return a By instance that finds web elements in web driver.
+	 */
+	public static By value(String valueText)
+	{
+	    return new FindByValue(valueText);
 	}
 }
 

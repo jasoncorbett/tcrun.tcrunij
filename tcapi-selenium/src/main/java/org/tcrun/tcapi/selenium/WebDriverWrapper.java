@@ -273,7 +273,7 @@ public interface WebDriverWrapper
 	 * @param page The page to "handle".
 	 * @param context The context object (type determined by the page class)
 	 */
-	public <T> void handlePage(Class<? extends SelfAwarePage<T>> page, T context);
+	public <T> void handlePage(Class<? extends SelfAwarePage<T>> page, T context) throws Exception;
 
 	public boolean isCurrentPage(Class<? extends SelfAwarePage> page);
 
@@ -324,4 +324,10 @@ public interface WebDriverWrapper
 	 * @param windowHandle The windowHandle to switch to and close.  You can use the getWindowHandle function to get this handle.
          */
 	public void closeWindow(String windowHandle);
+
+        /**
+	 * Checks whether the specified page element is visible.  This is a non-waiting function, the page element must currently exist.
+	 * @param locator The page element to check visibility on
+         */
+        public boolean isVisible(PageElement locator);
 }

@@ -16,12 +16,16 @@ public abstract class AbstractFindByParentBy extends By
 {
 	public abstract boolean matches(WebElement e);
 
-	public abstract By getParentBy();
+	public abstract List<By> getParentBy();
 
 	@Override
 	public List<WebElement> findElements(SearchContext context)
 	{
-		List<WebElement> possible_elements = context.findElements(getParentBy());
+		ArrayList<WebElement> possible_elements = new ArrayList<WebElement>();
+		for(By parentBy: getParentBy())
+		{
+			possible_elements.addAll(context.findElements(parentBy));
+		}
 		List<WebElement> retval = new ArrayList<WebElement>();
 		for (WebElement possible : possible_elements)
 		{
