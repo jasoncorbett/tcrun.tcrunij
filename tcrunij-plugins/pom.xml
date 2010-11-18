@@ -19,6 +19,7 @@
         <module>tcapi-plugin</module>
         <module>basic-plugins</module>
         <module>htmlreport</module>
+        <module>junitxmlreport</module>
     </modules>
 
 </project>
