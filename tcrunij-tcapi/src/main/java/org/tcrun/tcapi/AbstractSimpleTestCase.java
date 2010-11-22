@@ -132,9 +132,9 @@ public abstract class AbstractSimpleTestCase implements SimpleTestCase, TestWith
 	 *
 	 * @param key The name of the configuration you're looking for.
 	 * @return The value assigned to the key provided in the configuration.
-	 * @throws BrokenTestError if the configuration key does not exist, debugging information is provided.
+	 * @throws TestCaseError if the configuration key does not exist, debugging information is provided.
 	 */
-	public String configValue(String key) throws BrokenTestError
+	public String configValue(String key) throws TestCaseError
 	{
 		if(!tcinfo.containsKey(key))
 		{
@@ -152,8 +152,9 @@ public abstract class AbstractSimpleTestCase implements SimpleTestCase, TestWith
 	 * @param key The name of the configuration you're looking for.
 	 * @param defaultValue The default value to be returned if the key does not exist.
 	 * @return the value of the configuration assigned to the key provided, if it doesn't exist the default value is returned.
+	 * @throws TestCaseError if configValue detects anything wrong.  The default implementation doesn't throw this error.
 	 */
-	public String configValue(String key, String defaultValue)
+	public String configValue(String key, String defaultValue) throws TestCaseError
 	{
 		String retval = defaultValue;
 		if(!tcinfo.containsKey(key))
