@@ -13,6 +13,7 @@ import org.tcrun.api.TCRunContext;
 import org.tcrun.api.TestCaseAttribute;
 import org.tcrun.api.TestRunner;
 import org.tcrun.api.plugins.AttributeProviderPlugin;
+import org.tcrun.tcapi.ResultBasedTestError;
 import org.tcrun.tcapi.SimpleTestCase;
 import org.tcrun.tcapi.TestResult;
 
@@ -126,29 +127,43 @@ public class TCApiRunnableTest implements RunnableTest, TestRunner
 		}
 
 		boolean should_continue = true;
+		String reason = "";
+		TestResult override = null;
 		try
 		{
 			s_logger.info("Calling tcSetup on test '{}'.", getTestClass().getName());
 			test_instance.tcSetup(test_configuration);
+		} catch(ResultBasedTestError e)
+		{
+			should_continue = test_instance.handleException(e);
+			override = e.getResult();
+			reason = e.getMessage();
 		} catch(RuntimeException e)
 		{
 			// No logging by default, the test's handleException should take care of logging.
 			should_continue = test_instance.handleException(e);
+			reason = e.getMessage();
 		} catch(Exception e)
 		{
 			// No logging by default, the test's handleException should take care of logging.
 			should_continue = test_instance.handleException(e);
+			reason = e.getMessage();
 		}
 
 		if(!should_continue)
 		{
 			s_logger.info("Because of an error in tcSetup of test '{}', doTest will not be called (handleException returned false).", getTestClass().getName());
-			context.addResult(new SimpleTestCaseResult(this, "", TestResult.BROKEN_TEST));
+			if(override != null)
+			{
+				context.addResult(new SimpleTestCaseResult(this, reason, override));
+			} else
+			{
+				context.addResult(new SimpleTestCaseResult(this, reason, TestResult.BROKEN_TEST));
+			}
 			return;
 		}
 
 		TestResult result = TestResult.BROKEN_TEST;
-		String reason = "";
 
 		try
 		{
@@ -163,6 +178,11 @@ public class TCApiRunnableTest implements RunnableTest, TestRunner
 			{
 				reason = "Test returned " + result.toString() + " from doTest method.";
 			}
+		} catch (ResultBasedTestError e)
+		{
+			reason = e.getMessage();
+			test_instance.handleException(e);
+			override = e.getResult();
 		} catch (RuntimeException e)
 		{
 			reason = "Exception " + e.getClass().getName() + " was thrown during doTest: " + e.getMessage();
@@ -173,7 +193,11 @@ public class TCApiRunnableTest implements RunnableTest, TestRunner
 			test_instance.handleException(e);
 		}
 
+		if(override != null)
+			result = override;
+
 		s_logger.info("Test with id '{}' returned result '{}' for reason '{}'.", new Object[] {getTestId(), result.toString(), reason});
+
 
 		try
 		{

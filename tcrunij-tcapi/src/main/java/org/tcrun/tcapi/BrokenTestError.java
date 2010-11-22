@@ -8,10 +8,16 @@ package org.tcrun.tcapi;
  *
  * @author jcorbett
  */
-public class BrokenTestError extends Exception
+public class BrokenTestError extends ResultBasedTestError
 {
 	public BrokenTestError(String message)
 	{
 		super(message);
+	}
+
+	@Override
+	public TestResult getResult()
+	{
+		return TestResult.BROKEN_TEST;
 	}
 }
