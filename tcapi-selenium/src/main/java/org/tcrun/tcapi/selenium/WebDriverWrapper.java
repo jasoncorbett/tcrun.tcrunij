@@ -20,7 +20,7 @@ public interface WebDriverWrapper
 	 */
 	public void setDefaultTimeout(int timeout);
 
-        /**
+	/**
 	 * Clear the text on web page element, waiting a maximum of the default timeout for the element to exist.
 	 *
 	 * @param locator The page element instance that describes how to find the element to clear the text on.
@@ -50,7 +50,7 @@ public interface WebDriverWrapper
 	 */
 	public void click(PageElement locator, int timeout);
 
-        /**
+	/**
 	 * Submit a web page element, waiting a maximum of the default timeout for the element to exist.
 	 *
 	 * @param locator The page element instance that describes how to find the element to submit.
@@ -163,14 +163,14 @@ public interface WebDriverWrapper
 	 */
 	public String getPageTitle();
 
-        /**
+	/**
 	 * Get the html source of the current page in the browser.
 	 *
 	 * @return The html source of the current page displayed in the browser.
 	 */
 	public String getPageSource();
 
-        /**
+	/**
 	 * Get the url of the current page in the browser.
 	 *
 	 * @return The url of the current page displayed in the browser.
@@ -184,12 +184,12 @@ public interface WebDriverWrapper
 	 */
 	public void goTo(String url);
 
-        /**
+	/**
 	 * Tell the browser to go back.
 	 */
 	public void goBack();
 
-        /**
+	/**
 	 * Tell the browser to go forward.
 	 */
 	public void goForward();
@@ -277,57 +277,69 @@ public interface WebDriverWrapper
 
 	public boolean isCurrentPage(Class<? extends SelfAwarePage> page);
 
-
-        /**
+	/**
 	 * Get the browser window handle of the current window.  This is a non-waiting function.
 	 *
 	 * @return The window handle of the current window.
 	 */
 	public String getWindowHandle();
 
-        /**
+	/**
 	 * Get a set containing all the browser window handles.  This is a non-waiting function.
 	 *
 	 * @return A set containing all the browser window handles.
 	 */
 	public Set<String> getWindowHandles();
 
-        /**
+	/**
 	 * Switch to the browser window using the specified window handle.  The handle can be obtained from getWindowHandle or getWindowHandles
 	 *
 	 * @param windowHandle The handle of the browser window you want to switch to.
 	 */
 	public void switchToWindowByHandle(String windowHandle);
 
-        /**
+	/**
 	 * Switch to the browser window that contains the specified URL or partial URL.  Wait a maximum of the default
 	 * timeout for the select list to exist.
 	 * @param windowURL The url or partial url of the browser window you want to switch to.
 	 */
 	public void switchToWindowByURL(String windowURL);
 
-        /**
+	/**
 	 * Switch to the browser window that contains the specified URL or partial URL.  Wait the specified timeout
-         * for the switch to window to be successful
+	 * for the switch to window to be successful
 	 * @param windowURL The url or partial url of the browser window you want to switch to.
-         * @param timeout The maximum amount of time to wait for the element to exist in seconds.
+	 * @param timeout The maximum amount of time to wait for the element to exist in seconds.
 	 */
 	public void switchToWindowByURL(String windowURL, int timeout);
 
-        /**
+	/**
 	 * Closes the current browser window.  This is a non-waiting function.
 	 */
 	public void closeWindow();
 
-        /**
+	/**
 	 * Closes the the specified browser window.  This is a non-waiting function, the window must currently exist.
 	 * @param windowHandle The windowHandle to switch to and close.  You can use the getWindowHandle function to get this handle.
-         */
+	 */
 	public void closeWindow(String windowHandle);
 
-        /**
+	/**
 	 * Checks whether the specified page element is visible.  This is a non-waiting function, the page element must currently exist.
 	 * @param locator The page element to check visibility on
-         */
-        public boolean isVisible(PageElement locator);
+	 */
+	public boolean isVisible(PageElement locator);
+
+	/**
+	 * Take a screenshot, naming it automatically.  This will be placed in the testcase's log directory.
+	 */
+	public void takeScreenShot();
+
+	/**
+	 * Take a screenshot, naming it with the provided name.  If ".png" is not at the end of the filename it will be
+	 * added.  Also a number may be attached to help keep order.
+	 *
+	 * @param name
+	 */
+	public void takeScreenShot(String name);
 }
