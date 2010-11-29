@@ -1,6 +1,8 @@
 package org.tcrun.tcapi.selenium;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
+import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
@@ -30,6 +32,9 @@ import org.slf4j.helpers.MessageFormatter;
 import java.util.Set;
 import org.openqa.selenium.NoSuchWindowException;
 import java.util.Calendar;
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.firefox.FirefoxProfile;
 
 /**
@@ -42,6 +47,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	private WebDriver driver;
 	private int timeout;
 	private static XLogger logger = XLoggerFactory.getXLogger("test." + DefaultWebDriverWrapper.class.getName());
+	private int screenshot_counter;
 
 	public static WebDriver getDriverFromBrowserName(String name, String remote) throws MalformedURLException
 	{
@@ -69,7 +75,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 			caps = DesiredCapabilities.chrome();
 		}
 
-		return new RemoteWebDriver(remoteUrl, caps);
+		return new RemoteDriverWithScreenshots(remoteUrl, caps);
 	}
 
 	public static WebDriver getDriverFromBrowserName(String name)
@@ -111,6 +117,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	public DefaultWebDriverWrapper(WebDriver driver)
 	{
 		this.driver = driver;
+		screenshot_counter = 0;
 	}
 
 	public DefaultWebDriverWrapper(String name)
@@ -143,49 +150,49 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		return element;
 	}
 
-        @Override
+	@Override
 	public void click(PageElement locator)
 	{
 		click(locator, timeout);
 	}
 
-        @Override
+	@Override
 	public void click(PageElement locator, int timeout)
 	{
 		logger.debug("Clicking on element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
 		getElement(locator, timeout).click();
 	}
 
-        @Override
+	@Override
 	public void clear(PageElement locator)
 	{
 		clear(locator, timeout);
 	}
 
-        @Override
+	@Override
 	public void clear(PageElement locator, int timeout)
 	{
 		logger.debug("Clearing the text from element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
 		getElement(locator, timeout).clear();
 	}
 
-        @Override
-        public void submit(PageElement locator)
-        {
-                submit(locator, timeout);
-        }
+	@Override
+	public void submit(PageElement locator)
+	{
+		submit(locator, timeout);
+	}
 
-        @Override
+	@Override
 	public void submit(PageElement locator, int timeout)
 	{
 		logger.debug("Submitting an element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
 		getElement(locator, timeout).submit();
 	}
 
-        @Override
+	@Override
 	public void type(PageElement locator, String text, int timeout)
 	{
-                clear(locator, timeout);
+		clear(locator, timeout);
 		logger.debug("Typing text '{}' in element with name '{}' and found '{}'.", new Object[]
 		{
 			text, locator.getName(), locator.getFindByDescription()
@@ -193,7 +200,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		getElement(locator, timeout).sendKeys(text);
 	}
 
-        @Override
+	@Override
 	public void type(PageElement locator, String text)
 	{
 		type(locator, text, timeout);
@@ -233,19 +240,19 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		return driver.getTitle();
 	}
 
-        @Override
-        public String getPageSource()
-        {
-                logger.debug("Getting current page html source.");
-                return driver.getPageSource();
-        }
+	@Override
+	public String getPageSource()
+	{
+		logger.debug("Getting current page html source.");
+		return driver.getPageSource();
+	}
 
-        @Override
-        public String getPageUrl()
-        {
-                logger.debug("Getting current page url.");
-                return driver.getCurrentUrl();
-        }
+	@Override
+	public String getPageUrl()
+	{
+		logger.debug("Getting current page url.");
+		return driver.getCurrentUrl();
+	}
 
 	@Override
 	public void goTo(String url)
@@ -254,19 +261,19 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		driver.get(url);
 	}
 
-        @Override
-        public void goBack()
-        {
-                logger.debug("Going back in the browser.");
-                driver.navigate().back();
-        }
+	@Override
+	public void goBack()
+	{
+		logger.debug("Going back in the browser.");
+		driver.navigate().back();
+	}
 
-        @Override
-        public void goForward()
-        {
-                logger.debug("Going forward in the browser.");
-                driver.navigate().forward();
-        }
+	@Override
+	public void goForward()
+	{
+		logger.debug("Going forward in the browser.");
+		driver.navigate().forward();
+	}
 
 	public WebDriver getDriver()
 	{
@@ -451,7 +458,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	@Override
 	public boolean exists(PageElement element)
 	{
-                logger.debug("Checking for existence of element '{}'.", element.getName());
+		logger.debug("Checking for existence of element '{}'.", element.getName());
 		return element.exists(driver, 0);
 	}
 
@@ -480,107 +487,144 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		}
 	}
 
-        @Override
-        public String getWindowHandle()
-        {
-                logger.debug("Getting current browser window handle");
-                return driver.getWindowHandle();
-        }
+	@Override
+	public String getWindowHandle()
+	{
+		logger.debug("Getting current browser window handle");
+		return driver.getWindowHandle();
+	}
 
-        @Override
+	@Override
 	public Set<String> getWindowHandles()
-        {
-                logger.debug("Getting all browser window handles");
-                return driver.getWindowHandles();
-        }
+	{
+		logger.debug("Getting all browser window handles");
+		return driver.getWindowHandles();
+	}
 
-        @Override
+	@Override
 	public void switchToWindowByHandle(String windowHandle)
-        {
-                logger.debug("Switching to the window with handle '{}'.", windowHandle);
-                driver.switchTo().window(windowHandle);
-        }
+	{
+		logger.debug("Switching to the window with handle '{}'.", windowHandle);
+		driver.switchTo().window(windowHandle);
+	}
 
-        @Override
+	@Override
 	public void switchToWindowByURL(String windowURL)
-        {
-            switchToWindowByURL(windowURL, timeout);
-        }
+	{
+		switchToWindowByURL(windowURL, timeout);
+	}
 
-        @Override
+	@Override
 	public void switchToWindowByURL(String windowURL, int timeout)
-        {
-                Calendar endTime = Calendar.getInstance();
-                endTime.add(Calendar.SECOND, timeout);
-                String switchToHandle = "";
-                String defaultHandle = getWindowHandle();
-                logger.debug("Looking for the window with the URL containing '{}'.", windowURL);
-                while(true)
-                {
-                        if (Calendar.getInstance().after(endTime))
-                        {
-                                logger.error("Unable to find window with URL containing '{}'.", windowURL);
-                                logger.error("Switching back to the default window");
-                                switchToWindowByHandle(defaultHandle);
-                                throw new NoSuchWindowException("Timed out waiting for a known page");
-                        }
-                        for (String possibleHandle : getWindowHandles())
-                        {
-                                switchToWindowByHandle(possibleHandle);
-                                if (getPageUrl().contains(windowURL) == true)
-                                        switchToHandle = possibleHandle;
-                        }
-                        if (switchToHandle.isEmpty() == false)
-                        {
-                                logger.debug("Found the window with the URL containing '{}', switching to it now.", windowURL);
-                                switchToWindowByHandle(switchToHandle);
-                                break;
-                        }
-                }
+	{
+		Calendar endTime = Calendar.getInstance();
+		endTime.add(Calendar.SECOND, timeout);
+		String switchToHandle = "";
+		String defaultHandle = getWindowHandle();
+		logger.debug("Looking for the window with the URL containing '{}'.", windowURL);
+		while (true)
+		{
+			if (Calendar.getInstance().after(endTime))
+			{
+				logger.error("Unable to find window with URL containing '{}'.", windowURL);
+				logger.error("Switching back to the default window");
+				switchToWindowByHandle(defaultHandle);
+				throw new NoSuchWindowException("Timed out waiting for a known page");
+			}
+			for (String possibleHandle : getWindowHandles())
+			{
+				switchToWindowByHandle(possibleHandle);
+				if (getPageUrl().contains(windowURL) == true)
+				{
+					switchToHandle = possibleHandle;
+				}
+			}
+			if (switchToHandle.isEmpty() == false)
+			{
+				logger.debug("Found the window with the URL containing '{}', switching to it now.", windowURL);
+				switchToWindowByHandle(switchToHandle);
+				break;
+			}
+		}
 
-        }
+	}
 
-        @Override
-        public void closeWindow()
-        {
-            logger.debug("Closing current browser window");
-            driver.close();
-        }
+	@Override
+	public void closeWindow()
+	{
+		logger.debug("Closing current browser window");
+		driver.close();
+	}
 
-        @Override
-        public void closeWindow(String windowHandle)
-        {
-            logger.debug("Closing the the window with handle '{}'.", windowHandle);
-            switchToWindowByHandle(windowHandle);
-            closeWindow();
-        }
+	@Override
+	public void closeWindow(String windowHandle)
+	{
+		logger.debug("Closing the the window with handle '{}'.", windowHandle);
+		switchToWindowByHandle(windowHandle);
+		closeWindow();
+	}
 
-        @Override
-        public boolean isVisible(PageElement locator)
-        {
-            boolean elementVisible = true;
-            logger.debug("Checking visibility on element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
-            if (exists(locator) == true)
-            {
-                WebElement wdelement = getElement(locator, timeout);
-                if (RenderedWebElement.class.isAssignableFrom(wdelement.getClass()))
-                {
-                    RenderedWebElement relement = (RenderedWebElement) wdelement;
-                    elementVisible = relement.isDisplayed();
-                }
-                if(elementVisible)
-                {
-                    logger.debug("Found visible element with name '{}' and found '{}'", locator.getName(), locator.getFindByDescription());
-                }
-                else
-                {
-                    logger.debug("Element was NOT VISIBLE with name '{}' and found '{}'", locator.getName(), locator.getFindByDescription());
-                }
-            }
-            else
-            {
-                elementVisible = false;
-            }
-            return elementVisible;
-        }
+	@Override
+	public boolean isVisible(PageElement locator)
+	{
+		boolean elementVisible = true;
+		logger.debug("Checking visibility on element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
+		if (exists(locator) == true)
+		{
+			WebElement wdelement = getElement(locator, timeout);
+			if (RenderedWebElement.class.isAssignableFrom(wdelement.getClass()))
+			{
+				RenderedWebElement relement = (RenderedWebElement) wdelement;
+				elementVisible = relement.isDisplayed();
+			}
+			if (elementVisible)
+			{
+				logger.debug("Found visible element with name '{}' and found '{}'", locator.getName(), locator.getFindByDescription());
+			} else
+			{
+				logger.debug("Element was NOT VISIBLE with name '{}' and found '{}'", locator.getName(), locator.getFindByDescription());
+			}
+		} else
+		{
+			elementVisible = false;
+		}
+		return elementVisible;
+	}
+
+	@Override
+	public void takeScreenShot()
+	{
+		takeScreenShot("screenshot");
+	}
+
+	@Override
+	public void takeScreenShot(String name)
+	{
+		if (TakesScreenshot.class.isAssignableFrom(driver.getClass()))
+		{
+			if (name == null)
+			{
+				name = "screenshot";
+			}
+			if (!name.toLowerCase().endsWith(".png"))
+			{
+				name = name + ".png";
+			}
+			name = ++screenshot_counter + "-" + name;
+			File ss_file = DebugSupport.getOutputFile(name);
+			logger.debug("Taking screenshot, output file will be {}", ss_file.getAbsolutePath());
+			File ss_tmp = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+			try
+			{
+				FileUtils.copyFile(ss_tmp, ss_file);
+			} catch (IOException ex)
+			{
+				logger.error("Unable to copy screenshot from '" + ss_tmp.getAbsolutePath() + "' to '" + ss_file.getAbsolutePath() + "': ", ex);
+			}
+		} else
+		{
+			logger.warn("Requested screenshot by name '{}', but browser doesn't support taking screenshots.", name);
+		}
+
+	}
 }
