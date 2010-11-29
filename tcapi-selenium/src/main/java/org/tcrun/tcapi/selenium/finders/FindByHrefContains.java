@@ -34,7 +34,7 @@ public class FindByHrefContains extends AbstractFindByParentBy
 	@Override
 	public String toString()
 	{
-		return String.format("By href attribute containing '{}'.", hrefContainsText);
+		return String.format("By href attribute containing '%s'.", hrefContainsText);
 	}
 
 }

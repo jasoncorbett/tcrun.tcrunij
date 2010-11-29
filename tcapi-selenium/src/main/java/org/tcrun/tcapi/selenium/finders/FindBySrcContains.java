@@ -34,7 +34,7 @@ public class FindBySrcContains extends AbstractFindByParentBy
 	@Override
 	public String toString()
 	{
-		return String.format("By src attribute containing '{}'.", srcContainsText);
+		return String.format("By src attribute containing '%s'.", srcContainsText);
 	}
 
 }

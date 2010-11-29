@@ -35,7 +35,7 @@ public class FindByValue extends AbstractFindByParentBy
 	@Override
 	public String toString()
 	{
-		return String.format("By value attribute matching '{}'.", valueText);
+		return String.format("By value attribute matching '%s'.", valueText);
 	}
 
 }

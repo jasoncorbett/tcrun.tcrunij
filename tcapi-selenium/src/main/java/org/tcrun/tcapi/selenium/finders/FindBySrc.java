@@ -34,7 +34,7 @@ public class FindBySrc extends AbstractFindByParentBy
 	@Override
 	public String toString()
 	{
-		return String.format("By src attribute matching '{}'.", srcText);
+		return String.format("By src attribute matching '%s'.", srcText);
 	}
 
 }
