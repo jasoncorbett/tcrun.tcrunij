@@ -34,7 +34,7 @@ public class FindByHref extends AbstractFindByParentBy
 	@Override
 	public String toString()
 	{
-		return String.format("By href attribute matching '{}'.", hrefText);
+		return String.format("By href attribute matching '%s'.", hrefText);
 	}
 
 }

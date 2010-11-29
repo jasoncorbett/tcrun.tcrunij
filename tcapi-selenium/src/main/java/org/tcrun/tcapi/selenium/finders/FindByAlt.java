@@ -23,7 +23,7 @@ public class FindByAlt extends AbstractFindByParentBy
 	@Override
 	public String toString()
 	{
-		return String.format("By alt text '{}'.", altText);
+		return String.format("By alt text '%s'.", altText);
 	}
 
 	@Override
