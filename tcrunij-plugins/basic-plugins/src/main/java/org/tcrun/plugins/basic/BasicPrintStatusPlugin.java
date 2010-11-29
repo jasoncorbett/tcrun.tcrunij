@@ -25,7 +25,12 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.util.ContextInitializer;
+import java.util.HashMap;
+import java.util.Map;
 import org.slf4j.LoggerFactory;
+import org.tcrun.api.Result;
+import org.tcrun.api.ResultStatus;
+import org.tcrun.api.plugins.ShutdownTaskPlugin;
 
 /**
  *
@@ -33,9 +38,9 @@ import org.slf4j.LoggerFactory;
  */
 @ImplementsPlugin(
 {
-	BeforeTestCasePlugin.class, AfterTestCasePlugin.class, CommandLineOptionPlugin.class, CommandLineConsumerPlugin.class
+	BeforeTestCasePlugin.class, AfterTestCasePlugin.class, CommandLineOptionPlugin.class, CommandLineConsumerPlugin.class, ShutdownTaskPlugin.class
 })
-public class BasicPrintStatusPlugin implements BeforeTestCasePlugin, AfterTestCasePlugin, CommandLineOptionPlugin, CommandLineConsumerPlugin
+public class BasicPrintStatusPlugin implements BeforeTestCasePlugin, AfterTestCasePlugin, CommandLineOptionPlugin, CommandLineConsumerPlugin, ShutdownTaskPlugin
 {
 
 	//TODO: add verbose (logs)
@@ -54,7 +59,7 @@ public class BasicPrintStatusPlugin implements BeforeTestCasePlugin, AfterTestCa
 			if(m_verbose_mode)
 			{
 				System.out.println();
-				System.out.println("------------------------------------------------------------");
+				System.out.println("----------------------------------------------------------------------------");
 			}
 			m_number_of_results = p_context.getResultList().size();
 		}
@@ -141,6 +146,47 @@ public class BasicPrintStatusPlugin implements BeforeTestCasePlugin, AfterTestCa
 		if(options.hasOption("print-steps"))
 		{
 			m_print_steps = true;
+		}
+	}
+
+	@Override
+	public void onShutdown(TCRunContext p_context)
+	{
+		if(p_context.getResultList().size() > 0)
+		{
+			if(m_verbose_mode)
+			{
+				// reprint results
+				System.out.println("----------------------------------------------------------------------------");
+				int counter = 0;
+				for(Result result: p_context.getResultList())
+				{
+					System.out.printf("%04d-%s: %s%n", m_test_number, result.getTest().getTestId(), result.getStatus().toString());
+				}
+			}
+
+			if(!m_quiet_mode)
+			{
+				int total = p_context.getResultList().size();
+				Map<ResultStatus, Integer> counts = new HashMap<ResultStatus, Integer>();
+				for(Result result: p_context.getResultList())
+				{
+					if(counts.containsKey(result.getStatus()))
+					{
+						counts.put(result.getStatus(), counts.get(result.getStatus()) + 1);
+					} else
+					{
+						counts.put(result.getStatus(), 1);
+					}
+				}
+
+				System.out.println("----------------------------------------------------------------------------");
+				for(ResultStatus status : counts.keySet())
+				{
+					System.out.printf("%s: %d%n", status.toString(), counts.get(status));
+				}
+				System.out.printf("Total: %d%n", total);
+			}
 		}
 	}
 }
