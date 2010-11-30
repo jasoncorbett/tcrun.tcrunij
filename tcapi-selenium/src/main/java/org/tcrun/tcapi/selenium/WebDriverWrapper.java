@@ -342,4 +342,19 @@ public interface WebDriverWrapper
 	 * @param name
 	 */
 	public void takeScreenShot(String name);
+        
+        /**
+	 * Saves the current page HTML source to a file, naming the file automatically.  This will be placed in the testcase's log directory.
+	 */
+	public void saveHTMLSource();
+
+	/**
+	 * Saves the current page HTML source to a file, naming file with the provided name.  If ".html" is not at the end of the filename it will be
+	 * added.  Also a number may be attached to help keep order.
+	 *
+	 * @param name
+	 */
+	public void saveHTMLSource(String name);
+
+
 }

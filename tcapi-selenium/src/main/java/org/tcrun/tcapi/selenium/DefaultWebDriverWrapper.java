@@ -48,6 +48,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	private int timeout;
 	private static XLogger logger = XLoggerFactory.getXLogger("test." + DefaultWebDriverWrapper.class.getName());
 	private int screenshot_counter;
+        private int htmlsource_counter;
 
 	public static WebDriver getDriverFromBrowserName(String name, String remote) throws MalformedURLException
 	{
@@ -118,6 +119,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	{
 		this.driver = driver;
 		screenshot_counter = 0;
+                htmlsource_counter = 0;
 	}
 
 	public DefaultWebDriverWrapper(String name)
@@ -625,6 +627,36 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		{
 			logger.warn("Requested screenshot by name '{}', but browser doesn't support taking screenshots.", name);
 		}
+
+	}
+
+        @Override
+	public void saveHTMLSource()
+	{
+		saveHTMLSource("pagesource");
+	}
+
+	@Override
+	public void saveHTMLSource(String name)
+	{
+                if (name == null)
+                {
+                        name = "pagesource";
+                }
+                if (!name.toLowerCase().endsWith(".html"))
+                {
+                        name = name + ".html";
+                }
+                name = ++htmlsource_counter + "-" + name;
+                File src_file = DebugSupport.getOutputFile(name);
+                logger.debug("Saving current page HTML source, output file will be {}", src_file.getAbsolutePath());
+                try
+                {
+                        FileUtils.writeStringToFile(src_file, getPageSource());
+                } catch (IOException ex)
+                {
+                        logger.error("Unable to save the current page HTML source to the file '" + src_file.getAbsolutePath() + "': ", ex);
+                }
 
 	}
 }
