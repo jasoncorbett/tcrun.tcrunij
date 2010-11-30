@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.dom4j.Document;
 import org.dom4j.DocumentFactory;
@@ -12,6 +13,7 @@ import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 import org.slf4j.MDC;
+import org.tcrun.api.ImplementsPlugin;
 import org.tcrun.api.Result;
 import org.tcrun.api.TCRunContext;
 import org.tcrun.api.plugins.BeforeTestListRunnerPlugin;
@@ -26,6 +28,7 @@ import org.tcrun.api.plugins.TestListRunnerPlugin;
  *
  * @author jcorbett
  */
+@ImplementsPlugin({CommandLineOptionPlugin.class, CommandLineConsumerPlugin.class, BeforeTestListRunnerPlugin.class, ResultWatcherPlugin.class, ShutdownTaskPlugin.class})
 public class JUnitXMLReportPlugin implements CommandLineOptionPlugin, CommandLineConsumerPlugin, BeforeTestListRunnerPlugin, ResultWatcherPlugin, ShutdownTaskPlugin
 {
 
@@ -41,13 +44,16 @@ public class JUnitXMLReportPlugin implements CommandLineOptionPlugin, CommandLin
 	@Override
 	public void addToCommandLineParser(Options options)
 	{
-		//throw new UnsupportedOperationException("Not supported yet.");
+		options.addOption(OptionBuilder.hasArg(false)
+		                  .withLongOpt("junit-report")
+						  .create());
 	}
 
 	@Override
 	public void consumeCommandLineOptions(CommandLine options)
 	{
-		//throw new UnsupportedOperationException("Not supported yet.");
+		if(options.hasOption("junit-report"))
+			generate = true;
 	}
 
 	@Override
