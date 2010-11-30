@@ -249,10 +249,17 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		return driver.getTitle();
 	}
 
-	@Override
+        @Override
 	public String getPageSource()
 	{
-		logger.debug("Getting current page html source.");
+                return getPageSource(true);
+        }
+
+	@Override
+	public String getPageSource(boolean should_log)
+	{
+                if (should_log == true)
+		        logger.debug("Getting current page html source.");
 		return driver.getPageSource();
 	}
 
@@ -587,11 +594,17 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		closeWindow();
 	}
 
-	@Override
+        @Override
 	public boolean isVisible(PageElement locator)
+        {
+                return isVisible(locator, true);
+        }
+	@Override
+	public boolean isVisible(PageElement locator, boolean should_log)
 	{
 		boolean elementVisible = true;
-		logger.debug("Checking visibility on element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
+                if (should_log == true)
+		        logger.debug("Checking visibility on element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
 		if (exists(locator) == true)
 		{
 			WebElement wdelement = getElement(locator, timeout);

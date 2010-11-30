@@ -178,9 +178,17 @@ public interface WebDriverWrapper
 	 */
 	public String getPageSource();
 
+        /**
+	 * Get the html source of the current page in the browser.
+	 *
+	 * @return The html source of the current page displayed in the browser.
+	 */
+	public String getPageSource(boolean should_log);
+
 	/**
 	 * Get the url of the current page in the browser.
 	 *
+         * @param should_log Whether we should log what we are doing.
 	 * @return The url of the current page displayed in the browser.
 	 */
 	public String getPageUrl();
@@ -354,9 +362,19 @@ public interface WebDriverWrapper
 
 	/**
 	 * Checks whether the specified page element is visible.  This is a non-waiting function, the page element must currently exist.
-	 * @param locator The page element to check visibility on
+	 * We log what element we are checking the visibility for.
+         * 
+         * @param locator The page element to check visibility on
 	 */
 	public boolean isVisible(PageElement locator);
+
+        /**
+	 * Checks whether the specified page element is visible.  This is a non-waiting function, the page element must currently exist.
+         *
+         * @param should_log Whether we should log what page element we are checking the visibility for.
+         * @param locator The page element to check visibility on
+	 */
+	public boolean isVisible(PageElement locator, boolean should_log);
 
 	/**
 	 * Take a screenshot, naming it automatically.  This will be placed in the testcase's log directory.
