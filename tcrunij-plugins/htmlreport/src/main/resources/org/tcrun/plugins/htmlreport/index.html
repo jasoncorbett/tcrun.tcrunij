@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+	<head>
+		<title>Test Case Results</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<link type="text/css" rel="stylesheet" href="results.css" />
+		<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+        <script type="text/javascript">
+			// Load the Visualization API and the piechart package.
+			google.load('visualization', '1', {'packages':['corechart']});
+			google.load("jquery", "1.4.3");
+			google.setOnLoadCallback(function() {
+				$(document).ready(function() {
+					$.getJSON("results.json", function(results) {
+						document.title = results['title']
+						$("#report-title").text(results['title'])
+						$("#runtime-info-detail").append("<ul></ul>")
+						$("#runtime-info-detail ul").append("<li><span class=\"runtime-info-name\">Test Plan: </span>" + results["plan"] + "</li>")
+						$("#runtime-info-detail ul").append("<li><span class=\"runtime-info-name\">Environment: </span>" + results["environment"] + "</li>")
+						$("#runtime-info-detail").append("<table id=\"count-table\"></table>")
+						var counts = {}
+						for(var i in results['results'])
+						{
+							var result = results['results'][i]
+							$("#results-list").append("<li class=\"" + result['result'] + "-block\">" +
+								"<a href=\"#\" id=\"result-" + ((i*1)+1) + "\" class=\"result-name\">" +
+								result["name"] + "</a><div class=\"" + result['result'] +
+								"\">" + result['result'] + "<image src=\"images/" +
+								result['result'] + ".png\" class=\"result-image\" /></div>" +
+								"<div class=\"clear\"></div>" +
+								"<pre id=\"result-" + ((i*1)+1) + "-log-file\" class=\"log-file\">" +
+								"</pre><hr /></li>")
+							$("pre#result-" + ((i*1)+1) + "-log-file").data("log-file", result['log']).data("initialized", "false").hide()
+							if(counts[result['result']])
+							{
+								counts[result['result']]++
+							} else
+							{
+								counts[result['result']] = 1
+							}
+						}
+						var data = new google.visualization.DataTable();
+						data.addColumn('string', 'Result')
+						data.addColumn('number', 'Number of Results')
+						if(!(counts['PASS']))
+						{
+							counts['PASS'] = 0
+						}
+						data.addRow(['Pass', counts['PASS']])
+						$("#count-table").append("<tr><td><span class=\"runtime-info-name\">Pass: </span></td><td>" + counts["PASS"] + "</td></tr>")
+						if(!(counts['FAIL']))
+						{
+							counts['FAIL'] = 0
+						}
+						data.addRow(['Fail', counts['FAIL']])
+						$("#count-table").append("<tr class=\"even\"><td><span class=\"runtime-info-name\">Fail: </span></td><td>" + counts["FAIL"] + "</td></tr>")
+						if(!(counts['BROKEN_TEST']))
+						{
+							counts['BROKEN_TEST'] = 0
+						}
+						data.addRow(['Broken Test', counts['BROKEN_TEST']])
+						$("#count-table").append("<tr><td><span class=\"runtime-info-name\">Broken Test: </span></td><td>" + counts["BROKEN_TEST"] + "</td></tr>")
+						if(!(counts['NOT_TESTED']))
+						{
+							counts['NOT_TESTED'] = 0
+						}
+						data.addRow(['Not Tested', counts['NOT_TESTED']])
+						$("#count-table").append("<tr class=\"even\"><td><span class=\"runtime-info-name\">Not Tested: </span></td><td>" + counts["NOT_TESTED"] + "</td></tr>")
+						if(!(counts['SKIPPED']))
+						{
+							counts['SKIPPED'] = 0
+						}
+						data.addRow(['Skipped', counts['SKIPPED']])
+						$("#count-table").append("<tr><td><span class=\"runtime-info-name\">Skipped: </span></td><td>" + counts["SKIPPED"] + "</td></tr>")
+						$("#count-table").append("<tr class=\"table-totals\"><td><span class=\"runtime-info-name\">Total Tests: </span></td><td>" + results['results'].length + "</td></tr>")
+
+						var chart = new google.visualization.PieChart(document.getElementById('results-chart'))
+						chart.draw(data, {width: 600, height: 300, is3D: true, title: results['title'], colors: ['green', 'red', '#ffa500', '#9a9a9a', '#0000aa']});
+						$(".result-name").click(function () {
+							var logfile = "#" + this.id + "-log-file"
+							if($(logfile).is(":visible"))
+							{
+								$(logfile).hide(500)
+							} else
+							{
+								if($(logfile).data("initialized") == "false")
+								{
+									$.ajax({"url": $(logfile).data("log-file"),
+										"dataType": 'text',
+										"context": $(logfile),
+										"success": function(data) {
+											data = data.replace(/\n/g,"\r\n")
+											$(this).text(data)
+											$(this).data("initialized", "true")
+										}})
+								}
+								$("#" + this.id + "-log-file").show(500)
+							}
+							return false;
+						})
+						$(".results-filter-box").click(function() {
+							if($(this).is(":checked"))
+							{
+								$("li." + this.name + "-block").show(250)
+							} else
+							{
+								$("li." + this.name + "-block").hide(250)
+							}
+						})
+					})
+
+				})
+
+		})
+        </script>
+	</head>
+	<body>
+		<div id="header">
+			<h1 id="report-title">Test Case Results</h1>
+		</div>
+		<div id="main">
+			<div id="results-chart">
+			</div>
+			<div id="runtime-info">
+				<h4 id="runtime-info-title">Runtime Info</h4>
+				<div id="runtime-info-detail"></div>
+			</div>
+			<div id="results-detail">
+				<h3 id="individual-results-title">Individual Results</h3>
+				<ul id="results-list">
+					<li id="results-filter">
+						<input type="checkbox" name="PASS" class="results-filter-box" checked="true" /><label for="PASS" class="results-filter-label"><img src="images/PASS.png" class="result-image" alt="Pass" /> &nbsp;Show Pass Results</label>
+						<input type="checkbox" name="FAIL" class="results-filter-box" checked="true" /><label for="FAIL" class="results-filter-label"><img src="images/FAIL.png" class="result-image" alt="Fail" /> &nbsp;Show Fail Results</label>
+						<input type="checkbox" name="BROKEN_TEST" class="results-filter-box" checked="true" /><label for="BROKEN_TEST" class="results-filter-label"><img src="images/BROKEN_TEST.png" class="result-image" alt="Broken Test" /> &nbsp;Show Broken Test Results</label>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</body>
+</html>
