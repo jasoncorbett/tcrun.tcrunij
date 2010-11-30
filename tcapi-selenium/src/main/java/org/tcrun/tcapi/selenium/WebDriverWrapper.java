@@ -163,6 +163,14 @@ public interface WebDriverWrapper
 	 */
 	public String getPageTitle();
 
+        /**
+	 * Get the title of the current page in the browser.
+	 *
+         * @param should_log Whether we should log what we are doing.
+	 * @return The title of the current page displayed in the browser.
+	 */
+	public String getPageTitle(boolean should_log);
+
 	/**
 	 * Get the html source of the current page in the browser.
 	 *
@@ -176,6 +184,15 @@ public interface WebDriverWrapper
 	 * @return The url of the current page displayed in the browser.
 	 */
 	public String getPageUrl();
+
+        /**
+	 * Get the url of the current page in the browser.
+	 *
+         * @param  should_log Whether we should log what we are doing.
+         *
+	 * @return The url of the current page displayed in the browser.
+	 */
+	public String getPageUrl(boolean should_log);
 
 	/**
 	 * Tell the browser to go to a specific URL.
@@ -250,12 +267,23 @@ public interface WebDriverWrapper
 
 	/**
 	 * Check for the existence of a web page element.  This is a quick check, no waiting is performed.
+         * We log what what page element we are checking for.
 	 *
 	 * @param element The PageElement that describes where to find the element.
 	 *
 	 * @return true if the element exists and is accessible, false otherwise
 	 */
 	public boolean exists(PageElement element);
+
+        /**
+	 * Check for the existence of a web page element.  This is a quick check, no waiting is performed.
+	 *
+	 * @param element The PageElement that describes where to find the element.
+         * @param should_log Whether we should log what page element we are checking for.
+	 *
+	 * @return true if the element exists and is accessible, false otherwise
+	 */
+	public boolean exists(PageElement element, boolean should_log);
 
 	/**
 	 * Check for the existence of a SelfAwarePage.  This is a non-waiting check, unless the page provided waits for

@@ -235,10 +235,17 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		return getElement(locator, timeout).getAttribute(attribute);
 	}
 
-	@Override
+        @Override
 	public String getPageTitle()
 	{
-		logger.debug("Getting current page title.");
+                return getPageTitle(true);
+        }
+
+	@Override
+	public String getPageTitle(boolean should_log)
+	{
+                if (should_log == true)
+		        logger.debug("Getting current page title.");
 		return driver.getTitle();
 	}
 
@@ -249,10 +256,17 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		return driver.getPageSource();
 	}
 
-	@Override
-	public String getPageUrl()
+        @Override
+        public String getPageUrl()
 	{
-		logger.debug("Getting current page url.");
+                return getPageUrl(true);
+        }
+
+	@Override
+	public String getPageUrl(boolean should_log)
+	{
+                if (should_log == true)
+		        logger.debug("Getting current page url.");
 		return driver.getCurrentUrl();
 	}
 
@@ -460,7 +474,14 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	@Override
 	public boolean exists(PageElement element)
 	{
-		logger.debug("Checking for existence of element '{}'.", element.getName());
+		return exists(element, true);
+	}
+
+        @Override
+	public boolean exists(PageElement element, boolean should_log)
+	{
+                if (should_log == true)
+		        logger.debug("Checking for existence of element '{}'.", element.getName());
 		return element.exists(driver, 0);
 	}
 
