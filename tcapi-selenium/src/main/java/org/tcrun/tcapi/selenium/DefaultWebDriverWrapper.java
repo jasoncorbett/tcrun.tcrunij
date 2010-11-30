@@ -146,7 +146,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 			});
 			logger.error("Current page URL: {}", driver.getCurrentUrl());
 			logger.error("Current page title: {}", driver.getTitle());
-			logger.error("Current page source: {}", driver.getPageSource());
+                        saveHTMLSource();
 			throw ex;
 		}
 		return element;
@@ -312,7 +312,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 				logger.error("Waited for page '{}' for {} seconds, but still is not here.", page.getName(), timeout);
 				logger.error("Current page URL: {}", driver.getCurrentUrl());
 				logger.error("Current page title: {}", driver.getTitle());
-				logger.error("Current page source: {}", driver.getPageSource());
+                                saveHTMLSource();
 				throw new NoSuchElementException("Couldn't find page '" + page.getName() + "' after " + timeout + " seconds.");
 			}
 			logger.info("Found page '{}' after {} seconds.", page.getName(), ((new Date()).getTime() - start_time.getTime()) / 1000);
