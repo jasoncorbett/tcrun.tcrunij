@@ -23,8 +23,8 @@ import org.tcrun.tcapi.TestResult;
  */
 public class TCApiRunnableTest implements RunnableTest, TestRunner
 {
-	static private XLogger s_logger = XLoggerFactory.getXLogger(TCApiRunnableTest.class);
 
+	static private XLogger s_logger = XLoggerFactory.getXLogger(TCApiRunnableTest.class);
 	private List<TestCaseAttribute> m_attributes;
 	private Class<?> test_class;
 	private SimpleTestCase test_instance;
@@ -32,14 +32,14 @@ public class TCApiRunnableTest implements RunnableTest, TestRunner
 
 	public TCApiRunnableTest(Class<?> p_test, TCRunContext p_context)
 	{
-				// Error checking, make sure we have a valid test case class to work with.
-		if(p_test == null)
+		// Error checking, make sure we have a valid test case class to work with.
+		if (p_test == null)
 		{
 			s_logger.error("Constructor called with a null test case class.");
 			throw new IllegalArgumentException(TCApiRunnableTest.class.getCanonicalName() + "'s constructor called with a null test case class.");
 		}
 
-		if(!SimpleTestCase.class.isAssignableFrom(p_test))
+		if (!SimpleTestCase.class.isAssignableFrom(p_test))
 		{
 			s_logger.error("Constructor called with test class '{}' which does not implement '{}'.", p_test.getCanonicalName(), SimpleTestCase.class.getCanonicalName());
 			throw new IllegalArgumentException("Test Class " + p_test.getCanonicalName() + " does not implement " + SimpleTestCase.class.getCanonicalName() + ".");
@@ -56,7 +56,7 @@ public class TCApiRunnableTest implements RunnableTest, TestRunner
 		s_logger.debug("Initializing attributes for test '{}' by going through AttributeProviderPlugins.", p_test.getCanonicalName());
 		List<AttributeProviderPlugin> attr_plugins = plugin_manager.getPluginsFor(AttributeProviderPlugin.class);
 		s_logger.debug("There are '{}' attribute provider plugins, looping through them all.", attr_plugins.size());
-		for(AttributeProviderPlugin plugin: attr_plugins)
+		for (AttributeProviderPlugin plugin : attr_plugins)
 		{
 			s_logger.debug("Calling getAttributesFor() on plugin class '{}'.", plugin.getClass().getCanonicalName());
 			m_attributes.addAll(plugin.getAttributesFor(p_context, p_test, p_test.getCanonicalName()));
@@ -88,17 +88,17 @@ public class TCApiRunnableTest implements RunnableTest, TestRunner
 
 	public Object getTestInstance()
 	{
-		if(test_instance == null)
+		if (test_instance == null)
 		{
 			// create an instance the first time this is called, initialization on demand.
 			// it's important NOT to do this in the constructor, because the test class may not actually be used.
 			try
 			{
 				test_instance = (SimpleTestCase) test_class.newInstance();
-			} catch(InstantiationException ex)
+			} catch (InstantiationException ex)
 			{
 				s_logger.error("Was not able to create instance of test case class " + test_class.getCanonicalName(), ex.getMessage());
-			} catch(IllegalAccessException ex)
+			} catch (IllegalAccessException ex)
 			{
 				s_logger.error("Was not able to create instance of test case class " + test_class.getCanonicalName(), ex.getMessage());
 			}
@@ -120,7 +120,7 @@ public class TCApiRunnableTest implements RunnableTest, TestRunner
 	{
 		// make sure the instance has been created.
 		getTestInstance();
-		if(test_instance == null)
+		if (test_instance == null)
 		{
 			s_logger.error("Unable to run test '{}' because test instance was null.", getTestClass().getName());
 			return;
@@ -133,81 +133,73 @@ public class TCApiRunnableTest implements RunnableTest, TestRunner
 		{
 			s_logger.info("Calling tcSetup on test '{}'.", getTestClass().getName());
 			test_instance.tcSetup(test_configuration);
-		} catch(ResultBasedTestError e)
+		} catch (ResultBasedTestError e)
 		{
 			should_continue = test_instance.handleException(e);
 			override = e.getResult();
 			reason = e.getMessage();
-		} catch(RuntimeException e)
+		} catch (RuntimeException e)
 		{
 			// No logging by default, the test's handleException should take care of logging.
 			should_continue = test_instance.handleException(e);
 			reason = e.getMessage();
-		} catch(Exception e)
+		} catch (Exception e)
 		{
 			// No logging by default, the test's handleException should take care of logging.
 			should_continue = test_instance.handleException(e);
 			reason = e.getMessage();
 		}
 
-		if(!should_continue)
-		{
+		if (!should_continue)
 			s_logger.info("Because of an error in tcSetup of test '{}', doTest will not be called (handleException returned false).", getTestClass().getName());
-			if(override != null)
-			{
-				context.addResult(new SimpleTestCaseResult(this, reason, override));
-			} else
-			{
-				context.addResult(new SimpleTestCaseResult(this, reason, TestResult.BROKEN_TEST));
-			}
-			return;
-		}
 
 		TestResult result = TestResult.BROKEN_TEST;
 
-		try
+		if (should_continue)
 		{
-			s_logger.info("Calling doTest on test '{}'.", getTestClass().getName());
-			result = test_instance.doTest();
-			if (result == null)
+			try
 			{
-				s_logger.warn("Test '{}' returned null test result, using BROKEN_TEST.", test_class.getName());
-				result = TestResult.BROKEN_TEST;
-				reason = "Test returned null result from doTest method.";
-			} else
+				s_logger.info("Calling doTest on test '{}'.", getTestClass().getName());
+				result = test_instance.doTest();
+				if (result == null)
+				{
+					s_logger.warn("Test '{}' returned null test result, using BROKEN_TEST.", test_class.getName());
+					result = TestResult.BROKEN_TEST;
+					reason = "Test returned null result from doTest method.";
+				} else
+				{
+					reason = "Test returned " + result.toString() + " from doTest method.";
+				}
+			} catch (ResultBasedTestError e)
 			{
-				reason = "Test returned " + result.toString() + " from doTest method.";
+				reason = e.getMessage();
+				test_instance.handleException(e);
+				override = e.getResult();
+			} catch (RuntimeException e)
+			{
+				reason = "Exception " + e.getClass().getName() + " was thrown during doTest: " + e.getMessage();
+				test_instance.handleException(e);
+			} catch (Exception e)
+			{
+				reason = "Exception " + e.getClass().getName() + " was thrown during doTest: " + e.getMessage();
+				test_instance.handleException(e);
 			}
-		} catch (ResultBasedTestError e)
-		{
-			reason = e.getMessage();
-			test_instance.handleException(e);
-			override = e.getResult();
-		} catch (RuntimeException e)
-		{
-			reason = "Exception " + e.getClass().getName() + " was thrown during doTest: " + e.getMessage();
-			test_instance.handleException(e);
-		} catch (Exception e)
-		{
-			reason = "Exception " + e.getClass().getName() + " was thrown during doTest: " + e.getMessage();
-			test_instance.handleException(e);
 		}
 
-		if(override != null)
+		if (override != null)
 			result = override;
 
 		s_logger.info("Test with id '{}' returned result '{}' for reason '{}'.", new Object[] {getTestId(), result.toString(), reason});
-
 
 		try
 		{
 			s_logger.info("Calling tcCleanup on test '{}'.", getTestClass().getName());
 			test_instance.tcCleanUp();
-		} catch(RuntimeException e)
+		} catch (RuntimeException e)
 		{
 			// No logging by default, the test's handleException should take care of logging.
 			should_continue = test_instance.handleException(e);
-		} catch(Exception e)
+		} catch (Exception e)
 		{
 			// No logging by default, the test's handleException should take care of logging.
 			should_continue = test_instance.handleException(e);
