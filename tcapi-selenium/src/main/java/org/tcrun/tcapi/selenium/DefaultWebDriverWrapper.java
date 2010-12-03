@@ -49,7 +49,8 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	private int timeout;
 	private static XLogger logger = XLoggerFactory.getXLogger("test." + DefaultWebDriverWrapper.class.getName());
 	private int screenshot_counter;
-    private int htmlsource_counter;
+        private int htmlsource_counter;
+        private static String original_browser_window_handle;
 
 	public static WebDriver getDriverFromCapabilities(Capabilities caps)
 	{
@@ -99,6 +100,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		this.driver = driver;
 		screenshot_counter = 0;
                 htmlsource_counter = 0;
+                original_browser_window_handle = getWindowHandle();
 	}
 
 	public DefaultWebDriverWrapper(Capabilities caps)
@@ -681,4 +683,15 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		driver.quit();
 		driver = getDriverFromCapabilities(driver_capabilities);
 	}
+
+        @Override
+        public void closeAllWindowsExceptOriginal()
+        {
+                for (String windowHandle : getWindowHandles())
+                {
+                        if (windowHandle != original_browser_window_handle)
+                            closeWindow(windowHandle);
+                }
+                switchToWindowByHandle(original_browser_window_handle);
+        }
 }
