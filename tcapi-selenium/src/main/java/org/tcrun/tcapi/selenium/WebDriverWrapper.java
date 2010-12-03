@@ -407,4 +407,9 @@ public interface WebDriverWrapper
 	 */
 	public void reopen();
 
+        /**
+	 * Close all of the browser windows except the original one.
+	 */
+        public void closeAllWindowsExceptOriginal();
+
 }
