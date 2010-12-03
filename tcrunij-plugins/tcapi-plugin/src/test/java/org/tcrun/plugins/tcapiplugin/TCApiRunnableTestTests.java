@@ -3,12 +3,9 @@ package org.tcrun.plugins.tcapiplugin;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.tcrun.api.Result;
@@ -17,7 +14,6 @@ import org.tcrun.api.TCRunContext;
 import org.tcrun.tcapi.AbstractSimpleTestCase;
 import org.tcrun.tcapi.NotTestedException;
 import org.tcrun.tcapi.ResultBasedTestError;
-import org.tcrun.tcapi.SimpleTestCase;
 import static org.junit.Assert.*;
 import org.tcrun.tcapi.TestCaseError;
 import org.tcrun.tcapi.TestResult;
@@ -46,6 +42,77 @@ public class TCApiRunnableTestTests
 		assertNotNull("Running the test should always provide a result.", context.getLastResult());
 		assertSame("Result should be a BrokenTest", ResultStatus.BROKEN_TEST, context.getLastResult().getStatus());
 		assertTrue("Cleanup SHOULD ALWAYS BE RUN!", ((TcapiMock)context.getLastResult().getTest().getTestRunner().getTestInstance()).ranCleanupMethod());
+	}
+
+	@Test
+	public void cleanupRunAfterTestThrowsException()
+	{
+		runner.setConfigurationValue(TcapiMock.TEST_THROW_EXCEPTION, "true");
+		runner.runTest(context);
+		assertNotNull("Running the test should always provide a result.", context.getLastResult());
+		assertSame("Result should be a BrokenTest", ResultStatus.BROKEN_TEST, context.getLastResult().getStatus());
+		assertTrue("Cleanup SHOULD ALWAYS BE RUN!", ((TcapiMock)context.getLastResult().getTest().getTestRunner().getTestInstance()).ranCleanupMethod());
+	}
+
+	@Test
+	public void testCalledWhenHandleExceptionReturnsTrue()
+	{
+		runner.setConfigurationValue(TcapiMock.SETUP_THROW_EXCEPTION, "true");
+		runner.setConfigurationValue(TcapiMock.HANDLE_EXCEPTION_RETURN_TRUE, "true");
+		runner.runTest(context);
+		assertNotNull("Running the test should always provide a result.", context.getLastResult());
+		assertSame("Result should be a Skipped", ResultStatus.SKIPPED, context.getLastResult().getStatus());
+		assertTrue("Test should be called when handle exception returns true.", ((TcapiMock)context.getLastResult().getTest().getTestRunner().getTestInstance()).ranTestMethod());
+		assertTrue("Cleanup SHOULD ALWAYS BE RUN!", ((TcapiMock)context.getLastResult().getTest().getTestRunner().getTestInstance()).ranCleanupMethod());
+	}
+
+	@Test
+	public void resultAddedForReturnValue()
+	{
+		runner.runTest(context);
+		assertNotNull("Running the test should always provide a result.", context.getLastResult());
+		assertSame("Result should be a Skipped Test", ResultStatus.SKIPPED, context.getLastResult().getStatus());
+	}
+
+	@Test
+	public void overrideResultExceptionThrownInSetup()
+	{
+		runner.setConfigurationValue(TcapiMock.SETUP_THROW_EXCEPTION, "true");
+		runner.setConfigurationValue(TcapiMock.EXCEPTION_TYPE, TcapiMock.EXCEPTION_PASS);
+		runner.runTest(context);
+		assertNotNull("Running the test should always provide a result.", context.getLastResult());
+		assertSame("Result should be a Pass (A Result based exception was thrown with a value of PASS).", ResultStatus.PASS, context.getLastResult().getStatus());
+	}
+
+	@Test
+	public void overrideResultExceptionThrownInTest()
+	{
+		runner.setConfigurationValue(TcapiMock.TEST_THROW_EXCEPTION, "true");
+		runner.setConfigurationValue(TcapiMock.EXCEPTION_TYPE, TcapiMock.EXCEPTION_FAIL);
+		runner.runTest(context);
+		assertNotNull("Running the test should always provide a result.", context.getLastResult());
+		assertSame("Result should be a Fail (A Result based exception was thrown with a value of FAIL).", ResultStatus.FAIL, context.getLastResult().getStatus());
+	}
+
+	@Test
+	public void notTestedExceptionCasesNotTestedResult()
+	{
+		runner.setConfigurationValue(TcapiMock.SETUP_THROW_EXCEPTION, "true");
+		runner.setConfigurationValue(TcapiMock.EXCEPTION_TYPE, TcapiMock.EXCEPTION_NOT_TESTED);
+		runner.runTest(context);
+		assertNotNull("Running the test should always provide a result.", context.getLastResult());
+		assertSame("Result should be a Not Tested (A Result based exception was thrown with a value of NOT_TESTED).", ResultStatus.NOT_TESTED, context.getLastResult().getStatus());
+	}
+
+	@Test
+	public void byDefaultTestNotCalledWhenHandleExceptionReturnsFalse()
+	{
+		runner.setConfigurationValue(TcapiMock.SETUP_THROW_EXCEPTION, "true");
+		runner.setConfigurationValue(TcapiMock.EXCEPTION_TYPE, TcapiMock.EXCEPTION_NOT_TESTED);
+		runner.runTest(context);
+		assertNotNull("Running the test should always provide a result.", context.getLastResult());
+		assertSame("Result should be a Not Tested (A Result based exception was thrown with a value of NOT_TESTED).", ResultStatus.NOT_TESTED, context.getLastResult().getStatus());
+		assertFalse("Test should not be called when handle exception returns false.", ((TcapiMock)context.getLastResult().getTest().getTestRunner().getTestInstance()).ranTestMethod());
 	}
 }
 
