@@ -45,88 +45,69 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 {
 
 	private WebDriver driver;
+	private Capabilities driver_capabilities;
 	private int timeout;
 	private static XLogger logger = XLoggerFactory.getXLogger("test." + DefaultWebDriverWrapper.class.getName());
 	private int screenshot_counter;
-        private int htmlsource_counter;
+    private int htmlsource_counter;
 
-	public static WebDriver getDriverFromBrowserName(String name, String remote) throws MalformedURLException
+	public static WebDriver getDriverFromCapabilities(Capabilities caps)
 	{
-		URL remoteUrl = new URL("http://" + remote + ":4444/wd/hub");
-		Capabilities caps = null;
-		if (name.equalsIgnoreCase("ff")
-		|| name.equalsIgnoreCase("firefox"))
+		if(caps.getCapability(RemoteDriverWithScreenshots.REMOTE_URL) == null)
 		{
-			caps = DesiredCapabilities.firefox();
-		}
-
-		if (name.equalsIgnoreCase("headless"))
+			if(caps.getBrowserName().equals(DesiredCapabilities.htmlUnit().getBrowserName()))
+			{
+				HtmlUnitDriver driver = new HtmlUnitDriver(BrowserVersion.FIREFOX_3_6);
+				driver.setJavascriptEnabled(true);
+				return driver;
+			} else if(caps.getBrowserName().equals(DesiredCapabilities.firefox().getBrowserName()))
+			{
+				if(caps.getPlatform() == Platform.WINDOWS)
+				{
+					FirefoxProfile profile = new FirefoxProfile();
+					profile.setPreference("general.useragent.override", "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2.10) Gecko/20100914 Firefox/3.6.10 (.NET CLR 2.0.40607)");
+					return new FirefoxDriver(profile);
+				} else
+				{
+					return new FirefoxDriver();
+				}
+			} else if(caps.getBrowserName().equals(DesiredCapabilities.internetExplorer().getBrowserName()))
+			{
+				return new InternetExplorerDriver();
+			} else if(caps.getBrowserName().equals(DesiredCapabilities.chrome().getBrowserName()))
+			{
+				return new ChromeDriver();
+			} else
+			{
+				return new FirefoxDriver();
+			}
+		} else
 		{
-			caps = DesiredCapabilities.htmlUnit();
+			try
+			{
+				return new RemoteDriverWithScreenshots(caps);
+			} catch (MalformedURLException ex)
+			{
+				logger.error("Invalid URL for remote webdriver '" + caps.getCapability(RemoteDriverWithScreenshots.REMOTE_URL) + "': ", ex);
+				return null;
+			}
 		}
-
-		if (name.equalsIgnoreCase("ie")
-		|| name.equalsIgnoreCase("internetExplorer"))
-		{
-			caps = DesiredCapabilities.internetExplorer();
-		}
-
-		if (name.equalsIgnoreCase("chrome"))
-		{
-			caps = DesiredCapabilities.chrome();
-		}
-
-		return new RemoteDriverWithScreenshots(remoteUrl, caps);
 	}
 
-	public static WebDriver getDriverFromBrowserName(String name)
-	{
-		if (name.equalsIgnoreCase("ff")
-		|| name.equalsIgnoreCase("firefox"))
-		{
-			return new FirefoxDriver();
-		}
-
-		if (name.equalsIgnoreCase("ffwin"))
-		{
-			FirefoxProfile profile = new FirefoxProfile();
-			profile.setPreference("general.useragent.override", "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2.10) Gecko/20100914 Firefox/3.6.10 (.NET CLR 2.0.40607)");
-			return new FirefoxDriver(profile);
-		}
-
-		if (name.equalsIgnoreCase("headless"))
-		{
-			HtmlUnitDriver driver = new HtmlUnitDriver(BrowserVersion.FIREFOX_3);
-			driver.setJavascriptEnabled(true);
-			return driver;
-		}
-
-		if (name.equalsIgnoreCase("ie")
-		|| name.equalsIgnoreCase("InternetExplorer"))
-		{
-			return new InternetExplorerDriver();
-		}
-
-		if (name.equalsIgnoreCase("Chrome"))
-		{
-			return new ChromeDriver();
-		}
-
-		throw new IllegalArgumentException("Browser driver with name '" + name + "' not supported yet.");
-	}
-
-	public DefaultWebDriverWrapper(WebDriver driver)
+	protected DefaultWebDriverWrapper(WebDriver driver)
 	{
 		this.driver = driver;
 		screenshot_counter = 0;
                 htmlsource_counter = 0;
 	}
 
-	public DefaultWebDriverWrapper(String name)
+	public DefaultWebDriverWrapper(Capabilities caps)
 	{
-		this(DefaultWebDriverWrapper.getDriverFromBrowserName(name));
+		this(getDriverFromCapabilities(caps));
+		driver_capabilities = caps;
 	}
 
+	@Override
 	public void setDefaultTimeout(int timeout)
 	{
 		this.timeout = timeout;
@@ -692,5 +673,13 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
                         logger.error("Unable to save the current page HTML source to the file '" + src_file.getAbsolutePath() + "': ", ex);
                 }
 
+	}
+
+	@Override
+	public void reopen()
+	{
+		driver.close();
+		driver.quit();
+		driver = getDriverFromCapabilities(driver_capabilities);
 	}
 }

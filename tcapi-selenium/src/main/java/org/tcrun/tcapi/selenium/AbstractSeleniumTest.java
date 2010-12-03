@@ -13,6 +13,19 @@ public abstract class AbstractSeleniumTest extends AbstractSimpleTestCase
 
     protected WebDriverWrapper browser;
 
+	private void setBrowserObject() throws Exception
+	{
+        if (tcinfo.containsKey("remote"))
+        {
+			String remoteUrl = "http://" + configValue("remote") + ":4444/wd/hub";
+            browser = new DefaultWebDriverWrapper(CapabilitiesFactory.getCapabilitiesFor(configValue("browser", "headless"), remoteUrl));
+        } else
+        {
+            browser = new DefaultWebDriverWrapper(CapabilitiesFactory.getCapabilitiesFor(configValue("browser", "headless")));
+        }
+        browser.setDefaultTimeout(Integer.parseInt(configValue("defaults.timeout", "30")));
+	}
+
     @Override
     public void frameworkSetup() throws Exception
     {
@@ -21,14 +34,7 @@ public abstract class AbstractSeleniumTest extends AbstractSimpleTestCase
         {
             if (PersistentBrowserPlugin.persistentBrowser == null)
             {
-                if (tcinfo.containsKey("remote"))
-                {
-                    browser = new DefaultWebDriverWrapper(DefaultWebDriverWrapper.getDriverFromBrowserName(configValue("browser", "headless"), configValue("remote")));
-                } else
-                {
-                    browser = new DefaultWebDriverWrapper(configValue("browser", "headless"));
-                }
-                browser.setDefaultTimeout(30);
+				setBrowserObject();
                 PersistentBrowserPlugin.persistentBrowser = browser;
             } else
             {
@@ -36,14 +42,7 @@ public abstract class AbstractSeleniumTest extends AbstractSimpleTestCase
             }
         } else
         {
-            if (tcinfo.containsKey("remote"))
-            {
-                browser = new DefaultWebDriverWrapper(DefaultWebDriverWrapper.getDriverFromBrowserName(configValue("browser", "headless"), configValue("remote")));
-            } else
-            {
-                browser = new DefaultWebDriverWrapper(configValue("browser", "headless"));
-            }
-            browser.setDefaultTimeout(30);
+			setBrowserObject();
         }
     }
 
