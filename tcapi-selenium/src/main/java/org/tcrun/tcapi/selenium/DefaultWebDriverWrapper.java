@@ -678,7 +678,6 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	@Override
 	public void reopen()
 	{
-		driver.close();
 		driver.quit();
 		driver = getDriverFromCapabilities(driver_capabilities);
 	}
