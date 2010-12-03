@@ -402,5 +402,9 @@ public interface WebDriverWrapper
 	 */
 	public void saveHTMLSource(String name);
 
+	/**
+	 * Reopen a new browser with the same configuration as the current one.
+	 */
+	public void reopen();
 
 }
