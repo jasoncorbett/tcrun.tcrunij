@@ -689,6 +689,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	{
 		driver.quit();
 		driver = getDriverFromCapabilities(driver_capabilities);
+                original_browser_window_handle = getWindowHandle();
 	}
 
         @Override
@@ -697,7 +698,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
                 logger.info("Closing all browser windows except: " + original_browser_window_handle);
                 for (String windowHandle : getWindowHandles())
                 {
-                        if (windowHandle != original_browser_window_handle)
+                        if (windowHandle.equals(original_browser_window_handle) == false)
                             closeWindow(windowHandle);
                 }
                 switchToWindowByHandle(original_browser_window_handle);
