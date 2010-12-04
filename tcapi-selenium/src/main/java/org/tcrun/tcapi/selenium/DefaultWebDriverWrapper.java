@@ -533,24 +533,31 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		Calendar endTime = Calendar.getInstance();
 		endTime.add(Calendar.SECOND, timeout);
 		String switchToHandle = "";
-		String defaultHandle = getWindowHandle();
 		logger.debug("Looking for the window with the URL containing '{}'.", windowURL);
 		while (true)
 		{
 			if (Calendar.getInstance().after(endTime))
 			{
 				logger.error("Unable to find window with URL containing '{}'.", windowURL);
-				logger.error("Switching back to the default window");
-				switchToWindowByHandle(defaultHandle);
+				logger.error("Switching back to the original window: " + original_browser_window_handle);
+				switchToWindowByHandle(original_browser_window_handle);
 				throw new NoSuchWindowException("Timed out waiting for a known page");
 			}
 			for (String possibleHandle : getWindowHandles())
 			{
 				switchToWindowByHandle(possibleHandle);
-				if (getPageUrl().contains(windowURL) == true)
+                                
+				if (getPageUrl(false).toLowerCase().contains(windowURL.toLowerCase()) == true)
 				{
 					switchToHandle = possibleHandle;
-				}
+				}  else
+                                {
+                                        try
+                                        {
+                                                java.lang.Thread.sleep(1000);
+                                        }
+                                        catch (Exception e) {}
+                                }
 			}
 			if (switchToHandle.isEmpty() == false)
 			{
@@ -687,6 +694,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
         @Override
         public void closeAllWindowsExceptOriginal()
         {
+                logger.info("Closing all browser windows except: " + original_browser_window_handle);
                 for (String windowHandle : getWindowHandles())
                 {
                         if (windowHandle != original_browser_window_handle)
