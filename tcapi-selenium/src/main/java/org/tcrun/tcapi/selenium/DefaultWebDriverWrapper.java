@@ -50,7 +50,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	private static XLogger logger = XLoggerFactory.getXLogger("test." + DefaultWebDriverWrapper.class.getName());
 	private int screenshot_counter;
         private int htmlsource_counter;
-        private static String original_browser_window_handle "";
+        private static String original_browser_window_handle = "";
 
 	public static WebDriver getDriverFromCapabilities(Capabilities caps)
 	{
