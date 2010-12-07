@@ -690,7 +690,6 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	{
 		driver.quit();
 		driver = getDriverFromCapabilities(driver_capabilities);
-                original_browser_window_handle = getWindowHandle();
 	}
 
         @Override
