@@ -50,7 +50,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	private static XLogger logger = XLoggerFactory.getXLogger("test." + DefaultWebDriverWrapper.class.getName());
 	private int screenshot_counter;
         private int htmlsource_counter;
-        private static String original_browser_window_handle;
+        private static String original_browser_window_handle "";
 
 	public static WebDriver getDriverFromCapabilities(Capabilities caps)
 	{
@@ -99,8 +99,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	{
 		this.driver = driver;
 		screenshot_counter = 0;
-                htmlsource_counter = 0;
-                original_browser_window_handle = getWindowHandle();
+                htmlsource_counter = 0;  
 	}
 
 	public DefaultWebDriverWrapper(Capabilities caps)
@@ -505,19 +504,21 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	{
 		logger.debug("Getting current browser window handle");
 		return driver.getWindowHandle();
-	}
+        }
 
 	@Override
 	public Set<String> getWindowHandles()
 	{
 		logger.debug("Getting all browser window handles");
 		return driver.getWindowHandles();
-	}
+        }
 
 	@Override
 	public void switchToWindowByHandle(String windowHandle)
 	{
-		logger.debug("Switching to the window with handle '{}'.", windowHandle);
+                logger.debug("Switching to the window with handle '{}'.", windowHandle);
+                if (original_browser_window_handle.equals("") == true)
+                        original_browser_window_handle = getWindowHandle();
 		driver.switchTo().window(windowHandle);
 	}
 
