@@ -598,7 +598,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
         }
         else
         {
-            logger.info("original_browser_window_handle is not set, no other windows to close");
+             logger.info("original_browser_window_handle is not set, no other windows to close");
         }
 
     }
