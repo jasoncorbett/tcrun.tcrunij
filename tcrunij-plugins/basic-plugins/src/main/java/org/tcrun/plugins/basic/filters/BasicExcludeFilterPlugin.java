@@ -17,6 +17,8 @@ public class BasicExcludeFilterPlugin implements FilterPlugin
 	{
 		if(p_filterString.startsWith("excludeid:"))
 			return new ExcludeIdFilter(p_filterString);
+		else if(p_filterString.startsWith("excludepkg:"))
+			return new ExcludePackageFilter(p_filterString);
 		else
 			return null;
 	}
