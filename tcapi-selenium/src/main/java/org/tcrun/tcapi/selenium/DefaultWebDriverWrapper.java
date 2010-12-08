@@ -129,6 +129,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 			logger.error("Current page URL: {}", driver.getCurrentUrl());
 			logger.error("Current page title: {}", driver.getTitle());
                         saveHTMLSource();
+                        takeScreenShot();
 			throw ex;
 		}
 		return element;
@@ -144,7 +145,8 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	public void click(PageElement locator, int timeout)
 	{
 		logger.debug("Clicking on element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
-		getElement(locator, timeout).click();
+		//getElement(locator, timeout).click();
+                getElement(locator, timeout).sendKeys("\n");
 	}
 
 	@Override
@@ -316,6 +318,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 				logger.error("Current page URL: {}", driver.getCurrentUrl());
 				logger.error("Current page title: {}", driver.getTitle());
                                 saveHTMLSource();
+                                takeScreenShot();
 				throw new NoSuchElementException("Couldn't find page '" + page.getName() + "' after " + timeout + " seconds.");
 			}
 			logger.info("Found page '{}' after {} seconds.", page.getName(), ((new Date()).getTime() - start_time.getTime()) / 1000);

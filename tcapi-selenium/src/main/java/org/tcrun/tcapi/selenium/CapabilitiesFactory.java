@@ -46,7 +46,14 @@ public class CapabilitiesFactory
 		} else if(browserName.equalsIgnoreCase("chrome"))
 		{
 			return DesiredCapabilities.chrome();
-		} else if(browserName.equalsIgnoreCase("headless") ||
+		} else if(browserName.equalsIgnoreCase("chromewin") ||
+		          browserName.equalsIgnoreCase("chromeonwindows"))
+		{
+			DesiredCapabilities caps = DesiredCapabilities.chrome();
+			caps.setPlatform(Platform.WINDOWS);
+			return caps;
+		}
+                else if(browserName.equalsIgnoreCase("headless") ||
 		          browserName.equalsIgnoreCase("htmlunit"))
 		{
 			return DesiredCapabilities.htmlUnit();
