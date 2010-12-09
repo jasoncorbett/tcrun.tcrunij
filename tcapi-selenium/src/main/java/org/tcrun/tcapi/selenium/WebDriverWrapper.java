@@ -106,6 +106,36 @@ public interface WebDriverWrapper
 	 * @param attribute The name of the attribute to retrieve the value for.
 	 * @return The value of the attribute.
 	 */
+        public void setSelected(PageElement locator);
+
+	/**
+	 * Select an input of type checkbox, waiting a maximum of the default timeout for the element to exist.
+	 *
+	 * @param locator The page element instance that describes how to find the element to select.
+	 */
+        public void setSelected(PageElement locator, int timeout);
+
+	/**
+	 * Select an input of type checkbox, waiting a maximum of the default timeout for the element to exist.
+	 *
+	 * @param locator The page element instance that describes how to find the element to select.
+	 * @param timeout The maximum amount of time to wait for the element to exist in seconds.
+	 */
+        public boolean isSelected(PageElement locator);
+
+	/**
+	 * Check if an input of type checkbox is selected, waiting a maximum of the default timeout for the element to exist.
+	 *
+	 * @param locator The page element instance that describes how to find the element to check.
+	 */
+        public boolean isSelected(PageElement locator, int timeout);
+
+	/**
+	 * Check if an input of type checkbox is selected, waiting a maximum of the default timeout for the element to exist.
+	 *
+	 * @param locator The page element instance that describes how to find the element to check.
+	 * @param timeout The maximum amount of time to wait for the element to exist in seconds.
+	 */
 	public String getAttribute(PageElement locator, String attribute);
 
 	/**
