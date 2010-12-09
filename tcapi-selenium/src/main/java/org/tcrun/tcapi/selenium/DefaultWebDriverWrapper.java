@@ -123,8 +123,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
     @Override
     public void click(PageElement locator, int timeout) {
         logger.debug("Clicking on element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
-        //getElement(locator, timeout).click();
-        getElement(locator, timeout).sendKeys("\n");
+        getElement(locator, timeout).click();
     }
 
     @Override
@@ -173,6 +172,30 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
     public String getText(PageElement locator, int timeout) {
 
         return getElement(locator, timeout).getText();
+    }
+
+    @Override
+    public void setSelected(PageElement locator, int timeout) {
+        logger.debug("Setting selected element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
+        getElement(locator, timeout).setSelected();
+    }
+
+    @Override
+    public void setSelected(PageElement locator) {
+
+        setSelected(locator, timeout);
+    }
+
+    @Override
+    public boolean isSelected(PageElement locator, int timeout) {
+        logger.debug("Checking if is selected element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
+        return getElement(locator, timeout).isSelected();
+    }
+
+    @Override
+    public boolean isSelected(PageElement locator) {
+
+        return isSelected(locator, timeout);
     }
 
     @Override
