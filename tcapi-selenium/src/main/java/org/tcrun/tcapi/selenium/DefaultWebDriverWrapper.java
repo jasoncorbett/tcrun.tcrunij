@@ -91,6 +91,10 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
     public DefaultWebDriverWrapper(Capabilities caps) {
         this(getDriverFromCapabilities(caps));
         driver_capabilities = caps;
+        if (driver_capabilities.getBrowserName().equals(DesiredCapabilities.chrome().getBrowserName()) == false)
+        {
+            original_browser_window_handle = driver.getWindowHandle();
+        }
     }
 
     @Override
@@ -459,9 +463,6 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
     @Override
     public void switchToWindowByHandle(String windowHandle) {
         logger.debug("Switching to the window with handle '{}'.", windowHandle);
-        if (original_browser_window_handle.equals("") == true) {
-            original_browser_window_handle = getWindowHandle();
-        }
         driver.switchTo().window(windowHandle);
     }
 
@@ -479,13 +480,23 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
         while (true) {
             if (Calendar.getInstance().after(endTime)) {
                 logger.error("Unable to find window with URL containing '{}'.", windowURL);
-                logger.error("Switching back to the original window: " + original_browser_window_handle);
-                switchToWindowByHandle(original_browser_window_handle);
+                if (original_browser_window_handle.equals("") == false)
+                {
+                    logger.error("Switching back to the original window: " + original_browser_window_handle);
+                    switchToWindowByHandle(original_browser_window_handle);
+                }
+                else
+                {
+                    logger.error("original_browser_window_handle was not set, cannot switch back to the original browser window.  Reopening browser instead.");
+                    reopen();
+                }
                 throw new NoSuchWindowException("Timed out waiting for a known page");
             }
             for (String possibleHandle : getWindowHandles()) {
                 switchToWindowByHandle(possibleHandle);
 
+                logger.info("windowURL: " + windowURL);
+                logger.info("currentURL: " + getPageUrl(false).toLowerCase());
                 if (getPageUrl(false).toLowerCase().contains(windowURL.toLowerCase()) == true) {
                     switchToHandle = possibleHandle;
                 } else {
@@ -602,6 +613,11 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
     public void reopen() {
         driver.quit();
         driver = getDriverFromCapabilities(driver_capabilities);
+        if (driver_capabilities.getBrowserName().equals(DesiredCapabilities.chrome().getBrowserName()) == false)
+        {
+            original_browser_window_handle = driver.getWindowHandle(); 
+        }
+
     }
 
     @Override
