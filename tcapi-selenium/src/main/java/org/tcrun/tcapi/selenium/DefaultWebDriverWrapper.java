@@ -641,4 +641,16 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
         }
 
     }
+
+    @Override
+    public void logToSessionFile(String filename, String logString)
+    {
+        File session_file = DebugSupport.getSessionOutputFile(filename);
+        logger.debug("Writing to session file, session file will be {}", session_file.getAbsolutePath());
+        try {
+            FileUtils.writeStringToFile(session_file, logString);
+        } catch (IOException ex) {
+            logger.error("Unable to write to the session file '" + session_file.getAbsolutePath() + "': ", ex);
+        }
+    }
 }
