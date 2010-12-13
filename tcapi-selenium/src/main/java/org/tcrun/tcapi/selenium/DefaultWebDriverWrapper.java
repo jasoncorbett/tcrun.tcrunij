@@ -494,9 +494,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
             }
             for (String possibleHandle : getWindowHandles()) {
                 switchToWindowByHandle(possibleHandle);
-
-                logger.info("windowURL: " + windowURL);
-                logger.info("currentURL: " + getPageUrl(false).toLowerCase());
+                logger.info("Current browser URL: " + getPageUrl(false).toLowerCase());
                 if (getPageUrl(false).toLowerCase().contains(windowURL.toLowerCase()) == true) {
                     switchToHandle = possibleHandle;
                 } else {
@@ -646,7 +644,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
     public void logToSessionFile(String filename, String logString)
     {
         File session_file = DebugSupport.getSessionOutputFile(filename);
-        logger.debug("Writing to session file, session file will be {}", session_file.getAbsolutePath());
+        logger.info("Writing to session file, session file will be {}", session_file.getAbsolutePath());
         try {
             FileUtils.writeStringToFile(session_file, logString);
         } catch (IOException ex) {
