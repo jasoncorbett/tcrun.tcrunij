@@ -442,4 +442,6 @@ public interface WebDriverWrapper
 	 */
         public void closeAllWindowsExceptOriginal();
 
+        public void logToSessionFile(String name, String logString);
+
 }

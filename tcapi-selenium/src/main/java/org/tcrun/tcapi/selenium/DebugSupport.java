@@ -21,4 +21,14 @@ public class DebugSupport
 	{
 		return new FileOutputStream(getOutputFile(filename));
 	}
+
+        public static File getSessionOutputFile(String filename)
+	{
+		return new File("results" + File.separator + MDC.get("TestRunId") + File.separator + filename);
+	}
+
+	public static OutputStream getSessionOutputStream(String filename) throws FileNotFoundException
+	{
+		return new FileOutputStream(getOutputFile(filename));
+	}
 }
