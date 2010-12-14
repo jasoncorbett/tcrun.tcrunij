@@ -29,6 +29,6 @@ public class DebugSupport
 
 	public static OutputStream getSessionOutputStream(String filename) throws FileNotFoundException
 	{
-		return new FileOutputStream(getOutputFile(filename), true);
+		return new FileOutputStream(getSessionOutputFile(filename), true);
 	}
 }
