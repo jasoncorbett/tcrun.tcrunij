@@ -149,17 +149,21 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
     }
 
     @Override
-    public void type(PageElement locator, String text, int timeout) {
+    public void type(PageElement locator, String text, int timeout, boolean should_log) {
         clear(locator, timeout);
-        logger.debug("Typing text '{}' in element with name '{}' and found '{}'.", new Object[]{
-                    text, locator.getName(), locator.getFindByDescription()
-                });
+        if (should_log == true)
+            logger.debug("Typing text '{}' in element with name '{}' and found '{}'.", new Object[]{ text, locator.getName(), locator.getFindByDescription()});
         getElement(locator, timeout).sendKeys(text);
     }
 
     @Override
+    public void type(PageElement locator, String text, boolean should_log) {
+        type(locator, text, timeout, should_log);
+    }
+
+    @Override
     public void type(PageElement locator, String text) {
-        type(locator, text, timeout);
+        type(locator, text, timeout, true);
     }
 
     @Override
