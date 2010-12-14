@@ -157,6 +157,12 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
     }
 
     @Override
+    public void type(PageElement locator, String text, int timeout)
+    {
+        type(locator, text, timeout, true);
+    }
+
+    @Override
     public void type(PageElement locator, String text, boolean should_log) {
         type(locator, text, timeout, should_log);
     }
