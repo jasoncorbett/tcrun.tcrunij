@@ -76,6 +76,15 @@ public interface WebDriverWrapper
 	public void type(PageElement locator, String text, int timeout, boolean should_log);
 
         /**
+	 * Type text on an element in a page, waiting a maximum of the amount of time passed in for the element to exist.
+	 *
+	 * @param locator The page element instance that describes how to find the element to type in.
+	 * @param text The text to type.
+	 * @param timeout The maximum amount of time to wait for the element to exist in seconds.
+	 */
+        public void type(PageElement locator, String text, int timeout);
+
+        /**
 	 * Type text on an element in a page, waiting a maximum of the default timeout for the element to exist.
 	 *
 	 * @param locator The page element instance that describes how to find the element to type in.
