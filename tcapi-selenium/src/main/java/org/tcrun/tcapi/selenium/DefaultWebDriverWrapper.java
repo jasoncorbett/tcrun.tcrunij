@@ -1,15 +1,13 @@
 package org.tcrun.tcapi.selenium;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.NoSuchElementException;
@@ -21,10 +19,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.openqa.selenium.internal.selenesedriver.GetPageSource;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.remote.RenderedRemoteWebElement;
 import org.openqa.selenium.support.ui.Select;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
@@ -33,6 +28,7 @@ import java.util.Set;
 import org.openqa.selenium.NoSuchWindowException;
 import java.util.Calendar;
 import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.NotFoundException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.firefox.FirefoxProfile;
@@ -643,12 +639,19 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
     @Override
     public void logToSessionFile(String filename, String logString)
     {
-        File session_file = DebugSupport.getSessionOutputFile(filename);
-        logger.info("Writing to session file, session file will be {}", session_file.getAbsolutePath());
+        String sessionOutputFileName = DebugSupport.getSessionOutputFile(filename).getAbsolutePath();
+        logger.info("Writing to session file, session file will be " + sessionOutputFileName);
         try {
-            FileUtils.writeStringToFile(session_file, logString);
+            OutputStream os = DebugSupport.getSessionOutputStream(filename);
+            OutputStreamWriter osw = new OutputStreamWriter(os);
+            BufferedWriter bw = new BufferedWriter(osw);
+            bw.write(logString);
+            bw.newLine();
+            bw.close();
         } catch (IOException ex) {
-            logger.error("Unable to write to the session file '" + session_file.getAbsolutePath() + "': ", ex);
+            logger.error("Unable to write to the session file '" + sessionOutputFileName + "': ", ex);
+        } catch (NotFoundException ex) {
+            logger.error("Unable to write to the session file '" + sessionOutputFileName + "': ", ex);
         }
     }
 }
