@@ -461,6 +461,23 @@ public interface WebDriverWrapper
 	 */
         public void closeAllWindowsExceptOriginal();
 
+        /**
+	 * Log to a session file instead of a test case specific file.
+	 */
         public void logToSessionFile(String name, String logString);
 
+        /**
+	 * Gets the first selected option and returns the text from that option.
+	 *
+	 * @param selectList that you want to get the first selected option from
+	 */
+        public void getFirstSelectedOptionText(PageElement selectList);
+
+        /**
+	 * Gets the first selected option and returns the text from that option.
+	 *
+	 * @param selectList that you want to get the first selected option from
+         * @param timeout The maximum amount of time to wait for the element to exist in seconds.
+	 */
+        public String getFirstSelectOptionText(PageElement selectList, int timeout);
 }
