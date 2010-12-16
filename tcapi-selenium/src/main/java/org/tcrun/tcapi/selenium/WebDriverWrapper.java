@@ -471,7 +471,7 @@ public interface WebDriverWrapper
 	 *
 	 * @param selectList that you want to get the first selected option from
 	 */
-        public void getFirstSelectedOptionText(PageElement selectList);
+        public String getFirstSelectedOptionText(PageElement selectList);
 
         /**
 	 * Gets the first selected option and returns the text from that option.

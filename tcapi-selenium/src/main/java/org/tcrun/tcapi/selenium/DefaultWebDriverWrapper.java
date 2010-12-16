@@ -666,8 +666,8 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
     }
 
     @Override
-    public void getFirstSelectedOptionText(PageElement selectList) {
-        getFirstSelectOptionText(selectList, timeout);
+    public String getFirstSelectedOptionText(PageElement selectList) {
+        return getFirstSelectOptionText(selectList, timeout);
     }
 
     @Override
