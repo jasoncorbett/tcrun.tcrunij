@@ -664,4 +664,18 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
             logger.error("Unable to write to the session file '" + sessionOutputFileName + "': ", ex);
         }
     }
+
+    @Override
+    public void getFirstSelectedOptionText(PageElement selectList) {
+        getFirstSelectOptionText(selectList, timeout);
+    }
+
+    @Override
+    public String getFirstSelectOptionText(PageElement selectList, int timeout) {
+        logger.debug("Getting first selected option as text from of select list '{}' found by '{}' waiting a max timeout of {} seconds.", new Object[]{
+                    selectList.getName(), selectList.getFinder(), timeout
+                });
+        Select selectInput = new Select(getElement(selectList, timeout));
+        return selectInput.getFirstSelectedOption().getText();
+    }
 }
