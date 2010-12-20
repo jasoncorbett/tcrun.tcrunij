@@ -161,7 +161,7 @@ public class BasicPrintStatusPlugin implements BeforeTestCasePlugin, AfterTestCa
 				int counter = 0;
 				for(Result result: p_context.getResultList())
 				{
-					System.out.printf("%04d-%s: %s%n", m_test_number, result.getTest().getTestId(), result.getStatus().toString());
+					System.out.printf("%04d-%s: %s%n", ++counter, result.getTest().getTestId(), result.getStatus().toString());
 				}
 			}
 
