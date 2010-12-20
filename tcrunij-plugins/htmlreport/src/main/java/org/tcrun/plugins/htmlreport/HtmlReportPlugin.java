@@ -2,26 +2,20 @@ package org.tcrun.plugins.htmlreport;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.MDC;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.tcrun.api.ImplementsPlugin;
 import org.tcrun.api.Result;
-import org.tcrun.api.TCRunContext;
 import org.tcrun.api.TestWithName;
 import org.tcrun.api.annotations.TestName;
 import org.tcrun.api.plugins.CommandLineConsumerPlugin;
 import org.tcrun.api.plugins.CommandLineOptionPlugin;
 import org.tcrun.api.plugins.ResultWatcherPlugin;
-import org.tcrun.api.plugins.ShutdownTaskPlugin;
 
 /**
  *
@@ -29,14 +23,15 @@ import org.tcrun.api.plugins.ShutdownTaskPlugin;
  */
 @ImplementsPlugin(
 {
-	CommandLineOptionPlugin.class, CommandLineConsumerPlugin.class, ResultWatcherPlugin.class, ShutdownTaskPlugin.class
+	CommandLineOptionPlugin.class, CommandLineConsumerPlugin.class, ResultWatcherPlugin.class
 })
-public class HtmlReportPlugin implements CommandLineOptionPlugin, CommandLineConsumerPlugin, ResultWatcherPlugin, ShutdownTaskPlugin
+public class HtmlReportPlugin implements CommandLineOptionPlugin, CommandLineConsumerPlugin, ResultWatcherPlugin
 {
 
 	private boolean generate_report = false;
 	private Report report;
 	private static XLogger logger = XLoggerFactory.getXLogger(HtmlReportPlugin.class);
+	private File destdir;
 
 	@Override
 	public String getPluginName()
@@ -81,6 +76,12 @@ public class HtmlReportPlugin implements CommandLineOptionPlugin, CommandLineCon
 			{
 				report.setPlan("None Specified");
 			}
+						// copy images, html, and css to output directory
+			destdir = new File("results");
+			destdir = new File(destdir, MDC.get("TestRunId"));
+			FileUtils.copyResourcesRecursively(this.getClass().getResource("images"), new File(destdir, "images"));
+			FileUtils.copyResourcesRecursively(this.getClass().getResource("index.html"), new File(destdir, "index.html"));
+			FileUtils.copyResourcesRecursively(this.getClass().getResource("results.css"), new File(destdir, "results.css"));
 		}
 	}
 
@@ -105,21 +106,6 @@ public class HtmlReportPlugin implements CommandLineOptionPlugin, CommandLineCon
 			}
 			json_result.setName(name);
 			report.getResults().add(json_result);
-		}
-
-	}
-
-	@Override
-	public void onShutdown(TCRunContext p_context)
-	{
-		if(generate_report)
-		{
-			// copy images, html, and css to output directory
-			File destdir = new File("results");
-			destdir = new File(destdir, MDC.get("TestRunId"));
-			FileUtils.copyResourcesRecursively(this.getClass().getResource("images"), new File(destdir, "images"));
-			FileUtils.copyResourcesRecursively(this.getClass().getResource("index.html"), new File(destdir, "index.html"));
-			FileUtils.copyResourcesRecursively(this.getClass().getResource("results.css"), new File(destdir, "results.css"));
 
 			ObjectMapper mapper = new ObjectMapper();
 			try
@@ -129,8 +115,9 @@ public class HtmlReportPlugin implements CommandLineOptionPlugin, CommandLineCon
 			{
 				logger.error("Unable to generate json for html report: ", ex);
 			}
-		}
-	}
 
+		}
+
+	}
 
 }
