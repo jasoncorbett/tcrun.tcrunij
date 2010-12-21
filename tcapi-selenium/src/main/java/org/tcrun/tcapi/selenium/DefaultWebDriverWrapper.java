@@ -678,4 +678,25 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
         Select selectInput = new Select(getElement(selectList, timeout));
         return selectInput.getFirstSelectedOption().getText();
     }
+
+	@Override
+	public void hover(PageElement locator)
+	{
+		hover(locator, timeout);
+	}
+
+	@Override
+	public void hover(PageElement locator, int timeout)
+	{
+		WebElement element = getElement(locator, timeout);
+        if (RenderedWebElement.class.isAssignableFrom(element.getClass()))
+		{
+			logger.debug("Hovering mouse over element '{}' located by '{}'.", locator.getName(), locator.getFindByDescription());
+            RenderedWebElement relement = (RenderedWebElement) element;
+			relement.hover();
+		} else
+		{
+			logger.warn("Element '{}' found by '{}' is not a \"RenderedWebElement\" and so web driver wrapper cannot issue the hover command.", locator.getName(), locator.getFindByDescription());
+		}
+	}
 }
