@@ -155,4 +155,22 @@ public class FileUtils
 	{
 		return f.exists() || f.mkdir();
 	}
+        public static String[] getListOfFiles(final File searchDir, final String fileExtension)
+        {
+            String[] stringFileList;
+            File[] fileList = searchDir.listFiles(new Filter(fileExtension));
+            if (fileList.length != 0)
+            {
+                    stringFileList = new String[fileList.length];
+                    for (int index = 0; index < fileList.length; index++)
+                    {
+                        stringFileList[index] = fileList[index].toString();
+                    }
+            }
+            else
+            {
+                    stringFileList = new String[0];
+            }
+            return stringFileList;
+        }
 }
