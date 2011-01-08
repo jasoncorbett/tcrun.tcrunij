@@ -10,6 +10,8 @@ public class JsonResult
 	private String name;
 	private String result;
 	private String log;
+        private String[] screenshots;
+        private String[] htmlSourceFiles;
 
 	public String getId()
 	{
@@ -50,4 +52,25 @@ public class JsonResult
 	{
 		this.result = result;
 	}
+
+        public String[] getHtmlSourceFiles()
+        {
+
+                return htmlSourceFiles;
+        }
+
+        public void setHtmlSourceFiles(String[] htmlSourceFiles)
+        {
+                this.htmlSourceFiles = htmlSourceFiles;
+        }
+
+        public String[] getScreenshots()
+        {
+                return screenshots;
+        }
+
+        public void setScreenshots(String[] screenshots)
+        {
+                this.screenshots = screenshots;
+        }
 }

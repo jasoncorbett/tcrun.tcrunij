@@ -105,6 +105,25 @@ public class HtmlReportPlugin implements CommandLineOptionPlugin, CommandLineCon
 				name = result.getTest().getTestRunner().getTestClass().getAnnotation(TestName.class).value();
 			}
 			json_result.setName(name);
+
+                        // to be able to access the screenshots as http resources we need to trim off the file system specific psrts of the psth
+                        String[] pngList = FileUtils.getListOfFiles(new File("./results/" + MDC.get("TestCaseDir")), "png");
+                        for (int x=0; x<pngList.length; x++)
+                        {
+                            String[] pathPieces = pngList[x].split("/");
+                            pngList[x] = pathPieces[3] + "/" + pathPieces[4];
+                        }
+                        json_result.setScreenshots(pngList);
+
+                        // to be able to access the html source files as http resources we need to trim off the file system specific psrts of the psth
+                        String[] htmlSourceFiles = FileUtils.getListOfFiles(new File("./results/" + MDC.get("TestCaseDir")), "html");
+                        for (int x=0; x<htmlSourceFiles.length; x++)
+                        {
+                            String[] pathPieces = htmlSourceFiles[x].split("/");
+                            htmlSourceFiles[x] = pathPieces[3] + "/" + pathPieces[4];
+                        }
+                        json_result.setHtmlSourceFiles(htmlSourceFiles);
+
 			report.getResults().add(json_result);
 
 			ObjectMapper mapper = new ObjectMapper();

@@ -22,8 +22,21 @@
 						for(var i in results['results'])
 						{
 							var result = results['results'][i]
+                                                        var screenshotlinks = ""
+                                                        for (var j in result["screenshots"])
+                                                        {
+                                                            var screenshotname = result["screenshots"][j].split("/")[1]
+                                                            screenshotlinks = screenshotlinks + "<div><a href=" + result["screenshots"][j] + " target=\"_blank\">" + screenshotname  +"</a></div>"
+                                                        }
+                                                        var htmlsourcelinks = ""
+                                                        for (var k in result["htmlSourceFiles"])
+                                                        {
+                                                            var htmlsourcename = result["htmlSourceFiles"][k].split("/")[1]
+                                                            htmlsourcelinks = htmlsourcelinks + "<div><a href=" + result["htmlSourceFiles"][k] + " target=\"_blank\">" + htmlsourcename +"</a></div>"
+                                                        }
+
 							$("#results-list").append("<li class=\"" + result['result'] + "-block\">" +
-								"<a href=\"#\" id=\"result-" + ((i*1)+1) + "\" class=\"result-name\">" +
+								screenshotlinks + htmlsourcelinks + "<a href=\"#\" id=\"result-" + ((i*1)+1) + "\" class=\"result-name\">" +
 								result["name"] + "</a><div class=\"" + result['result'] +
 								"\">" + result['result'] + "<image src=\"images/" +
 								result['result'] + ".png\" class=\"result-image\" /></div>" +
@@ -132,6 +145,7 @@
 						<input type="checkbox" name="PASS" class="results-filter-box" checked="true" /><label for="PASS" class="results-filter-label"><img src="images/PASS.png" class="result-image" alt="Pass" /> &nbsp;Show Pass Results</label>
 						<input type="checkbox" name="FAIL" class="results-filter-box" checked="true" /><label for="FAIL" class="results-filter-label"><img src="images/FAIL.png" class="result-image" alt="Fail" /> &nbsp;Show Fail Results</label>
 						<input type="checkbox" name="BROKEN_TEST" class="results-filter-box" checked="true" /><label for="BROKEN_TEST" class="results-filter-label"><img src="images/BROKEN_TEST.png" class="result-image" alt="Broken Test" /> &nbsp;Show Broken Test Results</label>
+                                                <input type="checkbox" name="NOT_TESTED" class="results-filter-box" checked="true" /><label for="NOT_TESTED" class="results-filter-label"><img src="images/NOT_TESTED.png" class="result-image" alt="Not Tested" /> &nbsp;Show Not Tested</label>
 					</li>
 				</ul>
 			</div>
