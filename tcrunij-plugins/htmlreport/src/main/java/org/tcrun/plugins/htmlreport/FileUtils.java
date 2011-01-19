@@ -159,7 +159,7 @@ public class FileUtils
         {
             String[] stringFileList;
             File[] fileList = searchDir.listFiles(new Filter(fileExtension));
-            if (fileList.length != 0)
+            if (fileList != null && fileList.length != 0)
             {
                     stringFileList = new String[fileList.length];
                     for (int index = 0; index < fileList.length; index++)

@@ -9,3 +9,4 @@ org.tcrun.plugins.basic.filters.BasicExcludeFilterPlugin
 org.tcrun.plugins.basic.filters.BasicFilterPlugin
 org.tcrun.plugins.basic.attributeproviders.TestNameAttributeProvider
 org.tcrun.plugins.basic.attributeproviders.TestGroupAttributeProvider
+org.tcrun.plugins.basic.attributeproviders.FeatureNameAttributeProvider
