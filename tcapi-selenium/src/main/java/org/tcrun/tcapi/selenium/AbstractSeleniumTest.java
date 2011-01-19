@@ -82,9 +82,10 @@ public abstract class AbstractSeleniumTest extends AbstractSimpleTestCase
 		{
 			tclog.error("Current page URL: {}", browser.getDriver().getCurrentUrl());
             tclog.error("Current page title: {}", browser.getDriver().getTitle());
+			tclog.error("Exception thrown:  ", e);
             browser.saveHTMLSource();
             browser.takeScreenShot();
-			return super.handleException(e);
+			return false;
 		}
 }
 
