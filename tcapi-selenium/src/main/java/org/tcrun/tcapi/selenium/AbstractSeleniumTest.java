@@ -74,4 +74,17 @@ public abstract class AbstractSeleniumTest extends AbstractSimpleTestCase
             }
             this.frameworkSetup();
         }
+		/**
+		 * Capture page source and take a screen shot when an exception is thrown.
+		 */
+		@Override
+		public boolean handleException(Exception e)
+		{
+			tclog.error("Current page URL: {}", browser.getDriver().getCurrentUrl());
+            tclog.error("Current page title: {}", browser.getDriver().getTitle());
+            browser.saveHTMLSource();
+            browser.takeScreenShot();
+			return super.handleException(e);
+		}
 }
+
