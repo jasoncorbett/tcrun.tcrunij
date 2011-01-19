@@ -77,6 +77,7 @@ public abstract class AbstractSimpleTestCase implements SimpleTestCase, TestWith
 		{
 			tclog.info("FAIL: Assertion Failure: " + failure.getMessage(), failure);
 			retval = TestResult.FAIL;
+			handleException(failure);
 		}
 		return retval;
 	}
