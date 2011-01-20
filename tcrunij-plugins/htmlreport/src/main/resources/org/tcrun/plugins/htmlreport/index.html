@@ -19,6 +19,7 @@
 						$("#runtime-info-detail ul").append("<li><span class=\"runtime-info-name\">Environment: </span>" + results["environment"] + "</li>")
 						$("#runtime-info-detail").append("<table id=\"count-table\"></table>")
 						var counts = {}
+                                                var features = {}
 						for(var i in results['results'])
 						{
 							var result = results['results'][i]
@@ -37,7 +38,15 @@
                                                         }
                                                         htmlsourcelinks = htmlsourcelinks + "</div>"
 
-							$("#results-list").append("<li class=\"" + result['result'] + "-block\">" +
+							var feature = result["feature"]
+                                                        if(features[feature])
+                                                        {
+                                                                features[feature]++
+                                                        } else
+                                                        {
+                                                                features[feature] = 1
+                                                        }
+                                                        $("#results-list").append("<div class=\"" + feature + "_feature all_features\"><li class=\"" + result['result'] + "-block\">" +
 								"<a href=\"#\" id=\"result-" + ((i*1)+1) + "\" class=\"result-name\">" +
 								result["name"] + "</a><div class=\"" + result['result'] +
 								"\">" + result['result'] + "<image src=\"images/" +
@@ -45,7 +54,7 @@
 								"<div class=\"clear\"></div>" + screenshotlinks + htmlsourcelinks  +
 								"<pre id=\"result-" + ((i*1)+1) + "-log-file\" class=\"log-file\">" +
 								"</pre><hr />" + 
-                                                                "</li>")
+                                                                "</li><div>")
 							$("pre#result-" + ((i*1)+1) + "-log-file").data("log-file", result['log']).data("initialized", "false").hide()
 							if(counts[result['result']])
 							{
@@ -92,6 +101,12 @@
 
 						var chart = new google.visualization.PieChart(document.getElementById('results-chart'))
 						chart.draw(data, {width: 600, height: 300, is3D: true, title: results['title'], colors: ['green', 'red', '#ffa500', '#9a9a9a', '#0000aa']});
+                                                var selectoptions = ""
+                                                $.each(features, function(k, v){
+                                                    selectoptions = selectoptions + "<option value=\"" + k + "_feature\">"+ k + "</option>"
+                                                });
+                                                $("#filter-features-select").append("<select name=\"filterfeature\", class=\"filter-feature\"><option value=\"all_features\">Filter by feature:</option><option value=\"all_features\">Show All</option>" + selectoptions)
+                                                $("#filter-features-select").append("</select>")
 						$(".result-name").click(function () {
                                                         var sslinks = document.getElementById(this.id + "-screenshots").style.display;
                                                         var htlinks = document.getElementById(this.id + "-htmllinks").style.display;
@@ -140,6 +155,18 @@
 								$("li." + this.name + "-block").hide(250)
 							}
 						})
+                                                $(".filter-feature").change(function() {
+                                                    var filter = ($(this).val());
+                                                   
+                                                    if(filter == 'all_features')
+                                                    {
+                                                               $("div." + filter).show(250);
+                                                    } else
+                                                    {
+                                                               $("div.all_features").hide(250);
+                                                               $("div." + filter).show(250);
+                                                    } 
+                                                })
 					})
 
 				})
@@ -161,6 +188,8 @@
 			<div id="results-detail">
 				<h3 id="individual-results-title">Individual Results</h3>
 				<ul id="results-list">
+                                        <li id="filter-features-select">
+                                        </li>
 					<li id="results-filter">
 						<input type="checkbox" name="PASS" class="results-filter-box" checked="true" /><label for="PASS" class="results-filter-label"><img src="images/PASS.png" class="result-image" alt="Pass" /> &nbsp;Show Pass Results</label>
 						<input type="checkbox" name="FAIL" class="results-filter-box" checked="true" /><label for="FAIL" class="results-filter-label"><img src="images/FAIL.png" class="result-image" alt="Fail" /> &nbsp;Show Fail Results</label>
