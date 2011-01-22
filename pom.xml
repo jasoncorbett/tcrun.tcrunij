@@ -21,6 +21,7 @@
 		<module>tcrunij-plugins</module>
 		<module>tcrunij-cmd</module>
 		<module>tcrunij-packaging</module>
+		<module>tcrunij-integration</module>
 	</modules>
 
 	<distributionManagement>
