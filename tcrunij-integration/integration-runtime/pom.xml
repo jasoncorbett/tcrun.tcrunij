@@ -110,7 +110,7 @@
 		<dependency>
 			<groupId>org.tcrun</groupId>
 			<artifactId>tcrunij-packaging</artifactId>
-			<version>[1.0.0-63,2.0.0)</version>
+			<version>1.0.0-SNAPSHOT</version>
 			<type>tar.gz</type>
 			<classifier>nix</classifier>
 		</dependency>
