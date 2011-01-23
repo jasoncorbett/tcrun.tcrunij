@@ -9,7 +9,6 @@
 	<name>TCRunIJ</name>
 
 	<properties>
-		<tcrunij.buildid>SNAPSHOT</tcrunij.buildid>
 		<netbeans.hint.useExternalMaven>true</netbeans.hint.useExternalMaven>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -21,7 +20,6 @@
 		<module>tcrunij-plugins</module>
 		<module>tcrunij-cmd</module>
 		<module>tcrunij-packaging</module>
-		<module>tcrunij-integration</module>
 	</modules>
 
 	<distributionManagement>
