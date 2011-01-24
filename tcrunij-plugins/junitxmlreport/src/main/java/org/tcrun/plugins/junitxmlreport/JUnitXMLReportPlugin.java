@@ -108,14 +108,14 @@ public class JUnitXMLReportPlugin implements CommandLineOptionPlugin, CommandLin
 				if(result.getStatus() == ResultStatus.FAIL)
 				{
 					Element fail = testcase.addElement("failure");
-					fail.addAttribute("message", result.getReason());
+					fail.addAttribute("message", result.getReason().replace("\r\n", "").replace("\n", ""));
 					// Add log from test case
 				}
 
 				if(result.getStatus() == ResultStatus.BROKEN_TEST)
 				{
 					Element error = testcase.addElement("error");
-					error.addAttribute("message", result.getReason());
+					error.addAttribute("message", result.getReason().replace("\r\n", "").replace("\n", ""));
 					// Add log from test case
 				}
 			}
