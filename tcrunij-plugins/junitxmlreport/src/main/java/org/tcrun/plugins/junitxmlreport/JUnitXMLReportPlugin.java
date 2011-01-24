@@ -97,6 +97,7 @@ public class JUnitXMLReportPlugin implements CommandLineOptionPlugin, CommandLin
 				Element testcase = document.getRootElement().addElement("testcase");
 				String[] parts = result.getTest().getTestId().split("#");
 				testcase.addAttribute("classname", parts[0]);
+				testcase.addAttribute("time", "0.0");
 
 				// if the id is separated by a # then the first part is likely the classname the second is either a method
 				// or a data driven component
@@ -131,7 +132,8 @@ public class JUnitXMLReportPlugin implements CommandLineOptionPlugin, CommandLin
 			document.getRootElement().addAttribute("errors", Integer.toString(broken));
 			document.getRootElement().addAttribute("failures", Integer.toString(fail));
 			document.getRootElement().addAttribute("skipped", Integer.toString(skipped));
-			document.getRootElement().addAttribute("nottested", Integer.toString(nottested));
+			document.getRootElement().addAttribute("time", "0.0");
+			//document.getRootElement().addAttribute("nottested", Integer.toString(nottested));
 			document.getRootElement().addElement("system-out").addCDATA(null);
 			document.getRootElement().addElement("system-err").addCDATA(null);
 
