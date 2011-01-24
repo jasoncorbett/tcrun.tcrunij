@@ -15,6 +15,7 @@ import org.dom4j.io.XMLWriter;
 import org.slf4j.MDC;
 import org.tcrun.api.ImplementsPlugin;
 import org.tcrun.api.Result;
+import org.tcrun.api.ResultStatus;
 import org.tcrun.api.TCRunContext;
 import org.tcrun.api.plugins.BeforeTestListRunnerPlugin;
 import org.tcrun.api.plugins.CommandLineConsumerPlugin;
@@ -34,6 +35,11 @@ public class JUnitXMLReportPlugin implements CommandLineOptionPlugin, CommandLin
 
 	private boolean generate = false;
 	private Document document;
+	private int tests;
+	private int fail;
+	private int broken;
+	private int skipped;
+	private int nottested;
 
 	@Override
 	public String getPluginName()
@@ -74,7 +80,46 @@ public class JUnitXMLReportPlugin implements CommandLineOptionPlugin, CommandLin
 	@Override
 	public void onResultFiled(Result result)
 	{
-		//throw new UnsupportedOperationException("Not supported yet.");
+		if(generate)
+		{
+			tests++;
+			if(result.getStatus() == ResultStatus.FAIL)
+				fail++;
+			if(result.getStatus() == ResultStatus.BROKEN_TEST)
+				broken++;
+			if(result.getStatus() == ResultStatus.SKIPPED)
+				skipped++;
+			if(result.getStatus() == ResultStatus.NOT_TESTED)
+				nottested++;
+			if(result.getStatus() != ResultStatus.NOT_TESTED &&
+		       result.getStatus() != ResultStatus.SKIPPED)
+			{
+				Element testcase = document.getRootElement().addElement("testcase");
+				String[] parts = result.getTest().getTestId().split("#");
+				testcase.addAttribute("classname", parts[0]);
+
+				// if the id is separated by a # then the first part is likely the classname the second is either a method
+				// or a data driven component
+				if(parts.length > 1)
+				{
+					testcase.addAttribute("name", parts[1]);
+				}
+
+				if(result.getStatus() == ResultStatus.FAIL)
+				{
+					Element fail = testcase.addElement("failure");
+					fail.addAttribute("message", result.getReason());
+					// Add log from test case
+				}
+
+				if(result.getStatus() == ResultStatus.BROKEN_TEST)
+				{
+					Element error = testcase.addElement("error");
+					error.addAttribute("message", result.getReason());
+					// Add log from test case
+				}
+			}
+		}
 	}
 
 	@Override
@@ -82,6 +127,14 @@ public class JUnitXMLReportPlugin implements CommandLineOptionPlugin, CommandLin
 	{
 		if(generate)
 		{
+			document.getRootElement().addAttribute("tests", Integer.toString(tests));
+			document.getRootElement().addAttribute("errors", Integer.toString(broken));
+			document.getRootElement().addAttribute("failures", Integer.toString(fail));
+			document.getRootElement().addAttribute("skipped", Integer.toString(skipped));
+			document.getRootElement().addAttribute("nottested", Integer.toString(nottested));
+			document.getRootElement().addElement("system-out").addCDATA(null);
+			document.getRootElement().addElement("system-err").addCDATA(null);
+
 			try
 			{
 				File destdir = new File("results");
