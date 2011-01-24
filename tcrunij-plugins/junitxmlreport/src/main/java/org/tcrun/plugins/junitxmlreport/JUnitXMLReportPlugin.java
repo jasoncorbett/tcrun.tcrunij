@@ -97,26 +97,33 @@ public class JUnitXMLReportPlugin implements CommandLineOptionPlugin, CommandLin
 				Element testcase = document.getRootElement().addElement("testcase");
 				String[] parts = result.getTest().getTestId().split("#");
 				testcase.addAttribute("classname", parts[0]);
-				testcase.addAttribute("time", "0.0");
 
 				// if the id is separated by a # then the first part is likely the classname the second is either a method
 				// or a data driven component
 				if(parts.length > 1)
 				{
 					testcase.addAttribute("name", parts[1]);
+				} else
+				{
+					testcase.addAttribute("name", "");
 				}
+				testcase.addAttribute("time", "0.0");
 
 				if(result.getStatus() == ResultStatus.FAIL)
 				{
 					Element fail = testcase.addElement("failure");
-					fail.addAttribute("message", result.getReason().replace("\r\n", "").replace("\n", ""));
+					fail.addAttribute("type", "org.tcrun.api.TestCaseFail");
+					fail.addAttribute("message", "Test Case Failed");
+					fail.addText(result.getReason());
 					// Add log from test case
 				}
 
 				if(result.getStatus() == ResultStatus.BROKEN_TEST)
 				{
 					Element error = testcase.addElement("error");
-					error.addAttribute("message", result.getReason().replace("\r\n", "").replace("\n", ""));
+					error.addAttribute("type", "org.tcrun.api.TestCaseBroken");
+					fail.addAttribute("message", "Test Case is Broken (encountered an error)");
+					error.addText(result.getReason());
 					// Add log from test case
 				}
 			}
@@ -131,7 +138,7 @@ public class JUnitXMLReportPlugin implements CommandLineOptionPlugin, CommandLin
 			document.getRootElement().addAttribute("tests", Integer.toString(tests));
 			document.getRootElement().addAttribute("errors", Integer.toString(broken));
 			document.getRootElement().addAttribute("failures", Integer.toString(fail));
-			document.getRootElement().addAttribute("skipped", Integer.toString(skipped));
+			//document.getRootElement().addAttribute("skipped", Integer.toString(skipped));
 			document.getRootElement().addAttribute("time", "0.0");
 			//document.getRootElement().addAttribute("nottested", Integer.toString(nottested));
 			document.getRootElement().addElement("system-out").addCDATA(null);
