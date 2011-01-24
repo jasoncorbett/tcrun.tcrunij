@@ -27,6 +27,7 @@ public class TestWaitForFrame extends AbstractSeleniumTest
     public TestResult test() throws Exception
     {
 		step("Go to ugly test page at http://tcrun.org/UglyTestPage.html", "Ugly test page with frames loads");
+		enterDebugShell();
         browser.waitFor(UglyTestPage.class);
         check.that(browser.getText(UglyTestPage.ContentTitle), Is.EqualTo("The main content!"));
         //check.that(browser.exists(UglyTestPage.IframeContentTitle), Is.False());
