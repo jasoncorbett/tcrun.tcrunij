@@ -109,7 +109,8 @@ public class JUnitXMLReportPlugin implements CommandLineOptionPlugin, CommandLin
 				{
 					Element fail = testcase.addElement("failure");
 					fail.addAttribute("message", result.getReason().replace("\r\n", "").replace("\n", ""));
-					fail.addAttribute("type", "");
+					fail.addAttribute("type", "java.lang.Exception");
+					fail.addText(" ");
 					// Add log from test case
 				}
 
@@ -117,7 +118,8 @@ public class JUnitXMLReportPlugin implements CommandLineOptionPlugin, CommandLin
 				{
 					Element error = testcase.addElement("error");
 					error.addAttribute("message", result.getReason().replace("\r\n", "").replace("\n", ""));
-					error.addAttribute("type", "");
+					error.addAttribute("type", "java.lang.Exception");
+					error.addText(" ");
 					// Add log from test case
 				}
 			}
@@ -133,7 +135,7 @@ public class JUnitXMLReportPlugin implements CommandLineOptionPlugin, CommandLin
 			document.getRootElement().addAttribute("errors", Integer.toString(broken));
 			document.getRootElement().addAttribute("failures", Integer.toString(fail));
 			document.getRootElement().addAttribute("skipped", Integer.toString(skipped));
-			document.getRootElement().addAttribute("nottested", Integer.toString(nottested));
+			//document.getRootElement().addAttribute("nottested", Integer.toString(nottested));
 			document.getRootElement().addElement("system-out").addCDATA(null);
 			document.getRootElement().addElement("system-err").addCDATA(null);
 
