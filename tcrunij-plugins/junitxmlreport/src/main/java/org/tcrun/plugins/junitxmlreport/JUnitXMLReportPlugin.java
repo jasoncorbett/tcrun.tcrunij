@@ -109,6 +109,7 @@ public class JUnitXMLReportPlugin implements CommandLineOptionPlugin, CommandLin
 				{
 					Element fail = testcase.addElement("failure");
 					fail.addAttribute("message", result.getReason().replace("\r\n", "").replace("\n", ""));
+					fail.addAttribute("type", "");
 					// Add log from test case
 				}
 
@@ -116,6 +117,7 @@ public class JUnitXMLReportPlugin implements CommandLineOptionPlugin, CommandLin
 				{
 					Element error = testcase.addElement("error");
 					error.addAttribute("message", result.getReason().replace("\r\n", "").replace("\n", ""));
+					error.addAttribute("type", "");
 					// Add log from test case
 				}
 			}
