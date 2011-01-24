@@ -122,7 +122,7 @@ public class JUnitXMLReportPlugin implements CommandLineOptionPlugin, CommandLin
 				{
 					Element error = testcase.addElement("error");
 					error.addAttribute("type", "org.tcrun.api.TestCaseBroken");
-					fail.addAttribute("message", "Test Case is Broken (encountered an error)");
+					error.addAttribute("message", "Test Case is Broken (encountered an error)");
 					error.addText(result.getReason());
 					// Add log from test case
 				}
