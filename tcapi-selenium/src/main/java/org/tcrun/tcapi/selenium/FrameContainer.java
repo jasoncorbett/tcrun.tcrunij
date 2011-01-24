@@ -21,7 +21,10 @@ public class FrameContainer implements WebContainer
 	@Override
 	public WebElement findElement(WebDriver browser, PageElement item) throws NoSuchElementException
 	{
+		browser.switchTo().frame(frameId);
 		WebElement element = browser.findElement(item.getFinder());
+		browser.switchTo().defaultContent();
+
 		WebElement retval = null;
 		if(RenderedWebElement.class.isAssignableFrom(element.getClass()))
 		{
