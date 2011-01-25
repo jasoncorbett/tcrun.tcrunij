@@ -14,18 +14,22 @@ import org.openqa.selenium.WebElement;
  */
 public class InFrameRenderedWebElement extends ProxyRenderedWebElement implements RenderedWebElement
 {
-	private String frame;
+	private String frameId;
 
 	public InFrameRenderedWebElement(WebElement real, WebDriver driver, String frame)
 	{
 		super(real, driver);
-		this.frame = frame;
+		this.frameId = frame;
 	}
 
 	@Override
 	protected void beforeOperation()
 	{
-		driver.switchTo().frame(frame);
+		String[] frames = frameId.split("\\.");
+		for(String frame : frames)
+		{
+			driver.switchTo().frame(frame);
+		}
 	}
 
 	@Override
