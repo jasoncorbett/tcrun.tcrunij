@@ -4,6 +4,9 @@
  */
 package org.tcrun.tcapi.selenium;
 
+import java.util.ArrayList;
+import java.util.List;
+import org.openqa.selenium.By;
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -37,4 +40,26 @@ public class InFrameRenderedWebElement extends ProxyRenderedWebElement implement
 	{
 		driver.switchTo().defaultContent();
 	}
+
+
+	@Override
+	public List<WebElement> findElements(By by)
+	{
+		List<WebElement> orig = super.findElements(by);
+
+		List<WebElement> retval = new ArrayList<WebElement>();
+
+		for(WebElement element : orig)
+		{
+			retval.add(new InFrameRenderedWebElement(element, driver, frameId));
+		}
+		return retval;
+	}
+
+	@Override
+	public WebElement findElement(By by)
+	{
+		return new InFrameRenderedWebElement(super.findElement(by), driver, frameId);
+	}
+
 }
