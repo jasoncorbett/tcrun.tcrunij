@@ -36,6 +36,7 @@ public class TestWaitForFrame extends AbstractSeleniumTest
         browser.waitFor(UglyTestPage.IframeContentTitle);
         check.that(browser.getText(UglyTestPage.IframeContentTitle), Is.EqualTo("The iframe content!"));
 		check.that(browser.exists(UglyTestPage.ImageWithAltText), Is.True());
+		check.that(browser.getAttribute(UglyTestPage.ImageWithAltText, "src"), Is.StringContaining("logo"));
 		check.that(browser.getAttribute(UglyTestPage.BugImage,"src"), Is.StringContaining("bug.gif"));
         return TestResult.PASS;
     }

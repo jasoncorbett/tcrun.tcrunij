@@ -23,7 +23,7 @@ public class UglyTestPage implements SelfAwarePage<Object>
     @Override
     public boolean isCurrentPage(WebDriverWrapper browser)
     {
-        return browser.exists(ContentTitle, true);
+        return browser.exists(ContentTitle, false);
     }
 
     @Override
