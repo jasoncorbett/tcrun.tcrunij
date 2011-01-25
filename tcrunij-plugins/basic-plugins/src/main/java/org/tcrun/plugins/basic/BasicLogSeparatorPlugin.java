@@ -17,11 +17,16 @@ public class BasicLogSeparatorPlugin implements BeforeTestCasePlugin
 
 	public void beforeTestExecutes(TCRunContext p_context, TestRunner p_testrunner)
 	{
-		MDC.put("TestCaseDir", MDC.get("TestRunId") + "/" + ++test_count + "-" + p_testrunner.getTestClass().getName());
+		MDC.put("TestCaseDir", MDC.get("TestRunId") + "/" + getNextCount() + "-" + p_testrunner.getTestClass().getName());
 	}
 
 	public String getPluginName()
 	{
 		return "Basic Log Separator";
+	}
+
+	public synchronized int getNextCount()
+	{
+		return ++test_count;
 	}
 }
