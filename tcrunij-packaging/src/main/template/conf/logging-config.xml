@@ -61,11 +61,11 @@
 		</encoder>
 	</appender>
 
-	<logger name="test">
+	<logger name="test" level="debug">
 		<appender-ref ref="SIFT-TC" />
 	</logger>
 
-	<root level="debug">
+	<root level="info">
 		<appender-ref ref="SIFT" />
 	</root>
 </configuration>

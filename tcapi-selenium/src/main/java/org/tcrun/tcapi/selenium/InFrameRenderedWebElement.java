@@ -10,6 +10,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.ext.XLogger;
+import org.slf4j.ext.XLoggerFactory;
 
 /**
  *
@@ -17,6 +19,7 @@ import org.openqa.selenium.WebElement;
  */
 public class InFrameRenderedWebElement extends ProxyRenderedWebElement implements RenderedWebElement
 {
+	private XLogger logger = XLoggerFactory.getXLogger(InFrameRenderedWebElement.class);
 	private String frameId;
 
 	public InFrameRenderedWebElement(WebElement real, WebDriver driver, String frame)
@@ -28,6 +31,8 @@ public class InFrameRenderedWebElement extends ProxyRenderedWebElement implement
 	@Override
 	protected void beforeOperation()
 	{
+		logger.debug("Inside beforeOperation()");
+		driver.switchTo().defaultContent();
 		String[] frames = frameId.split("\\.");
 		for(String frame : frames)
 		{
@@ -38,6 +43,7 @@ public class InFrameRenderedWebElement extends ProxyRenderedWebElement implement
 	@Override
 	protected void afterOperation()
 	{
+		logger.debug("Inside afterOperation()");
 		driver.switchTo().defaultContent();
 	}
 

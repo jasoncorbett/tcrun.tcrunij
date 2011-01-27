@@ -17,6 +17,7 @@ import org.slf4j.ext.XLoggerFactory;
 import org.tcrun.api.ImplementsPlugin;
 import org.tcrun.api.RunnableTest;
 import org.tcrun.api.TCRunContext;
+import org.tcrun.api.annotations.DataDriven;
 import org.tcrun.api.plugins.TestLoaderPlugin;
 import org.tcrun.tcapi.SimpleTestCase;
 
@@ -113,7 +114,13 @@ public class TCApiTestLoader implements TestLoaderPlugin
 					{
 						// Add TCApi Test Runner to retval_list
 						s_logger.debug("Found test '{}'!", classname);
-						retval_list.add(new TCApiRunnableTest(potential, m_context));
+						if(potential.isAnnotationPresent(DataDriven.class))
+						{
+
+						} else
+						{
+							retval_list.add(new TCApiRunnableTest(potential, m_context));
+						}
 
 					}
 				} catch(ClassNotFoundException ex)
