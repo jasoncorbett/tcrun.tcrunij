@@ -29,6 +29,7 @@ public class TCApiRunnableTest implements RunnableTest, TestRunner
 	private Class<?> test_class;
 	private SimpleTestCase test_instance;
 	private Map<String, String> test_configuration;
+	private String test_id;
 
 	public TCApiRunnableTest(Class<?> p_test, TCRunContext p_context)
 	{
@@ -64,28 +65,39 @@ public class TCApiRunnableTest implements RunnableTest, TestRunner
 		}
 		s_logger.debug("Done looping through attribute provider plugins.");
 
+		test_id = test_class.getCanonicalName();
 	}
 
+	@Override
 	public List<TestCaseAttribute> getTestAttributes()
 	{
 		return m_attributes;
 	}
 
-	public String getTestId()
+	protected void setTestId(String newId)
 	{
-		return test_class.getCanonicalName();
+		test_id = newId;
 	}
 
+	@Override
+	public String getTestId()
+	{
+		return test_id;
+	}
+
+	@Override
 	public TestRunner getTestRunner()
 	{
 		return this;
 	}
 
+	@Override
 	public Class<?> getTestClass()
 	{
 		return test_class;
 	}
 
+	@Override
 	public Object getTestInstance()
 	{
 		if (test_instance == null)
@@ -106,16 +118,19 @@ public class TCApiRunnableTest implements RunnableTest, TestRunner
 		return test_instance;
 	}
 
+	@Override
 	public Map<String, String> getConfiguration()
 	{
 		return test_configuration;
 	}
 
+	@Override
 	public void setConfigurationValue(String p_key, String p_value)
 	{
 		test_configuration.put(p_key, p_value);
 	}
 
+	@Override
 	public void runTest(TCRunContext context)
 	{
 		// make sure the instance has been created.

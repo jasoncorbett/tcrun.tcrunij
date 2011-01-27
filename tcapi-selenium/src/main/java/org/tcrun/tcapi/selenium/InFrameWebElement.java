@@ -26,6 +26,7 @@ public class InFrameWebElement extends ProxyWebElement
 	@Override
 	public void beforeOperation()
 	{
+		driver.switchTo().defaultContent();
 		String[] frames = frameId.split("\\.");
 		for(String frame : frames)
 		{
