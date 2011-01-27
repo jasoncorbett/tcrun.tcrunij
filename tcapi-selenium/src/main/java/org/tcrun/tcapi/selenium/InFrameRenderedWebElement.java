@@ -31,8 +31,7 @@ public class InFrameRenderedWebElement extends ProxyRenderedWebElement implement
 	@Override
 	protected void beforeOperation()
 	{
-		logger.debug("Inside beforeOperation()");
-		driver.switchTo().defaultContent();
+		//driver.switchTo().defaultContent();
 		String[] frames = frameId.split("\\.");
 		for(String frame : frames)
 		{
@@ -43,7 +42,7 @@ public class InFrameRenderedWebElement extends ProxyRenderedWebElement implement
 	@Override
 	protected void afterOperation()
 	{
-		logger.debug("Inside afterOperation()");
+		//logger.debug("Inside afterOperation()");
 		driver.switchTo().defaultContent();
 	}
 
