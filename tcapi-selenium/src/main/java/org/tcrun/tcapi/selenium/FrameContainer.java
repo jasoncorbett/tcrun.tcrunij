@@ -22,15 +22,21 @@ public class FrameContainer implements WebContainer
 	public WebElement findElement(WebDriver browser, PageElement item) throws NoSuchElementException
 	{
 		//browser.switchTo().frame(frameId);
-		browser.switchTo().defaultContent();
-		String[] frames = frameId.split("\\.");
-		for(String frame : frames)
+		//browser.switchTo().defaultContent();
+		WebElement element = null;
+		try
 		{
-			browser.switchTo().frame(frame);
-		}
+			String[] frames = frameId.split("\\.");
+			for(String frame : frames)
+			{
+				browser.switchTo().frame(frame);
+			}
 
-		WebElement element = browser.findElement(item.getFinder());
-		browser.switchTo().defaultContent();
+			element = browser.findElement(item.getFinder());
+		} finally
+		{
+			browser.switchTo().defaultContent();
+		}
 
 		WebElement retval = null;
 		if(RenderedWebElement.class.isAssignableFrom(element.getClass()))
