@@ -11,19 +11,30 @@ import org.openqa.selenium.WebElement;
  */
 public class FrameContainer implements WebContainer
 {
-	private String frameId;
+	private String frameId = null;
+	private PageElement framePageElement;
 
 	public FrameContainer(String frameId)
 	{
 		this.frameId = frameId;
 	}
-
+	// leeard 2/15/11 - adding ability to accept a PageElement for dynamic frame ID support
+	public FrameContainer(PageElement framePageElement)
+	{
+		this.framePageElement = framePageElement;
+	}
 	@Override
 	public WebElement findElement(WebDriver browser, PageElement item) throws NoSuchElementException
 	{
 		//browser.switchTo().frame(frameId);
 		//browser.switchTo().defaultContent();
 		WebElement element = null;
+
+		// checking for the case of a PageElement being passed in
+		if(frameId == null)
+		{
+			frameId = browser.findElement(framePageElement.getFinder()).getAttribute("id");
+		}
 		try
 		{
 			String[] frames = frameId.split("\\.");
