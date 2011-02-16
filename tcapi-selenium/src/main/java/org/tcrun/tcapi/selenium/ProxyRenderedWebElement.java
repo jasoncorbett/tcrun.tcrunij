@@ -4,8 +4,8 @@
  */
 package org.tcrun.tcapi.selenium;
 
-import java.awt.Dimension;
-import java.awt.Point;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
