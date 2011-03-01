@@ -4,6 +4,8 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.ext.XLogger;
+import org.slf4j.ext.XLoggerFactory;
 
 /**
  *
@@ -13,7 +15,7 @@ public class FrameContainer implements WebContainer
 {
 	private String frameId = null;
 	private PageElement framePageElement;
-
+ 	private static XLogger logger = XLoggerFactory.getXLogger("test." + FrameContainer.class.getName());
 	public FrameContainer(String frameId)
 	{
 		this.frameId = frameId;
@@ -33,7 +35,8 @@ public class FrameContainer implements WebContainer
 		// checking for the case of a PageElement being passed in
 		if(frameId == null)
 		{
-			frameId = browser.findElement(framePageElement.getFinder()).getAttribute("id");
+			frameId = framePageElement.getElement(browser, 30).getAttribute("id");
+			logger.debug("Found dynamic frame with id=\"{}\"", frameId);
 		}
 		try
 		{

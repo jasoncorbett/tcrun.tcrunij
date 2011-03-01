@@ -11,6 +11,11 @@ public class In
 		return new FrameContainer(frameId);
 	}
 
+	public static WebContainer Frame(PageElement element)
+	{
+		return new FrameContainer(element);
+	}
+
 	public static WebContainer ParentElement(PageElement parent)
 	{
 		return new ParentElementContainer(parent);

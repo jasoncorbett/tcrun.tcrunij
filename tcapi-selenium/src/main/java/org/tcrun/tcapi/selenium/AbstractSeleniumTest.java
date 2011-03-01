@@ -91,7 +91,7 @@ public abstract class AbstractSeleniumTest extends AbstractSimpleTestCase
 				tclog.info("Steps to reproduce:");
 				for (int i = 0; i < steps.size(); i++)
 				{
-					tclog.info("Step {}: {}", i + 1, steps.get(i));
+					tclog.info("Step {}: {}", i + 1, steps.get(i).getStepName());
 				}
 			}
 			return false;

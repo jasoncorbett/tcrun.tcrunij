@@ -473,19 +473,19 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
     }
 
     @Override
-    public void switchToWindowByURL(String windowURL) {
-        switchToWindowByURL(windowURL, timeout);
+    public void switchToWindowByURLContains(String partialWindowURL) {
+        switchToWindowByURLContains(partialWindowURL, timeout);
     }
 
     @Override
-    public void switchToWindowByURL(String windowURL, int timeout) {
+    public void switchToWindowByURLContains(String partialWindowURL, int timeout) {
         Calendar endTime = Calendar.getInstance();
         endTime.add(Calendar.SECOND, timeout);
         String switchToHandle = "";
-        logger.debug("Looking for the window with the URL containing '{}'.", windowURL);
+        logger.debug("Looking for the window with the URL containing '{}'.", partialWindowURL);
         while (true) {
             if (Calendar.getInstance().after(endTime)) {
-                logger.error("Unable to find window with URL containing '{}'.", windowURL);
+                logger.error("Unable to find window with URL containing '{}'.", partialWindowURL);
                 if (original_browser_window_handle.equals("") == false)
                 {
                     logger.error("Switching back to the original window: " + original_browser_window_handle);
@@ -501,7 +501,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
             for (String possibleHandle : getWindowHandles()) {
                 switchToWindowByHandle(possibleHandle);
                 logger.info("Current browser URL: " + getPageUrl(false).toLowerCase());
-                if (getPageUrl(false).toLowerCase().contains(windowURL.toLowerCase()) == true) {
+                if (getPageUrl(false).toLowerCase().contains(partialWindowURL.toLowerCase()) == true) {
                     switchToHandle = possibleHandle;
                 } else {
                     try {
@@ -511,12 +511,57 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
                 }
             }
             if (switchToHandle.isEmpty() == false) {
-                logger.debug("Found the window with the URL containing '{}', switching to it now.", windowURL);
+                logger.debug("Found the window with the URL containing '{}', switching to it now.", partialWindowURL);
                 switchToWindowByHandle(switchToHandle);
                 break;
             }
         }
+    }
 
+    @Override
+    public void switchToWindowByURL(String windowURL) {
+        switchToWindowByURL(windowURL, timeout);
+    }
+
+    @Override
+    public void switchToWindowByURL(String windowURL, int timeout) {
+        Calendar endTime = Calendar.getInstance();
+        endTime.add(Calendar.SECOND, timeout);
+        String switchToHandle = "";
+        logger.debug("Looking for the window with the URL matching '{}'.", windowURL);
+        while (true) {
+            if (Calendar.getInstance().after(endTime)) {
+                logger.error("Unable to find window with URL matching '{}'.", windowURL);
+                if (original_browser_window_handle.equals("") == false)
+                {
+                    logger.error("Switching back to the original window: " + original_browser_window_handle);
+                    switchToWindowByHandle(original_browser_window_handle);
+                }
+                else
+                {
+                    logger.error("original_browser_window_handle was not set, cannot switch back to the original browser window.  Reopening browser instead.");
+                    reopen();
+                }
+                throw new NoSuchWindowException("Timed out waiting for a known page");
+            }
+            for (String possibleHandle : getWindowHandles()) {
+                switchToWindowByHandle(possibleHandle);
+                logger.info("Current browser URL: " + getPageUrl(false).toLowerCase());
+                if (getPageUrl(false).toLowerCase().equals(windowURL.toLowerCase()) == true) {
+                    switchToHandle = possibleHandle;
+                } else {
+                    try {
+                        java.lang.Thread.sleep(1000);
+                    } catch (Exception e) {
+                    }
+                }
+            }
+            if (switchToHandle.isEmpty() == false) {
+                logger.debug("Found the window with the URL matching '{}', switching to it now.", windowURL);
+                switchToWindowByHandle(switchToHandle);
+                break;
+            }
+        }
     }
 
     @Override
