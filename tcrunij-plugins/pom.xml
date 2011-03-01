@@ -20,6 +20,7 @@
         <module>basic-plugins</module>
         <module>htmlreport</module>
         <module>junitxmlreport</module>
+        <module>slickij-plugin</module>
     </modules>
 
 </project>
