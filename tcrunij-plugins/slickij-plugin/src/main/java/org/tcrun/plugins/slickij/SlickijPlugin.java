@@ -1,5 +1,7 @@
 package org.tcrun.plugins.slickij;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.OptionBuilder;
@@ -7,12 +9,15 @@ import org.apache.commons.cli.Options;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.bson.types.ObjectId;
 import org.jboss.resteasy.client.ProxyFactory;
 import org.jboss.resteasy.client.ClientResponseFailure;
 import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
 import org.tcrun.api.ImplementsPlugin;
 import org.tcrun.api.Result;
 import org.tcrun.api.TCRunContext;
+import org.tcrun.api.TestRunner;
+import org.tcrun.api.plugins.BeforeTestCasePlugin;
 import org.tcrun.api.plugins.CommandLineOptionPlugin;
 import org.tcrun.api.plugins.CommandLineConsumerPlugin;
 import org.tcrun.api.plugins.ResultWatcherPlugin;
@@ -24,16 +29,19 @@ import org.tcrun.slickij.api.ProjectResource;
 import org.tcrun.slickij.api.ResultResource;
 import org.tcrun.slickij.api.TestcaseResource;
 import org.tcrun.slickij.api.TestrunResource;
+import org.tcrun.slickij.api.data.Build;
 import org.tcrun.slickij.api.data.Configuration;
+import org.tcrun.slickij.api.data.ConfigurationReference;
 import org.tcrun.slickij.api.data.Project;
+import org.tcrun.slickij.api.data.Release;
 import org.tcrun.slickij.api.data.Testrun;
 
 /**
  *
  * @author jcorbett
  */
-@ImplementsPlugin({CommandLineOptionPlugin.class, CommandLineConsumerPlugin.class, ResultWatcherPlugin.class, BeforeTestListRunnerPlugin.class})
-public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsumerPlugin, ResultWatcherPlugin, BeforeTestListRunnerPlugin
+@ImplementsPlugin({CommandLineOptionPlugin.class, CommandLineConsumerPlugin.class, ResultWatcherPlugin.class, BeforeTestListRunnerPlugin.class, BeforeTestCasePlugin.class})
+public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsumerPlugin, ResultWatcherPlugin, BeforeTestListRunnerPlugin, BeforeTestCasePlugin
 {
 	private boolean report = false;
 	private String slickBaseUrl = null;
@@ -175,9 +183,46 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 					config.setConfigurationData(p_context.getTestCaseConfiguration());
 					config = configApi.addNewConfiguration(config);
 				}
+			}
 
-
+			testrun = new Testrun();
+			String name = "TCRunIJ Run";
+			if(options.hasOption("plan"))
+				name += " for plan " + options.getOptionValue("plan");
+			name += " starting at " + Calendar.getInstance().toString();
+			testrun.setName(name);
+			if(project != null)
+			{
+				testrun.setProject(project.createReference());
+				Release release = project.findRelease(project.getDefaultRelease());
+				if(release != null)
+				{
+					testrun.setRelease(release.createReference());
+					Build build = release.findBuild(release.getDefaultBuild());
+					if(build != null)
+						testrun.setBuild(build.createReference());
+				}
+			}
+			if(config != null)
+			{
+				ConfigurationReference ref = new ConfigurationReference();
+				ref.setConfigId(new ObjectId(config.getId()));
+				ref.setName(config.getName());
+				ref.setFilename(config.getFilename());
+				testrun.setConfig(ref);
+			}
+			try
+			{
+				testrun = testrunApi.createNewTestrun(testrun);
+			} catch(ClientResponseFailure error)
+			{
+				throw new StartupError("Unable to start test run on slick: " + error.getMessage());
 			}
 		}
+	}
+
+	@Override
+	public void beforeTestExecutes(TCRunContext p_context, TestRunner p_testrunner)
+	{
 	}
 }
