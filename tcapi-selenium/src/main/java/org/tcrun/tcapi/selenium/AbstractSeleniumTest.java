@@ -2,6 +2,7 @@ package org.tcrun.tcapi.selenium;
 
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.tools.shell.Global;
+import org.openqa.selenium.WebDriverException;
 import org.tcrun.api.TestCaseStep;
 import org.tcrun.tcapi.AbstractSimpleTestCase;
 
@@ -81,18 +82,25 @@ public abstract class AbstractSeleniumTest extends AbstractSimpleTestCase
 		@Override
 		public boolean handleException(Exception e)
 		{
-			tclog.error("Current page URL: {}", browser.getDriver().getCurrentUrl());
-            tclog.error("Current page title: {}", browser.getDriver().getTitle());
-			tclog.error("Exception thrown:  ", e);
-            browser.saveHTMLSource();
-            browser.takeScreenShot("Exception_" + e.getClass().getSimpleName());
-			if(steps.size() > 0)
+			try
 			{
-				tclog.info("Steps to reproduce:");
-				for (int i = 0; i < steps.size(); i++)
+				tclog.error("Current page URL: {}", browser.getDriver().getCurrentUrl());
+				tclog.error("Current page title: {}", browser.getDriver().getTitle());
+				tclog.error("Exception thrown:  ", e);
+				browser.saveHTMLSource();
+				browser.takeScreenShot("Exception_" + e.getClass().getSimpleName());
+				if(steps.size() > 0)
 				{
-					tclog.info("Step {}: {}", i + 1, steps.get(i).getStepName());
+					tclog.info("Steps to reproduce:");
+					for (int i = 0; i < steps.size(); i++)
+					{
+						tclog.info("Step {}: {}", i + 1, steps.get(i).getStepName());
+					}
 				}
+			}
+			catch (WebDriverException wde)
+			{
+				tclog.error("Caught an WebDriverException in handleException", wde);
 			}
 			return false;
 		}
