@@ -100,7 +100,8 @@ public abstract class AbstractSeleniumTest extends AbstractSimpleTestCase
 			}
 			catch (WebDriverException wde)
 			{
-				tclog.error("Caught an WebDriverException in handleException", wde);
+				tclog.error("Caught an WebDriverException in handleException, need to reopen the browser", wde);
+				browser.reopen();
 			}
 			return false;
 		}
