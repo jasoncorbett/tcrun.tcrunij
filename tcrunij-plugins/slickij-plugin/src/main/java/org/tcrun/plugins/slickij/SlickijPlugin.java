@@ -162,13 +162,25 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 				}
 				Testcase update = new Testcase();
 				update.setSteps(steps);
-				testcaseApi.updateTestcase(this.result.getTestcase().getTestcaseId(), update);
+				try
+				{
+					testcaseApi.updateTestcase(this.result.getTestcase().getTestcaseId(), update);
+				} catch(ClientResponseFailure error)
+				{
+					logger.error("Error adding steps to testcase.", error);
+				}
 			}
 			org.tcrun.slickij.api.data.Result update = new org.tcrun.slickij.api.data.Result();
 			update.setStatus(ResultStatus.valueOf(result.getStatus().toString()));
 			update.setRunstatus(RunStatus.FINISHED);
 			update.setReason(result.getReason());
-			resultApi.updateResult(this.result.getId(), update);
+			try
+			{
+				resultApi.updateResult(this.result.getId(), update);
+			} catch(ClientResponseFailure error)
+			{
+				logger.error("Unable to update the result status on slick.", error);
+			}
 		}
 	}
 
@@ -226,7 +238,14 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 			if(options.hasOption("e"))
 			{
 				String env = options.getOptionValue("e");
-				List<Configuration> configs = configApi.getMatchingConfigurations(null, "ENVIRONMENT", env + ".ini");
+				List<Configuration> configs = new ArrayList<Configuration>();
+				try
+				{
+					configs = configApi.getMatchingConfigurations(null, "ENVIRONMENT", env + ".ini");
+				} catch(ClientResponseFailure error)
+				{
+					logger.error("Unable to fetch list of matching configuration objects from slick v2.", error);
+				}
 				if(configs.size() > 0)
 					config = configs.get(0);
 				else
@@ -236,7 +255,14 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 					config.setConfigurationType("ENVIRONMENT");
 					config.setConfigurationData(p_context.getTestCaseConfiguration());
 					config.setFilename(env + ".ini");
-					config = configApi.addNewConfiguration(config);
+					try
+					{
+						config = configApi.addNewConfiguration(config);
+					} catch(ClientResponseFailure error)
+					{
+						config = null;
+						logger.error("Unable to create configuration object in slick v2.", error);
+					}
 				}
 			}
 
@@ -314,13 +340,28 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 				compname = compname.replace("-", " ");
 				compname = compname.replaceAll("([a-z])([A-Z])", "$1 $2");
 				comp.setName(compname);
-				comp = projectApi.addComponent(project.getId(), comp);
-				project.getComponents().add(comp);
+				try
+				{
+					comp = projectApi.addComponent(project.getId(), comp);
+				} catch(ClientResponseFailure error)
+				{
+					logger.error("Unable to create component with name " + comp.getName() + " and code " + comp.getCode() + " on slick.", error);
+					comp = null;
+				}
+				if(comp != null)
+					project.getComponents().add(comp);
 			}
+
 			ComponentReference compref = new ComponentReference();
-			compref.setId(comp.getObjectId());
-			compref.setName(comp.getName());
-			compref.setCode(comp.getCode());
+			if(comp != null)
+			{
+				compref.setId(comp.getObjectId());
+				compref.setName(comp.getName());
+				compref.setCode(comp.getCode());
+			} else
+			{
+				compref = null;
+			}
 
 			result = new org.tcrun.slickij.api.data.Result();
 			result.setTestrun(testrun.createReference());
@@ -388,7 +429,7 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 					result = resultApi.addResult(result);
 				} catch(ClientResponseFailure error)
 				{
-					logger.warn("Recieved error while trying to create result.", error);
+					logger.warn("Recieved error while trying to create result, assuming I need to create the test case first.", error);
 					// probably (hopefully) due to not finding the testcase.  We'll fix that
 					Testcase test = new Testcase();
 					test.setName(testref.getName());
@@ -409,12 +450,24 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 					{
 						List<String> tagsToAdd = new ArrayList<String>(tags);
 						tagsToAdd.removeAll(project.getTags());
-						project.setTags(projectApi.addTags(project.getId(), tagsToAdd));
+						try
+						{
+							project.setTags(projectApi.addTags(project.getId(), tagsToAdd));
+						} catch(ClientResponseFailure e)
+						{
+							logger.error("Error adding tags to project.", e);
+						}
 					}
 
 					test.setComponent(compref);
 					logger.info("Creating Testcase in Slick v2 with name {} and automationId {}.", test.getName(), test.getAutomationId());
-					test = testcaseApi.addNewTestcase(test);
+					try
+					{
+						test = testcaseApi.addNewTestcase(test);
+					} catch(ClientResponseFailure e)
+					{
+						logger.error("Error creating testcase.", e);
+					}
 					testref = test.createReference();
 					result.setTestcase(testref);
 					testIsNew = true;
