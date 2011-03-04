@@ -280,6 +280,7 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 			Logger testcase_logger = lc.getLogger("test");
 			logAppender.setContext(testcase_logger.getLoggerContext());
 			testcase_logger.addAppender(logAppender);
+			logAppender.start();
 		}
 	}
 
