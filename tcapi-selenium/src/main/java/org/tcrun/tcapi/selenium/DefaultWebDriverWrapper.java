@@ -31,6 +31,7 @@ import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.NotFoundException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.FirefoxProfile;
 
 /**
@@ -660,8 +661,15 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
 
     @Override
     public void reopen() {
-        driver.quit();
-        driver = getDriverFromCapabilities(driver_capabilities);
+        try
+		{
+			driver.quit();
+		}
+		catch (WebDriverException wde)
+		{
+			logger.error("Caught an Exception when trying to quit the driver in reopen()", wde);	
+		}
+		driver = getDriverFromCapabilities(driver_capabilities);
         if (driver_capabilities.getBrowserName().equals(DesiredCapabilities.chrome().getBrowserName()) == false)
         {
             original_browser_window_handle = driver.getWindowHandle(); 
