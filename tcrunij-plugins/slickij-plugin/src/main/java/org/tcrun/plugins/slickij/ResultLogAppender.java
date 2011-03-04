@@ -42,11 +42,10 @@ public class ResultLogAppender extends AppenderBase<ILoggingEvent> implements Ap
 	@Override
 	protected void append(ILoggingEvent eventObject)
 	{
-		System.out.println("Recieved logging event.");
 		if(result != null)
 		{
 			// we don't need a synchronized list, because we synchronize around the instance
-			if(toupload.containsKey(result))
+			if(!toupload.containsKey(result))
 				toupload.putIfAbsent(result, new ArrayList<LogEntry>());
 			List<LogEntry> entryList = toupload.get(result);
 			LogEntry entry = new LogEntry();
@@ -71,12 +70,6 @@ public class ResultLogAppender extends AppenderBase<ILoggingEvent> implements Ap
 			}
 
 		}
-	}
-
-	@Override
-	public void start()
-	{
-		// do nothing
 	}
 
 	public Result getResult()
