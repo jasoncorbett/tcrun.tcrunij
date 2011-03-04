@@ -59,6 +59,11 @@
 			<artifactId>logback-classic</artifactId>
 			<version>[0.9.24,0.10)</version>
 		</dependency>
-
+                <!-- JSON support -->
+                <dependency>
+                        <groupId>org.jboss.resteasy</groupId>
+                        <artifactId>resteasy-jackson-provider</artifactId>
+                        <version>2.1.0.GA</version>
+                </dependency>
 	</dependencies>
 </project>

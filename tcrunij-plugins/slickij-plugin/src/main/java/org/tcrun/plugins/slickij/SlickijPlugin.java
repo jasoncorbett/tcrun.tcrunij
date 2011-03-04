@@ -1,8 +1,18 @@
 package org.tcrun.plugins.slickij;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
+import java.io.File;
+import java.net.URISyntaxException;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
@@ -13,15 +23,24 @@ import org.bson.types.ObjectId;
 import org.jboss.resteasy.client.ProxyFactory;
 import org.jboss.resteasy.client.ClientResponseFailure;
 import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
+import org.slf4j.LoggerFactory;
+import org.slf4j.ext.XLogger;
+import org.slf4j.ext.XLoggerFactory;
 import org.tcrun.api.ImplementsPlugin;
 import org.tcrun.api.Result;
 import org.tcrun.api.TCRunContext;
+import org.tcrun.api.TestCaseStep;
 import org.tcrun.api.TestRunner;
+import org.tcrun.api.TestWithName;
+import org.tcrun.api.TestWithSteps;
+import org.tcrun.api.TestWithUUID;
+import org.tcrun.api.annotations.TestGroup;
 import org.tcrun.api.plugins.BeforeTestCasePlugin;
 import org.tcrun.api.plugins.CommandLineOptionPlugin;
 import org.tcrun.api.plugins.CommandLineConsumerPlugin;
 import org.tcrun.api.plugins.ResultWatcherPlugin;
 import org.tcrun.api.plugins.BeforeTestListRunnerPlugin;
+import org.tcrun.api.plugins.ShutdownTaskPlugin;
 import org.tcrun.api.plugins.StartupError;
 import org.tcrun.api.plugins.TestListRunnerPlugin;
 import org.tcrun.slickij.api.ConfigurationResource;
@@ -30,19 +49,28 @@ import org.tcrun.slickij.api.ResultResource;
 import org.tcrun.slickij.api.TestcaseResource;
 import org.tcrun.slickij.api.TestrunResource;
 import org.tcrun.slickij.api.data.Build;
+import org.tcrun.slickij.api.data.Component;
+import org.tcrun.slickij.api.data.ComponentReference;
 import org.tcrun.slickij.api.data.Configuration;
 import org.tcrun.slickij.api.data.ConfigurationReference;
 import org.tcrun.slickij.api.data.Project;
 import org.tcrun.slickij.api.data.Release;
+import org.tcrun.slickij.api.data.ResultStatus;
+import org.tcrun.slickij.api.data.RunStatus;
+import org.tcrun.slickij.api.data.Step;
+import org.tcrun.slickij.api.data.Testcase;
+import org.tcrun.slickij.api.data.TestcaseReference;
 import org.tcrun.slickij.api.data.Testrun;
 
 /**
  *
  * @author jcorbett
  */
-@ImplementsPlugin({CommandLineOptionPlugin.class, CommandLineConsumerPlugin.class, ResultWatcherPlugin.class, BeforeTestListRunnerPlugin.class, BeforeTestCasePlugin.class})
-public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsumerPlugin, ResultWatcherPlugin, BeforeTestListRunnerPlugin, BeforeTestCasePlugin
+@ImplementsPlugin({CommandLineOptionPlugin.class, CommandLineConsumerPlugin.class, ResultWatcherPlugin.class, BeforeTestListRunnerPlugin.class, BeforeTestCasePlugin.class, ShutdownTaskPlugin.class})
+public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsumerPlugin, ResultWatcherPlugin, BeforeTestListRunnerPlugin, BeforeTestCasePlugin, ShutdownTaskPlugin
 {
+	private static XLogger logger = XLoggerFactory.getXLogger(SlickijPlugin.class);
+
 	private boolean report = false;
 	private String slickBaseUrl = null;
 	private String slickUsername = null;
@@ -56,9 +84,12 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 	private TestcaseResource testcaseApi = null;
 	private ResultResource resultApi = null;
 
+	private ResultLogAppender logAppender = null;
 	private Project project = null;
 	private Testrun testrun = null;
 	private Configuration config = null;
+	private org.tcrun.slickij.api.data.Result result;
+	private boolean testIsNew = false;
 
 	private CommandLine options = null;
 
@@ -116,6 +147,29 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 	@Override
 	public void onResultFiled(Result result)
 	{
+		if(report && this.result != null)
+		{
+			if(testIsNew && TestWithSteps.class.isAssignableFrom(result.getTest().getTestRunner().getTestClass()))
+			{
+				List<Step> steps = new ArrayList<Step>();
+				List<TestCaseStep> realSteps = ((TestWithSteps)result.getTest().getTestRunner().getTestInstance()).getTestSteps();
+				for(TestCaseStep realStep : realSteps)
+				{
+					Step step = new Step();
+					step.setName(realStep.getStepName());
+					step.setExpectedResult(realStep.getStepExpectedResult());
+					steps.add(step);
+				}
+				Testcase update = new Testcase();
+				update.setSteps(steps);
+				testcaseApi.updateTestcase(this.result.getTestcase().getTestcaseId(), update);
+			}
+			org.tcrun.slickij.api.data.Result update = new org.tcrun.slickij.api.data.Result();
+			update.setStatus(ResultStatus.valueOf(result.getStatus().toString()));
+			update.setRunstatus(RunStatus.FINISHED);
+			update.setReason(result.getReason());
+			resultApi.updateResult(this.result.getId(), update);
+		}
 	}
 
 	@Override
@@ -181,6 +235,7 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 					config.setName("Environment " + env);
 					config.setConfigurationType("ENVIRONMENT");
 					config.setConfigurationData(p_context.getTestCaseConfiguration());
+					config.setFilename(env + ".ini");
 					config = configApi.addNewConfiguration(config);
 				}
 			}
@@ -189,7 +244,7 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 			String name = "TCRunIJ Run";
 			if(options.hasOption("plan"))
 				name += " for plan " + options.getOptionValue("plan");
-			name += " starting at " + Calendar.getInstance().toString();
+			name += " starting at " + (new Date()).toString();
 			testrun.setName(name);
 			if(project != null)
 			{
@@ -218,11 +273,172 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 			{
 				throw new StartupError("Unable to start test run on slick: " + error.getMessage());
 			}
+			logAppender = new ResultLogAppender(resultApi);
+			logAppender.setName("SLICK");
+
+			LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+			Logger testcase_logger = lc.getLogger("test");
+			logAppender.setContext(testcase_logger.getLoggerContext());
+			testcase_logger.addAppender(logAppender);
 		}
 	}
 
 	@Override
 	public void beforeTestExecutes(TCRunContext p_context, TestRunner p_testrunner)
 	{
+		if(report)
+		{
+			testIsNew = false;
+			String featurename = "unknown";
+			try
+			{
+				featurename = (new File(p_testrunner.getTestClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath())).getName();
+				Pattern endOfJarFilename = Pattern.compile("((-\\d+\\..*)?\\.jar)$");
+				Matcher match = endOfJarFilename.matcher(featurename);
+				if(match.find())
+				{
+					featurename = featurename.substring(0, match.start());
+				}
+			} catch (URISyntaxException ex)
+			{
+			}
+			Component comp = project.findComponentByCode(featurename);
+			if(comp == null)
+			{
+				comp = new Component();
+				comp.setCode(featurename);
+				String compname = featurename;
+				compname = Character.toUpperCase(compname.charAt(0)) + compname.substring(1);
+				compname = compname.replace("_", " ");
+				compname = compname.replace("-", " ");
+				compname = compname.replaceAll("([a-z])([A-Z])", "$1 $2");
+				comp.setName(compname);
+				comp = projectApi.addComponent(project.getId(), comp);
+				project.getComponents().add(comp);
+			}
+			ComponentReference compref = new ComponentReference();
+			compref.setId(comp.getObjectId());
+			compref.setName(comp.getName());
+			compref.setCode(comp.getCode());
+
+			result = new org.tcrun.slickij.api.data.Result();
+			result.setTestrun(testrun.createReference());
+			result.setProject(testrun.getProject());
+			result.setConfig(testrun.getConfig());
+			result.setRelease(testrun.getRelease());
+			result.setBuild(testrun.getBuild());
+			result.setStatus(ResultStatus.NO_RESULT);
+			result.setRunstatus(RunStatus.RUNNING);
+			result.setComponent(compref);
+			String hostname = "unknown";
+			try
+			{
+				java.net.InetAddress addr = java.net.InetAddress.getLocalHost();
+				hostname = addr.getHostName();
+			} catch (UnknownHostException ex)
+			{
+				// do nothing
+			}
+			result.setHostname(hostname);
+
+			TestcaseReference testref = new TestcaseReference();
+			testref.setAutomationTool("tcrunij");
+			if(TestWithUUID.class.isAssignableFrom(p_testrunner.getTestClass()))
+			{
+				TestWithUUID test = (TestWithUUID) p_testrunner.getTestInstance();
+				testref.setAutomationKey(test.getTestUUID().toString());
+			}
+			if(TestWithName.class.isAssignableFrom(p_testrunner.getTestClass()))
+			{
+				TestWithName test = (TestWithName) p_testrunner.getTestInstance();
+				testref.setName(hostname);
+			} else
+			{
+				String name = p_testrunner.getTestClass().getSimpleName();
+				// underscores become spaces
+				name = name.replace("_", " ");
+				// camelCase get's spaces inbetween, ex CamelCase becomes Camel Case
+				name = name.replaceAll("([a-z])([A-Z])", "$1 $2");
+				testref.setName(name);
+				if(!name.contains(" "))
+				{
+					// use the package name as the first part of the name
+					name = p_testrunner.getTestClass().getPackage().getName().replace(".*\\.", "");
+					// same changes as above
+					name = name.replace("_", " ");
+					name = name.replaceAll("([a-z])([A-Z])", "$1 $2");
+					// add the class name onto the end of the name, no need for substitutions, they didn't do anything
+					// before
+					name = name + " - " + p_testrunner.getTestClass().getSimpleName();
+					testref.setName(name);
+				}
+
+			}
+			// TODO: figure out a way to get the real test case id
+			testref.setAutomationId(p_testrunner.getTestClass().getName());
+
+			result.setTestcase(testref);
+
+			int tries = 0;
+			while(result.getId() == null && ++tries <= 3)
+			{
+				try
+				{
+					result = resultApi.addResult(result);
+				} catch(ClientResponseFailure error)
+				{
+					logger.warn("Recieved error while trying to create result.", error);
+					// probably (hopefully) due to not finding the testcase.  We'll fix that
+					Testcase test = new Testcase();
+					test.setName(testref.getName());
+					test.setAutomated(true);
+					test.setAutomationId(testref.getAutomationId());
+					test.setAutomationKey(testref.getAutomationKey());
+					test.setAutomationTool(testref.getAutomationTool());
+					test.setProject(project.createReference());
+					List<String> tags = new ArrayList<String>();
+					if(p_testrunner.getTestClass().isAnnotationPresent(TestGroup.class))
+					{
+						TestGroup annot = p_testrunner.getTestClass().getAnnotation(TestGroup.class);
+						tags.addAll(Arrays.asList(annot.value()));
+					}
+
+					test.setTags(tags);
+					if(!project.getTags().containsAll(tags))
+					{
+						List<String> tagsToAdd = new ArrayList<String>(tags);
+						tagsToAdd.removeAll(project.getTags());
+						project.setTags(projectApi.addTags(project.getId(), tagsToAdd));
+					}
+
+					test.setComponent(compref);
+					logger.info("Creating Testcase in Slick v2 with name {} and automationId {}.", test.getName(), test.getAutomationId());
+					test = testcaseApi.addNewTestcase(test);
+					testref = test.createReference();
+					result.setTestcase(testref);
+					testIsNew = true;
+
+				}
+			}
+			if(tries >= 3)
+			{
+				logAppender.setResult(null);
+				result = null;
+				logger.error("Unable to create result for test with class name {}.", p_testrunner.getTestClass().getName());
+			}
+			else
+			{
+				logAppender.setResult(result);
+			}
+		}
+	}
+
+	@Override
+	public void onShutdown(TCRunContext p_context)
+	{
+		if(report)
+		{
+			this.logAppender.setStop(true);
+		}
 	}
 }
