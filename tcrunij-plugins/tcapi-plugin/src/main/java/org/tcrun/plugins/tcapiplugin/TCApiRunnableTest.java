@@ -150,18 +150,54 @@ public class TCApiRunnableTest implements RunnableTest, TestRunner
 			test_instance.tcSetup(test_configuration);
 		} catch (ResultBasedTestError e)
 		{
-			should_continue = test_instance.handleException(e);
+			try
+			{
+				should_continue = test_instance.handleException(e);
+			} catch(RuntimeException ex)
+			{
+				s_logger.error("Caught exception while trying to call handle exception on testcase.", ex);
+				should_continue = false;
+
+			} catch(Exception ex)
+			{
+				s_logger.error("Caught exception while trying to call handle exception on testcase.", ex);
+				should_continue = false;
+			}
 			override = e.getResult();
 			reason = e.getMessage();
 		} catch (RuntimeException e)
 		{
 			// No logging by default, the test's handleException should take care of logging.
-			should_continue = test_instance.handleException(e);
+			try
+			{
+				should_continue = test_instance.handleException(e);
+			} catch(RuntimeException ex)
+			{
+				s_logger.error("Caught exception while trying to call handle exception on testcase.", ex);
+				should_continue = false;
+
+			} catch(Exception ex)
+			{
+				s_logger.error("Caught exception while trying to call handle exception on testcase.", ex);
+				should_continue = false;
+			}
 			reason = e.getMessage();
 		} catch (Exception e)
 		{
 			// No logging by default, the test's handleException should take care of logging.
-			should_continue = test_instance.handleException(e);
+			try
+			{
+				should_continue = test_instance.handleException(e);
+			} catch(RuntimeException ex)
+			{
+				s_logger.error("Caught exception while trying to call handle exception on testcase.", ex);
+				should_continue = false;
+
+			} catch(Exception ex)
+			{
+				s_logger.error("Caught exception while trying to call handle exception on testcase.", ex);
+				should_continue = false;
+			}
 			reason = e.getMessage();
 		}
 
@@ -188,16 +224,52 @@ public class TCApiRunnableTest implements RunnableTest, TestRunner
 			} catch (ResultBasedTestError e)
 			{
 				reason = e.getMessage();
-				test_instance.handleException(e);
+				try
+				{
+					test_instance.handleException(e);
+				} catch(RuntimeException ex)
+				{
+					s_logger.error("Caught exception while trying to call handle exception on testcase.", ex);
+					should_continue = false;
+
+				} catch(Exception ex)
+				{
+					s_logger.error("Caught exception while trying to call handle exception on testcase.", ex);
+					should_continue = false;
+				}
 				override = e.getResult();
 			} catch (RuntimeException e)
 			{
 				reason = "Exception " + e.getClass().getName() + " was thrown during doTest: " + e.getMessage();
-				test_instance.handleException(e);
+				try
+				{
+					test_instance.handleException(e);
+				} catch(RuntimeException ex)
+				{
+					s_logger.error("Caught exception while trying to call handle exception on testcase.", ex);
+					should_continue = false;
+
+				} catch(Exception ex)
+				{
+					s_logger.error("Caught exception while trying to call handle exception on testcase.", ex);
+					should_continue = false;
+				}
 			} catch (Exception e)
 			{
 				reason = "Exception " + e.getClass().getName() + " was thrown during doTest: " + e.getMessage();
-				test_instance.handleException(e);
+				try
+				{
+					test_instance.handleException(e);
+				} catch(RuntimeException ex)
+				{
+					s_logger.error("Caught exception while trying to call handle exception on testcase.", ex);
+					should_continue = false;
+
+				} catch(Exception ex)
+				{
+					s_logger.error("Caught exception while trying to call handle exception on testcase.", ex);
+					should_continue = false;
+				}
 			}
 		}
 
@@ -213,11 +285,30 @@ public class TCApiRunnableTest implements RunnableTest, TestRunner
 		} catch (RuntimeException e)
 		{
 			// No logging by default, the test's handleException should take care of logging.
-			should_continue = test_instance.handleException(e);
+			try
+			{
+				test_instance.handleException(e);
+			} catch(RuntimeException ex)
+			{
+				s_logger.error("Caught exception while trying to call handle exception on testcase.", ex);
+			} catch(Exception ex)
+			{
+				s_logger.error("Caught exception while trying to call handle exception on testcase.", ex);
+			}
 		} catch (Exception e)
 		{
 			// No logging by default, the test's handleException should take care of logging.
-			should_continue = test_instance.handleException(e);
+			try
+			{
+				test_instance.handleException(e);
+			} catch(RuntimeException ex)
+			{
+				s_logger.error("Caught exception while trying to call handle exception on testcase.", ex);
+
+			} catch(Exception ex)
+			{
+				s_logger.error("Caught exception while trying to call handle exception on testcase.", ex);
+			}
 		}
 		context.addResult(new SimpleTestCaseResult(this, reason, result));
 	}
