@@ -5,11 +5,15 @@ import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.AppenderBase;
+import ch.qos.logback.core.status.Status;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import org.jboss.resteasy.client.ClientResponseFailure;
+import org.slf4j.ext.XLogger;
+import org.slf4j.ext.XLoggerFactory;
 import org.tcrun.slickij.api.ResultResource;
 import org.tcrun.slickij.api.data.LogEntry;
 import org.tcrun.slickij.api.data.LogLevel;
@@ -21,6 +25,8 @@ import org.tcrun.slickij.api.data.Result;
  */
 public class ResultLogAppender extends AppenderBase<ILoggingEvent> implements Appender<ILoggingEvent>, Runnable
 {
+	private static XLogger logger = XLoggerFactory.getXLogger(ResultLogAppender.class);
+
 	private Result result;
 
 	private ConcurrentMap<Result, List<LogEntry>> toupload;
@@ -120,7 +126,19 @@ public class ResultLogAppender extends AppenderBase<ILoggingEvent> implements Ap
 				logentries = new ArrayList<LogEntry>(entryList);
 				entryList.clear();
 			}
-			resultApi.addToLog(key.getId(), logentries);
+			try
+			{
+				resultApi.addToLog(key.getId(), logentries);
+			} catch(ClientResponseFailure error)
+			{
+				// don't worry about infinate loops, this logger is only attached to test cases
+				logger.error("Unable to upload logs to slickij", error);
+				synchronized(entryList)
+				{
+					// push the logs back on the stack, retry
+					entryList.addAll(0, logentries);
+				}
+			}
 		}
 	}
 
