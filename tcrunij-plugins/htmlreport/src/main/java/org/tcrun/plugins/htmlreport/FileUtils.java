@@ -173,4 +173,9 @@ public class FileUtils
             }
             return stringFileList;
         }
+
+        public static String getFileSeperator()
+        {
+            return File.separator;
+        }
 }
