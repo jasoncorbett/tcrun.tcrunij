@@ -2,6 +2,7 @@ package org.tcrun.plugins.htmlreport;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.regex.Pattern;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
@@ -107,12 +108,11 @@ public class HtmlReportPlugin implements CommandLineOptionPlugin, CommandLineCon
 			}
 			json_result.setName(name);
 
-			// to be able to access the screenshots as http resources we need to trim off the file system specific psrts of the psth
+			// to be able to access the screenshots as http resources we need to trim off the file system specific parts of the psth
 			String[] pngList = FileUtils.getListOfFiles(new File("./results/" + MDC.get("TestCaseDir")), "png");
-			for (int x = 0; x < pngList.length; x++)
+                        for (int x = 0; x < pngList.length; x++)
 			{
-
-				String[] pathPieces = pngList[x].split(FileUtils.getFileSeperator());
+                                String[] pathPieces = pngList[x].split(Pattern.quote(File.separator));
 				pngList[x] = pathPieces[pathPieces.length - 2] + "/" + pathPieces[pathPieces.length - 1];
 			}
 			json_result.setScreenshots(pngList);
@@ -121,7 +121,7 @@ public class HtmlReportPlugin implements CommandLineOptionPlugin, CommandLineCon
 			String[] htmlSourceFiles = FileUtils.getListOfFiles(new File("./results/" + MDC.get("TestCaseDir")), "html");
 			for (int x = 0; x < htmlSourceFiles.length; x++)
 			{
-				String[] pathPieces = htmlSourceFiles[x].split(FileUtils.getFileSeperator());
+                                String[] pathPieces = htmlSourceFiles[x].split(Pattern.quote(File.separator));
 				htmlSourceFiles[x] = pathPieces[pathPieces.length - 2] + "/" + pathPieces[pathPieces.length - 1];
 			}
 			json_result.setHtmlSourceFiles(htmlSourceFiles);
