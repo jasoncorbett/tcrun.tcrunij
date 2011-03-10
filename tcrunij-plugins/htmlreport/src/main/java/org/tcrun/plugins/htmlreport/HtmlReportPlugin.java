@@ -113,7 +113,7 @@ public class HtmlReportPlugin implements CommandLineOptionPlugin, CommandLineCon
 			{
 
 				String[] pathPieces = pngList[x].split(FileUtils.getFileSeperator());
-				pngList[x] = pathPieces[3] + "/" + pathPieces[4];
+				pngList[x] = pathPieces[pathPieces.length - 2] + "/" + pathPieces[pathPieces.length - 1];
 			}
 			json_result.setScreenshots(pngList);
 
@@ -122,7 +122,7 @@ public class HtmlReportPlugin implements CommandLineOptionPlugin, CommandLineCon
 			for (int x = 0; x < htmlSourceFiles.length; x++)
 			{
 				String[] pathPieces = htmlSourceFiles[x].split(FileUtils.getFileSeperator());
-				htmlSourceFiles[x] = pathPieces[3] + "/" + pathPieces[4];
+				htmlSourceFiles[x] = pathPieces[pathPieces.length - 2] + "/" + pathPieces[pathPieces.length - 1];
 			}
 			json_result.setHtmlSourceFiles(htmlSourceFiles);
 
