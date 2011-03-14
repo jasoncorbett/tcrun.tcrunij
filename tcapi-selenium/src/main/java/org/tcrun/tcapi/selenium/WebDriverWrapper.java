@@ -496,24 +496,39 @@ public interface WebDriverWrapper
 	 */
         public String getFirstSelectOptionText(PageElement selectList, int timeout);
 
-		/**
-		 * Hover the mouse over an element, firing a mouse over event.  This is particularly useful for pages
-		 * that use javascript events to display something when the mouse hovers over the element.
-		 *
-		 * The default timeout for searching for the element applies.
-		 *
-		 * @param element The element to mouse over.
-		 */
-		public void hover(PageElement element);
+        /**
+         * Hover the mouse over an element, firing a mouse over event.  This is particularly useful for pages
+         * that use javascript events to display something when the mouse hovers over the element.
+         *
+         * The default timeout for searching for the element applies.
+         *
+         * @param element The element to mouse over.
+         */
+        public void hover(PageElement element);
 
-		/**
-		 * Hover the mouse over an element, firing a mouse over event.  This is particularly useful for pages
-		 * that use javascript events to display something when the mouse hovers over the element.
-		 *
-		 * The timeout is for how long to search for the element to exist.
-		 *
-		 * @param element The element to mouse over.
-		 * @param timeout The maximum amount of time to wait for the element to exist in seconds.
-		 */
-		public void hover(PageElement element, int timeout);
+        /**
+         * Hover the mouse over an element, firing a mouse over event.  This is particularly useful for pages
+         * that use javascript events to display something when the mouse hovers over the element.
+         *
+         * The timeout is for how long to search for the element to exist.
+         *
+         * @param element The element to mouse over.
+         * @param timeout The maximum amount of time to wait for the element to exist in seconds.
+         */
+        public void hover(PageElement element, int timeout);
+
+        /**
+	 * Wait for an element to be not visible.  Use the default timeout.
+	 *
+	 * @param element The element to wait for.
+	 */
+        public void waitForNotVisible(PageElement element);
+
+        /**
+         * Wait for an element to be not visible.  Use the default timeout
+         *
+         * @param element The element to wait for.
+         * @param timeout The maximum amount of time to wait.
+         */
+        public void waitForNotVisible(PageElement element, int timeout);
 }

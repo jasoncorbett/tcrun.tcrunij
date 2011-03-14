@@ -397,13 +397,27 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 			testref.setAutomationTool("tcrunij");
 			if(TestWithUUID.class.isAssignableFrom(p_testrunner.getTestClass()))
 			{
-				TestWithUUID test = (TestWithUUID) p_testrunner.getTestInstance();
-				testref.setAutomationKey(test.getTestUUID().toString());
+				try
+				{
+					TestWithUUID test = (TestWithUUID) p_testrunner.getTestInstance();
+					testref.setAutomationKey(test.getTestUUID().toString());
+				} catch(RuntimeException e)
+				{
+					// anytime we call something on the test we need to prepare for exceptions
+					logger.warn("Recieved exception when trying to get uuid from test.", e);
+				}
 			}
 			if(TestWithName.class.isAssignableFrom(p_testrunner.getTestClass()))
 			{
-				TestWithName test = (TestWithName) p_testrunner.getTestInstance();
-				testref.setName(hostname);
+				try
+				{
+					TestWithName test = (TestWithName) p_testrunner.getTestInstance();
+					testref.setName(hostname);
+				} catch(RuntimeException e)
+				{
+					// anytime we call something on the test we need to prepare for exceptions
+					logger.warn("Recieved exception when trying to get uuid from test.", e);
+				}
 			} else
 			{
 				String name = p_testrunner.getTestClass().getSimpleName();
