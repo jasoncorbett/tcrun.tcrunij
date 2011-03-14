@@ -168,6 +168,7 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 				} catch(ClientResponseFailure error)
 				{
 					logger.error("Error adding steps to testcase.", error);
+					error.getResponse().releaseConnection();
 				}
 			}
 			org.tcrun.slickij.api.data.Result update = new org.tcrun.slickij.api.data.Result();
@@ -180,6 +181,7 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 			} catch(ClientResponseFailure error)
 			{
 				logger.error("Unable to update the result status on slick.", error);
+				error.getResponse().releaseConnection();
 			}
 		}
 	}
@@ -245,6 +247,7 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 				} catch(ClientResponseFailure error)
 				{
 					logger.error("Unable to fetch list of matching configuration objects from slick v2.", error);
+					error.getResponse().releaseConnection();
 				}
 				if(configs.size() > 0)
 					config = configs.get(0);
@@ -262,6 +265,7 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 					{
 						config = null;
 						logger.error("Unable to create configuration object in slick v2.", error);
+						error.getResponse().releaseConnection();
 					}
 				}
 			}
@@ -297,9 +301,14 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 				testrun = testrunApi.createNewTestrun(testrun);
 			} catch(ClientResponseFailure error)
 			{
+				error.getResponse().releaseConnection();
 				throw new StartupError("Unable to start test run on slick: " + error.getMessage());
 			}
-			logAppender = new ResultLogAppender(resultApi);
+			DefaultHttpClient httpclient2 = new DefaultHttpClient();
+			httpclient2.getCredentialsProvider().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(slickUsername, slickPassword));
+			ApacheHttpClient4Executor executor2 = new ApacheHttpClient4Executor(httpclient2);
+			ResultResource resultApi2 = ProxyFactory.create(ResultResource.class, slickBaseUrl, executor2);
+			logAppender = new ResultLogAppender(resultApi2);
 			logAppender.setName("SLICK");
 
 			LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
@@ -347,6 +356,7 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 				{
 					logger.error("Unable to create component with name " + comp.getName() + " and code " + comp.getCode() + " on slick.", error);
 					comp = null;
+					error.getResponse().releaseConnection();
 				}
 				if(comp != null)
 					project.getComponents().add(comp);
@@ -412,8 +422,8 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 					// add the class name onto the end of the name, no need for substitutions, they didn't do anything
 					// before
 					name = name + " - " + p_testrunner.getTestClass().getSimpleName();
-					testref.setName(name);
 				}
+				testref.setName(name);
 
 			}
 			// TODO: figure out a way to get the real test case id
@@ -429,6 +439,7 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 					result = resultApi.addResult(result);
 				} catch(ClientResponseFailure error)
 				{
+					error.getResponse().releaseConnection();
 					logger.warn("Recieved error while trying to create result, assuming I need to create the test case first.", error);
 					// probably (hopefully) due to not finding the testcase.  We'll fix that
 					Testcase test = new Testcase();
@@ -466,6 +477,7 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 						test = testcaseApi.addNewTestcase(test);
 					} catch(ClientResponseFailure e)
 					{
+						error.getResponse().releaseConnection();
 						logger.error("Error creating testcase.", e);
 					}
 					testref = test.createReference();

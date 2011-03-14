@@ -106,7 +106,7 @@ public class ResultLogAppender extends AppenderBase<ILoggingEvent> implements Ap
 			uploadResults();
 			try
 			{
-				Thread.sleep(500);
+				Thread.sleep(1000);
 			} catch (InterruptedException ex)
 			{
 
@@ -133,6 +133,7 @@ public class ResultLogAppender extends AppenderBase<ILoggingEvent> implements Ap
 			{
 				// don't worry about infinate loops, this logger is only attached to test cases
 				logger.error("Unable to upload logs to slickij", error);
+				error.getResponse().releaseConnection();
 				synchronized(entryList)
 				{
 					// push the logs back on the stack, retry
