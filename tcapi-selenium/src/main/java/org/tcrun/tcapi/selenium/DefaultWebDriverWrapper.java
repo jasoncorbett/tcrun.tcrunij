@@ -752,4 +752,42 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
 			logger.warn("Element '{}' found by '{}' is not a \"RenderedWebElement\" and so web driver wrapper cannot issue the hover command.", locator.getName(), locator.getFindByDescription());
 		}
 	}
+
+        @Override
+    public void waitForNotVisible(PageElement element) {
+        waitForNotVisible(element, timeout);}
+
+
+    @Override
+    public void waitForNotVisible(PageElement element, int timeOut)
+    {
+
+        //New code added.
+        logger.debug("Waiting a max of {} seconds for element '{}' found by {} to become invisible.", new Object[]{
+                    timeout, element.getName(), element.getFindByDescription()
+                });
+        Calendar end_time = Calendar.getInstance();
+        Date start_time = end_time.getTime();
+        end_time.add(Calendar.SECOND, timeout);
+        WebElement wdelement = getElement(element, timeout);
+        if (RenderedWebElement.class.isAssignableFrom(wdelement.getClass())) {
+            RenderedWebElement relement = (RenderedWebElement) wdelement;
+            logger.debug("Found element '{}' after {} seconds, waiting for it to become invisible.", element.getName(), ((new Date()).getTime() - start_time.getTime()) / 1000);
+            while (relement.isDisplayed() && (Calendar.getInstance().before(end_time))) {
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    logger.debug("Caught interrupted exception, while waiting for element, but it shouldn't cause too much trouble: {}", e.getMessage());
+                }
+            }
+            if (relement.isDisplayed()) {
+                throw new ElementNotVisibleException(MessageFormatter.format("Waited {} seconds for element {} found by {} to become invisible, and it never happened.", new Object[]{
+                            timeout, element.getName(), element.getFindByDescription()
+                        }).getMessage());
+            }
+            logger.debug("Element '{}' was not found visible after {} seconds.", element.getName(), ((new Date()).getTime() - start_time.getTime()) / 1000);
+        } else {
+            logger.warn("The current browser doesn't return RenderedWebElements, so I can't check for visibility.  Hopefully that means webdriver won't either.");
+        }
+    }
 }
