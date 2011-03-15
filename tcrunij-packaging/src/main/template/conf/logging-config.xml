@@ -1,0 +1,71 @@
+<configuration>
+
+	<appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
+		<!-- in the absence of the class attribute, it is assumed that the
+		     desired discriminator type is
+		     ch.qos.logback.classic.sift.MDCBasedDiscriminator -->
+		<discriminator>
+			<Key>TestRunId</Key>
+			<DefaultValue>unknown</DefaultValue>
+		</discriminator>
+		<sift>
+			<appender name="RuntimeLog-${TestRunId}" class="ch.qos.logback.core.FileAppender">
+				<File>results/${TestRunId}/testrun.log</File>
+				<Append>false</Append>
+				<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+					<pattern>[%d{HH:mm:ss.SSS}|%-5level|%logger{36}]: %msg%n</pattern>
+				</encoder>
+			</appender>
+		</sift>
+	</appender>
+
+	<appender name="SIFT-TC" class="ch.qos.logback.classic.sift.SiftingAppender">
+		<!-- in the absence of the class attribute, it is assumed that the
+		     desired discriminator type is
+		     ch.qos.logback.classic.sift.MDCBasedDiscriminator -->
+		<discriminator>
+			<Key>TestCaseDir</Key>
+			<DefaultValue>unknown</DefaultValue>
+		</discriminator>
+		<sift>
+			<appender name="TestCase-${TestCaseDir}" class="ch.qos.logback.core.FileAppender">
+				<File>results/${TestCaseDir}/test.log</File>
+				<Append>false</Append>
+				<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+					<pattern>[%d{HH:mm:ss.SSS}|%-5level|%logger{36}]: %msg%n</pattern>
+				</encoder>
+			</appender>
+		</sift>
+	</appender>
+
+	<if condition='property("tcrunij.verbose").contains("true")'>
+		<then>
+			<appender name="TESTCASE-VERBOSE" class="ch.qos.logback.core.ConsoleAppender">
+				<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+					<pattern>[%d{HH:mm:ss}|%-5level|%logger{36}]: %msg%n</pattern>
+				</encoder>
+			</appender>
+			<logger name="test" level="debug">
+				<appender-ref ref="SIFT-TC" />
+				<appender-ref ref="TESTCASE-VERBOSE" />
+			</logger>
+		</then>
+	</if>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>WARN</level>
+		</filter>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>[%d{HH:mm:ss.SSS}|%-5level|%logger{36}]: %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="test" level="debug">
+		<appender-ref ref="SIFT-TC" />
+	</logger>
+
+	<root level="info">
+		<appender-ref ref="SIFT" />
+	</root>
+</configuration>
