@@ -201,21 +201,21 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 			if(projectName == null)
 			{
 				if(p_context.getTestCaseConfiguration().containsKey("Slickv2.project.name"))
-					slickBaseUrl = p_context.getTestCaseConfiguration().get("Slickv2.project.name");
+					projectName = p_context.getTestCaseConfiguration().get("Slickv2.project.name");
 				else
 					throw new StartupError("No configuration for slick project name, please either include on command line or add configuration option Slickv2.project.name");
 			}
 			if(slickUsername == null)
 			{
-				if(p_context.getTCRunConfiguration().containsKey("Slickv2.username"))
-					slickUsername = p_context.getTCRunConfiguration().get("Slickv2.username");
+				if(p_context.getTestCaseConfiguration().containsKey("Slickv2.username"))
+					slickUsername = p_context.getTestCaseConfiguration().get("Slickv2.username");
 				else
 					throw new StartupError("No configuration for slick username, please either include on command line or add configuration option Slickv2.username");
 			}
 			if(slickPassword == null)
 			{
-				if(p_context.getTCRunConfiguration().containsKey("Slickv2.password"))
-					slickPassword = p_context.getTCRunConfiguration().get("Slickv2.password");
+				if(p_context.getTestCaseConfiguration().containsKey("Slickv2.password"))
+					slickPassword = p_context.getTestCaseConfiguration().get("Slickv2.password");
 				else
 					throw new StartupError("No configuration for slick password, please either include on command line or add configuration option Slickv2.password");
 			}
@@ -274,7 +274,9 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 			String name = "TCRunIJ Run";
 			if(options.hasOption("plan"))
 				name += " for plan " + options.getOptionValue("plan");
-			name += " starting at " + (new Date()).toString();
+			else if(options.hasOption("a"))
+				name += " of all available tests";
+			//name += " starting at " + (new Date()).toString();
 			testrun.setName(name);
 			if(project != null)
 			{
@@ -412,7 +414,7 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 				try
 				{
 					TestWithName test = (TestWithName) p_testrunner.getTestInstance();
-					testref.setName(hostname);
+					testref.setName(test.getTestName());
 				} catch(RuntimeException e)
 				{
 					// anytime we call something on the test we need to prepare for exceptions
