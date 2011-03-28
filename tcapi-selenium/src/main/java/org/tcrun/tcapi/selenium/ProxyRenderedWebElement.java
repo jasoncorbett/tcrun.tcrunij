@@ -70,19 +70,6 @@ public class ProxyRenderedWebElement extends ProxyWebElement implements Rendered
 	}
 
 	@Override
-	public void hover()
-	{
-		try
-		{
-			beforeOperation();
-			rwebElement.hover();
-		} finally
-		{
-			afterOperation();
-		}
-	}
-
-	@Override
 	public void dragAndDropBy(int moveRightBy, int moveDownBy)
 	{
 		try

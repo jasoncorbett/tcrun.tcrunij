@@ -28,11 +28,14 @@ import java.util.Set;
 import org.openqa.selenium.NoSuchWindowException;
 import java.util.Calendar;
 import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.HasInputDevices;
 import org.openqa.selenium.NotFoundException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.interactions.Action;
+import org.openqa.selenium.interactions.ActionChainsGenerator;
 
 /**
  *
@@ -742,11 +745,12 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
 	public void hover(PageElement locator, int timeout)
 	{
 		WebElement element = getElement(locator, timeout);
-        if (RenderedWebElement.class.isAssignableFrom(element.getClass()))
+        if (HasInputDevices.class.isAssignableFrom(driver.getClass()))
 		{
 			logger.debug("Hovering mouse over element '{}' located by '{}'.", locator.getName(), locator.getFindByDescription());
-            RenderedWebElement relement = (RenderedWebElement) element;
-			relement.hover();
+            ActionChainsGenerator builder = ((HasInputDevices) driver).actionsBuilder();
+			Action hover = builder.moveToElement(element, 2, 2).build();
+			hover.perform();
 		} else
 		{
 			logger.warn("Element '{}' found by '{}' is not a \"RenderedWebElement\" and so web driver wrapper cannot issue the hover command.", locator.getName(), locator.getFindByDescription());
