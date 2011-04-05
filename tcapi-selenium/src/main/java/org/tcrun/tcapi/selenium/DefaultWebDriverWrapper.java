@@ -133,15 +133,30 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
     }
 
 	@Override
-	public void toggle(PageElement locator)
+	public void setCheckboxState(PageElement locator, boolean checked)
 	{
-		toggle(locator, timeout);
+		setCheckboxState(locator, checked, timeout);
 	}
 	@Override
-	public void toggle(PageElement locator, int timeout)
+	public void setCheckboxState(PageElement locator, boolean checked, int timeout)
 	{
-		logger.debug("toggling element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
-		getElement(locator, timeout).toggle();
+		WebElement element = getElement(locator, timeout);
+		if(checked)
+		{
+			logger.debug("setting checkbox element state to true with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
+			if(!element.isSelected())
+			{
+				element.toggle();
+			}
+		}
+		else
+		{
+			logger.debug("setting checkbox element state to false with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
+			if(element.isSelected())
+			{
+				element.toggle();
+			}
+		}
 	}
 
     @Override
