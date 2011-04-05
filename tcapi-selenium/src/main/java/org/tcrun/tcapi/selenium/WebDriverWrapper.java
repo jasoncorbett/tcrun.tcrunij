@@ -166,18 +166,20 @@ public interface WebDriverWrapper
 	 */
 		public boolean isEnabled(PageElement locator, int timeout);
 	/**
-	 * Toggle a checkbox element
-	 *  
-	 * @param locator The page element instance that describes how to find the element to toggle
-	 */
-		public void toggle(PageElement locator);
-	/**
-	 * Toggle a checkbox element
+	 * Set the state of an input of type checkbox
 	 *
-	 * @param locator The page element instance that describes how to find the element to toggle
+	 * @param locator The page element instance that describes how to find the element to set
+	 * @param checked True if you want it checked, false otherwise
+	 */
+		public void setCheckboxState(PageElement locator, boolean checked);
+	/**
+	 * Set the state of an input of type checkbox
+	 *  
+	 * @param locator The page element instance that describes how to find the element to set
+	 * @param checked True if you want it checked, false otherwise
 	 * @param timeout The maximum amount of time to wait for the element to exist in seconds
 	 */
-		public void toggle(PageElement locator, int timeout);
+		public void setCheckboxState(PageElement locator, boolean checked, int timeout);
 
 	/**
 	 * Check if an input of type checkbox is selected, waiting a maximum of the default timeout for the element to exist.
