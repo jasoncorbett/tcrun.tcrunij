@@ -120,6 +120,31 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
     }
 
     @Override
+    public boolean isEnabled(PageElement locator)
+	{
+		return isEnabled(locator, timeout);
+    }
+
+    @Override
+    public boolean isEnabled(PageElement locator,int timeout)
+	{
+		logger.debug("Checking whether element is enabled with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
+		return getElement(locator, timeout).isEnabled();
+    }
+
+	@Override
+	public void toggle(PageElement locator)
+	{
+		toggle(locator, timeout);
+	}
+	@Override
+	public void toggle(PageElement locator, int timeout)
+	{
+		logger.debug("toggling element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
+		getElement(locator, timeout).toggle();
+	}
+
+    @Override
     public void click(PageElement locator) {
         click(locator, timeout);
     }
