@@ -7,9 +7,12 @@ package org.tcrun.tcapi.selenium;
 import java.util.ArrayList;
 import java.util.List;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.internal.Coordinates;
+import org.openqa.selenium.internal.Locatable;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 
@@ -17,7 +20,7 @@ import org.slf4j.ext.XLoggerFactory;
  *
  * @author jcorbett
  */
-public class InFrameRenderedWebElement extends ProxyRenderedWebElement implements RenderedWebElement
+public class InFrameRenderedWebElement extends ProxyRenderedWebElement implements RenderedWebElement, Locatable
 {
 	private XLogger logger = XLoggerFactory.getXLogger(InFrameRenderedWebElement.class);
 	private String frameId;
@@ -65,6 +68,24 @@ public class InFrameRenderedWebElement extends ProxyRenderedWebElement implement
 	public WebElement findElement(By by)
 	{
 		return new InFrameRenderedWebElement(super.findElement(by), driver, frameId);
+	}
+
+	@Override
+	public Point getLocationOnScreenOnceScrolledIntoView()
+	{
+		this.beforeOperation();
+		Point retval = ((Locatable)this.rwebElement).getLocationOnScreenOnceScrolledIntoView();
+		this.afterOperation();
+		return retval;
+	}
+
+	@Override
+	public Coordinates getCoordinates()
+	{
+		this.beforeOperation();
+		Coordinates retval = ((Locatable)this.rwebElement).getCoordinates();
+		this.afterOperation();
+		return retval;
 	}
 
 }

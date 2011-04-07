@@ -1,2 +1,3 @@
 .*/target/.*
+tcrunij-integration/integration-runtime/tcrunij/.*
 .*\.DS_Store$
