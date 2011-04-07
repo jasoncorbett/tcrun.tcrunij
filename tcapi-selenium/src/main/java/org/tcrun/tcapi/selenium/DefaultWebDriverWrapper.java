@@ -170,6 +170,28 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
         getElement(locator, timeout).click();
     }
 
+	@Override
+	public void doubleClick(PageElement locator)
+	{
+		doubleClick(locator, timeout);
+	}
+
+	@Override
+	public void doubleClick(PageElement locator, int timeout)
+	{
+		WebElement element = getElement(locator, timeout);
+        if (HasInputDevices.class.isAssignableFrom(driver.getClass()))
+		{
+			logger.debug("Double clicking element '{}' located by '{}'.", locator.getName(), locator.getFindByDescription());
+            ActionChainsGenerator builder = ((HasInputDevices) driver).actionsBuilder();
+			Action dblclick = builder.doubleClick(element).build();
+			dblclick.perform();
+		} else
+		{
+			logger.error("Unable to double click element '{}' located by '{}' as browser driver with class '{}' does not implement HasInputDevices", new Object[] {locator.getName(), locator.getFindByDescription(), driver.getClass().getName()});
+		}
+	}
+
     @Override
     public void clear(PageElement locator) {
         clear(locator, timeout);

@@ -1,5 +1,6 @@
 package org.tcrun.integration.tests.tcapiselenium;
 
+import org.tcrun.integration.tests.tcapiselenium.pages.UglyTestPage;
 import java.util.UUID;
 import org.tcrun.api.annotations.TestGroup;
 import org.tcrun.api.annotations.TestName;
@@ -20,7 +21,7 @@ public class TestWaitForFrame extends AbstractSeleniumTest
     @Override
     public void setup() throws Exception
     {
-        browser.goTo("http://tcrun.org/UglyTestPage.html");
+        browser.goTo(UglyTestPage.Url);
     }
 
     @Override
