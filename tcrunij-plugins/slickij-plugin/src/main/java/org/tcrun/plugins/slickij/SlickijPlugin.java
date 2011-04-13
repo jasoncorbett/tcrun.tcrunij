@@ -2,7 +2,9 @@ package org.tcrun.plugins.slickij;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import eu.medsea.mimeutil.MimeUtil2;
 import java.io.File;
+import java.io.FileInputStream;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ import org.jboss.resteasy.client.ProxyFactory;
 import org.jboss.resteasy.client.ClientResponseFailure;
 import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.tcrun.api.ImplementsPlugin;
@@ -46,6 +49,7 @@ import org.tcrun.api.plugins.TestListRunnerPlugin;
 import org.tcrun.slickij.api.ConfigurationResource;
 import org.tcrun.slickij.api.ProjectResource;
 import org.tcrun.slickij.api.ResultResource;
+import org.tcrun.slickij.api.StoredFileResource;
 import org.tcrun.slickij.api.TestcaseResource;
 import org.tcrun.slickij.api.TestrunResource;
 import org.tcrun.slickij.api.data.Build;
@@ -58,6 +62,7 @@ import org.tcrun.slickij.api.data.Release;
 import org.tcrun.slickij.api.data.ResultStatus;
 import org.tcrun.slickij.api.data.RunStatus;
 import org.tcrun.slickij.api.data.Step;
+import org.tcrun.slickij.api.data.StoredFile;
 import org.tcrun.slickij.api.data.Testcase;
 import org.tcrun.slickij.api.data.TestcaseReference;
 import org.tcrun.slickij.api.data.Testrun;
@@ -66,32 +71,40 @@ import org.tcrun.slickij.api.data.Testrun;
  *
  * @author jcorbett
  */
-@ImplementsPlugin({CommandLineOptionPlugin.class, CommandLineConsumerPlugin.class, ResultWatcherPlugin.class, BeforeTestListRunnerPlugin.class, BeforeTestCasePlugin.class, ShutdownTaskPlugin.class})
+@ImplementsPlugin(
+{
+	CommandLineOptionPlugin.class, CommandLineConsumerPlugin.class, ResultWatcherPlugin.class, BeforeTestListRunnerPlugin.class, BeforeTestCasePlugin.class, ShutdownTaskPlugin.class
+})
 public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsumerPlugin, ResultWatcherPlugin, BeforeTestListRunnerPlugin, BeforeTestCasePlugin, ShutdownTaskPlugin
 {
-	private static XLogger logger = XLoggerFactory.getXLogger(SlickijPlugin.class);
 
+	private static XLogger logger = XLoggerFactory.getXLogger(SlickijPlugin.class);
 	private boolean report = false;
 	private String slickBaseUrl = null;
 	private String slickUsername = null;
 	private String slickPassword = null;
 	private String projectName = null;
 	private ApacheHttpClient4Executor executor = null;
-	
 	private ProjectResource projectApi = null;
 	private ConfigurationResource configApi = null;
 	private TestrunResource testrunApi = null;
 	private TestcaseResource testcaseApi = null;
 	private ResultResource resultApi = null;
-
+	private StoredFileResource filesApi = null;
 	private ResultLogAppender logAppender = null;
 	private Project project = null;
 	private Testrun testrun = null;
 	private Configuration config = null;
 	private org.tcrun.slickij.api.data.Result result;
 	private boolean testIsNew = false;
-
 	private CommandLine options = null;
+	private MimeUtil2 mimeDetector = null;
+
+	public SlickijPlugin()
+	{
+		mimeDetector = new MimeUtil2();
+		mimeDetector.registerMimeDetector("eu.medsea.mimeutil.detector.ExtensionMimeDetector");
+	}
 
 	@Override
 	public String getPluginName()
@@ -102,22 +115,10 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 	@Override
 	public void addToCommandLineParser(Options options)
 	{
-		options.addOption(OptionBuilder.withLongOpt("slick-report")
-		                 .hasOptionalArg()
-						 .withDescription("Post the results to slick")
-						 .create());
-		options.addOption(OptionBuilder.withLongOpt("slick-project-name")
-		                 .hasArg()
-						 .withDescription("Specify the project name in slick")
-						 .create());
-		options.addOption(OptionBuilder.withLongOpt("slick-username")
-		                 .hasArg()
-						 .withDescription("Provide the slick username")
-						 .create());
-		options.addOption(OptionBuilder.withLongOpt("slick-password")
-		                 .hasArg()
-						 .withDescription("Provide the slick password")
-						 .create());
+		options.addOption(OptionBuilder.withLongOpt("slick-report").hasOptionalArg().withDescription("Post the results to slick").create());
+		options.addOption(OptionBuilder.withLongOpt("slick-project-name").hasArg().withDescription("Specify the project name in slick").create());
+		options.addOption(OptionBuilder.withLongOpt("slick-username").hasArg().withDescription("Provide the slick username").create());
+		options.addOption(OptionBuilder.withLongOpt("slick-password").hasArg().withDescription("Provide the slick password").create());
 	}
 
 	@Override
@@ -152,7 +153,7 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 			if(testIsNew && TestWithSteps.class.isAssignableFrom(result.getTest().getTestRunner().getTestClass()))
 			{
 				List<Step> steps = new ArrayList<Step>();
-				List<TestCaseStep> realSteps = ((TestWithSteps)result.getTest().getTestRunner().getTestInstance()).getTestSteps();
+				List<TestCaseStep> realSteps = ((TestWithSteps) result.getTest().getTestRunner().getTestInstance()).getTestSteps();
 				for(TestCaseStep realStep : realSteps)
 				{
 					Step step = new Step();
@@ -171,10 +172,44 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 					error.getResponse().releaseConnection();
 				}
 			}
+			// add files to slick
+			List<StoredFile> storedfiles = new ArrayList<StoredFile>();
+			File[] files = new File("./results/" + MDC.get("TestCaseDir")).listFiles();
+			for(File file : files)
+			{
+				if(!file.getName().endsWith("test.log") && file.isFile())
+				{
+					try
+					{
+						String name = file.getName().replaceAll(".*" + File.pathSeparator, "");
+						StoredFile storedfile = new StoredFile();
+						storedfile.setFilename(name);
+						storedfile.setMimetype(mimeDetector.getMostSpecificMimeType(mimeDetector.getMimeTypes(file)).toString());
+						storedfile = filesApi.createStoredFile(storedfile);
+						byte[] data = new byte[(int) file.length()];
+						FileInputStream dataInputStream = new FileInputStream(file);
+						dataInputStream.read(data);
+						dataInputStream.close();
+						storedfile = filesApi.setFileContent(storedfile.getObjectId(), data);
+						storedfiles.add(storedfile);
+					} catch(ClientResponseFailure error)
+					{
+						logger.error("Error adding files.", error);
+						error.getResponse().releaseConnection();
+					} catch(RuntimeException e)
+					{
+						logger.error("Error adding files.", e);
+					} catch(Exception e)
+					{
+						logger.error("Error adding files.", e);
+					}
+				}
+			}
 			org.tcrun.slickij.api.data.Result update = new org.tcrun.slickij.api.data.Result();
 			update.setStatus(ResultStatus.valueOf(result.getStatus().toString()));
 			update.setRunstatus(RunStatus.FINISHED);
 			update.setReason(result.getReason());
+			update.setFiles(storedfiles);
 			try
 			{
 				resultApi.updateResult(this.result.getId(), update);
@@ -194,30 +229,42 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 			if(slickBaseUrl == null)
 			{
 				if(p_context.getTestCaseConfiguration().containsKey("Slickv2.url"))
+				{
 					slickBaseUrl = p_context.getTestCaseConfiguration().get("Slickv2.url");
-				else
+				} else
+				{
 					throw new StartupError("No configuration for slick base url, please either include on command line or add configuration option Slickv2.url");
+				}
 			}
 			if(projectName == null)
 			{
 				if(p_context.getTestCaseConfiguration().containsKey("Slickv2.project.name"))
+				{
 					projectName = p_context.getTestCaseConfiguration().get("Slickv2.project.name");
-				else
+				} else
+				{
 					throw new StartupError("No configuration for slick project name, please either include on command line or add configuration option Slickv2.project.name");
+				}
 			}
 			if(slickUsername == null)
 			{
 				if(p_context.getTestCaseConfiguration().containsKey("Slickv2.username"))
+				{
 					slickUsername = p_context.getTestCaseConfiguration().get("Slickv2.username");
-				else
+				} else
+				{
 					throw new StartupError("No configuration for slick username, please either include on command line or add configuration option Slickv2.username");
+				}
 			}
 			if(slickPassword == null)
 			{
 				if(p_context.getTestCaseConfiguration().containsKey("Slickv2.password"))
+				{
 					slickPassword = p_context.getTestCaseConfiguration().get("Slickv2.password");
-				else
+				} else
+				{
 					throw new StartupError("No configuration for slick password, please either include on command line or add configuration option Slickv2.password");
+				}
 			}
 			DefaultHttpClient httpclient = new DefaultHttpClient();
 			httpclient.getCredentialsProvider().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(slickUsername, slickPassword));
@@ -228,6 +275,7 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 			testrunApi = ProxyFactory.create(TestrunResource.class, slickBaseUrl, executor);
 			testcaseApi = ProxyFactory.create(TestcaseResource.class, slickBaseUrl, executor);
 			resultApi = ProxyFactory.create(ResultResource.class, slickBaseUrl, executor);
+			filesApi = ProxyFactory.create(StoredFileResource.class, slickBaseUrl, executor);
 
 			try
 			{
@@ -250,8 +298,9 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 					error.getResponse().releaseConnection();
 				}
 				if(configs.size() > 0)
+				{
 					config = configs.get(0);
-				else
+				} else
 				{
 					config = new Configuration();
 					config.setName("Environment " + env);
@@ -273,9 +322,12 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 			testrun = new Testrun();
 			String name = "TCRunIJ Run";
 			if(options.hasOption("plan"))
+			{
 				name += " for plan " + options.getOptionValue("plan");
-			else if(options.hasOption("a"))
+			} else if(options.hasOption("a"))
+			{
 				name += " of all available tests";
+			}
 			//name += " starting at " + (new Date()).toString();
 			testrun.setName(name);
 			if(project != null)
@@ -287,7 +339,9 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 					testrun.setRelease(release.createReference());
 					Build build = release.findBuild(release.getDefaultBuild());
 					if(build != null)
+					{
 						testrun.setBuild(build.createReference());
+					}
 				}
 			}
 			if(config != null)
@@ -337,7 +391,7 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 				{
 					featurename = featurename.substring(0, match.start());
 				}
-			} catch (URISyntaxException ex)
+			} catch(URISyntaxException ex)
 			{
 			}
 			Component comp = project.findComponentByCode(featurename);
@@ -361,7 +415,9 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 					error.getResponse().releaseConnection();
 				}
 				if(comp != null)
+				{
 					project.getComponents().add(comp);
+				}
 			}
 
 			ComponentReference compref = new ComponentReference();
@@ -389,7 +445,7 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 			{
 				java.net.InetAddress addr = java.net.InetAddress.getLocalHost();
 				hostname = addr.getHostName();
-			} catch (UnknownHostException ex)
+			} catch(UnknownHostException ex)
 			{
 				// do nothing
 			}
@@ -507,8 +563,7 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 				logAppender.setResult(null);
 				result = null;
 				logger.error("Unable to create result for test with class name {}.", p_testrunner.getTestClass().getName());
-			}
-			else
+			} else
 			{
 				logAppender.setResult(result);
 			}
