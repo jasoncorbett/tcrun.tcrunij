@@ -211,6 +211,25 @@ public abstract class AbstractSimpleTestCase implements SimpleTestCase, TestWith
 		if(this.getClass().isAnnotationPresent(TestName.class))
 		{
 			retval = this.getClass().getAnnotation(TestName.class).value();
+		} else
+		{
+				String name = this.getClass().getSimpleName();
+				// underscores become spaces
+				name = name.replace("_", " ");
+				// camelCase get's spaces inbetween, ex CamelCase becomes Camel Case
+				name = name.replaceAll("([a-z])([A-Z])", "$1 $2");
+				if(!name.contains(" "))
+				{
+					// use the package name as the first part of the name
+					name = this.getClass().getPackage().getName().replaceAll(".*\\.", "");
+					// same changes as above
+					name = name.replace("_", " ");
+					name = name.replaceAll("([a-z])([A-Z])", "$1 $2");
+					// add the class name onto the end of the name, no need for substitutions, they didn't do anything
+					// before
+					name = name + " - " + this.getClass().getSimpleName();
+				}
+				retval = name;
 		}
 
 		return retval;
