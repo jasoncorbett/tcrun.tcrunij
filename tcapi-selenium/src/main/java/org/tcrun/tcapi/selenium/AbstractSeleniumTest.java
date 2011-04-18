@@ -20,10 +20,10 @@ public abstract class AbstractSeleniumTest extends AbstractSimpleTestCase
         if (tcinfo.containsKey("remote"))
         {
 			String remoteUrl = "http://" + configValue("remote") + ":4444/wd/hub";
-            browser = new DefaultWebDriverWrapper(CapabilitiesFactory.getCapabilitiesFor(configValue("browser", "headless"), remoteUrl));
+            browser = new DefaultWebDriverWrapper(CapabilitiesFactory.getCapabilitiesFor(configValue("browser", "ff"), remoteUrl));
         } else
         {
-            browser = new DefaultWebDriverWrapper(CapabilitiesFactory.getCapabilitiesFor(configValue("browser", "headless")));
+            browser = new DefaultWebDriverWrapper(CapabilitiesFactory.getCapabilitiesFor(configValue("browser", "ff")));
         }
         browser.setDefaultTimeout(Integer.parseInt(configValue("defaults.timeout", "30")));
 	}
