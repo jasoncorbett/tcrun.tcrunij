@@ -1,6 +1,7 @@
 package org.tcrun.tcapi.selenium;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -36,6 +37,8 @@ public class AbstractSeleniumTestTests
 				return uuid;
 			}
 		};
-		test.tcSetup(new HashMap<String, String>());
+		Map<String, String> config = new HashMap<String, String>();
+		config.put("browser", "headless");
+		test.tcSetup(config);
 	}
 }
