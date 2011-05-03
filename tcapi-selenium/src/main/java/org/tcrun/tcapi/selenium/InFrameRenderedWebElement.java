@@ -24,6 +24,7 @@ public class InFrameRenderedWebElement extends ProxyRenderedWebElement implement
 {
 	private XLogger logger = XLoggerFactory.getXLogger(InFrameRenderedWebElement.class);
 	private String frameId;
+        private WebElement frameWebElement = null;
 
 	public InFrameRenderedWebElement(WebElement real, WebDriver driver, String frame)
 	{
@@ -31,15 +32,29 @@ public class InFrameRenderedWebElement extends ProxyRenderedWebElement implement
 		this.frameId = frame;
 	}
 
+        public InFrameRenderedWebElement(WebElement real, WebDriver driver, WebElement frame)
+        {
+                super(real, driver);
+                this.frameWebElement = frame;
+        }
+
 	@Override
 	protected void beforeOperation()
 	{
-		//driver.switchTo().defaultContent();
-		String[] frames = frameId.split("\\.");
-		for(String frame : frames)
-		{
-			driver.switchTo().frame(frame);
-		}
+                //driver.switchTo().defaultContent();
+                if (frameWebElement == null)
+                {
+                    // we have a frame name
+                    String[] frames = frameId.split("\\.");
+                    for(String frame : frames)
+                    {
+                            driver.switchTo().frame(frame);
+                    }
+                }
+                else
+                {
+                    driver.switchTo().frame(frameWebElement);
+                }
 	}
 
 	@Override
@@ -59,7 +74,10 @@ public class InFrameRenderedWebElement extends ProxyRenderedWebElement implement
 
 		for(WebElement element : orig)
 		{
-			retval.add(new InFrameRenderedWebElement(element, driver, frameId));
+                        if (frameWebElement == null)
+			    retval.add(new InFrameRenderedWebElement(element, driver, frameId));
+                        else
+                            retval.add(new InFrameRenderedWebElement(element, driver, frameWebElement));
 		}
 		return retval;
 	}
@@ -67,7 +85,10 @@ public class InFrameRenderedWebElement extends ProxyRenderedWebElement implement
 	@Override
 	public WebElement findElement(By by)
 	{
-		return new InFrameRenderedWebElement(super.findElement(by), driver, frameId);
+                if (frameWebElement == null)
+		    return new InFrameRenderedWebElement(super.findElement(by), driver, frameId);
+                else
+                    return new InFrameRenderedWebElement(super.findElement(by), driver, frameWebElement);
 	}
 
 	@Override

@@ -17,21 +17,34 @@ import org.openqa.selenium.WebElement;
 public class InFrameWebElement extends ProxyWebElement
 {
 	private String frameId;
+        private WebElement frameWebElement = null;
 	public InFrameWebElement(WebElement real, WebDriver driver, String frame)
 	{
 		super(real, driver);
 		this.frameId = frame;
+	}
+        public InFrameWebElement(WebElement real, WebDriver driver, WebElement frame)
+	{
+		super(real, driver);
+		this.frameWebElement = frame;
 	}
 
 	@Override
 	public void beforeOperation()
 	{
 		//driver.switchTo().defaultContent();
-		String[] frames = frameId.split("\\.");
-		for(String frame : frames)
-		{
-			driver.switchTo().frame(frame);
-		}
+                if (frameWebElement == null)
+                {
+                        String[] frames = frameId.split("\\.");
+                        for(String frame : frames)
+                        {
+                                driver.switchTo().frame(frame);
+                        }
+                }
+                else
+                {
+                        driver.switchTo().frame(frameWebElement);
+                }
 	}
 
 	@Override
@@ -49,7 +62,10 @@ public class InFrameWebElement extends ProxyWebElement
 
 		for(WebElement element : orig)
 		{
-			retval.add(new InFrameWebElement(element, driver, frameId));
+                        if (frameWebElement == null)
+			    retval.add(new InFrameWebElement(element, driver, frameId));
+                        else
+                            retval.add(new InFrameWebElement(element, driver, frameWebElement));
 		}
 		return retval;
 	}
@@ -57,6 +73,9 @@ public class InFrameWebElement extends ProxyWebElement
 	@Override
 	public WebElement findElement(By by)
 	{
-		return new InFrameWebElement(super.findElement(by), driver, frameId);
+                if (frameWebElement == null)
+		    return new InFrameWebElement(super.findElement(by), driver, frameId);
+                else
+                    return new InFrameWebElement(super.findElement(by), driver, frameWebElement);
 	}
 }
