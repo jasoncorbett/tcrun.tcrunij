@@ -266,6 +266,13 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 			DefaultHttpClient httpclient = new DefaultHttpClient();
 			httpclient.getCredentialsProvider().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(slickUsername, slickPassword));
 			executor = new ApacheHttpClient4Executor(httpclient);
+			if(!slickBaseUrl.endsWith("api") && !slickBaseUrl.endsWith("api/"))
+			{
+				if(slickBaseUrl.endsWith("/"))
+					slickBaseUrl += "api";
+				else
+					slickBaseUrl += "/api";
+			}
 
 			projectApi = ProxyFactory.create(ProjectResource.class, slickBaseUrl, executor);
 			configApi = ProxyFactory.create(ConfigurationResource.class, slickBaseUrl, executor);
