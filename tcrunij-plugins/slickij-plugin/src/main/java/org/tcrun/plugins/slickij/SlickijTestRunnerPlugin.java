@@ -162,7 +162,17 @@ public class SlickijTestRunnerPlugin implements CommandLineOptionPlugin, Command
 		parameter.setHostname(hostname);
 
 		Result current = null;
-		while((current = resultApi.getNextToBeRun(parameter)) != null)
+		try
+		{
+			current = resultApi.getNextToBeRun(parameter);
+		} catch(RuntimeException e)
+		{
+			System.out.println("Error occurred while trying to get tests to run: " + e.getMessage());
+		} catch(Exception e)
+		{
+			System.out.println("Error occurred while trying to get tests to run: " + e.getMessage());
+		}
+		while(current != null)
 		{
 			logAppender.setResult(current);
 			if(previousTestrunId == null)
@@ -270,6 +280,16 @@ public class SlickijTestRunnerPlugin implements CommandLineOptionPlugin, Command
 					error.getResponse().releaseConnection();
 				}
 
+			}
+			try
+			{
+				current = resultApi.getNextToBeRun(parameter);
+			} catch(RuntimeException e)
+			{
+				System.out.println("Error occurred while trying to get tests to run: " + e.getMessage());
+			} catch(Exception e)
+			{
+				System.out.println("Error occurred while trying to get tests to run: " + e.getMessage());
 			}
 		}
 	}
