@@ -29,6 +29,7 @@ import org.openqa.selenium.NoSuchWindowException;
 import java.util.Calendar;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.HasInputDevices;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NotFoundException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -180,6 +181,8 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
 	public void doubleClick(PageElement locator, int timeout)
 	{
 		WebElement element = getElement(locator, timeout);
+		/*
+		 * This is commented out because of issue 244 in selenium http://code.google.com/p/selenium/issues/detail?id=244
         if (HasInputDevices.class.isAssignableFrom(driver.getClass()))
 		{
 			logger.debug("Double clicking element '{}' located by '{}'.", locator.getName(), locator.getFindByDescription());
@@ -189,6 +192,36 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
 		} else
 		{
 			logger.error("Unable to double click element '{}' located by '{}' as browser driver with class '{}' does not implement HasInputDevices", new Object[] {locator.getName(), locator.getFindByDescription(), driver.getClass().getName()});
+		}
+		 * 
+		 */
+		try
+		{
+			WebElement realElement = element;
+			if(InFrameWebElement.class.isAssignableFrom(element.getClass())) // if we're in a frame
+			{
+				((InFrameWebElement)element).beforeOperation();
+				realElement = ((InFrameWebElement)element).real;
+			} else if(InFrameRenderedWebElement.class.isAssignableFrom(element.getClass()))
+			{
+				((InFrameRenderedWebElement)element).beforeOperation();
+				realElement = ((InFrameRenderedWebElement)element).real;
+			}
+			//hoping we're firefox, because this won't work on IE
+			// no reliable way to tell the difference if running remote
+			((JavascriptExecutor)getDriver()).executeScript("var evt = document.createEvent('MouseEvents');" +
+		        "evt.initMouseEvent('dblclick',true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0,null);" +
+		        "arguments[0].dispatchEvent(evt);", realElement);
+		} finally
+		{
+			if(InFrameWebElement.class.isAssignableFrom(element.getClass())) // if we're in a frame
+			{
+				((InFrameWebElement)element).afterOperation();
+
+			} else if(InFrameRenderedWebElement.class.isAssignableFrom(element.getClass()))
+			{
+				((InFrameRenderedWebElement)element).afterOperation();
+			}
 		}
 	}
 
