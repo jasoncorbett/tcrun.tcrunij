@@ -6,6 +6,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -67,7 +68,11 @@ public class PageElement {
                 element = null;
             } catch (NoSuchFrameException ex) {
                 element = null;
-            }
+            } catch (WebDriverException ex) {
+				element = null;
+				if (ex.getMessage().contains("this.getWindow() is null"))
+					browser.switchTo().defaultContent(); // hack for issue http://code.google.com/p/selenium/issues/detail?id=1438
+			}
             // This is the same check as the while loop, but we don't want to sleep if we're already over
             // time (in the case that timeout == 0).
             if (element == null && Calendar.getInstance().before(endTime)) {
