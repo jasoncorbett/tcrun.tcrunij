@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
@@ -43,6 +44,7 @@ import org.tcrun.slickij.api.StoredFileResource;
 import org.tcrun.slickij.api.TestcaseResource;
 import org.tcrun.slickij.api.TestrunResource;
 import org.tcrun.slickij.api.data.Configuration;
+import org.tcrun.slickij.api.data.ConfigurationOverride;
 import org.tcrun.slickij.api.data.Result;
 import org.tcrun.slickij.api.data.ResultStatus;
 import org.tcrun.slickij.api.data.RunStatus;
@@ -180,8 +182,50 @@ public class SlickijTestRunnerPlugin implements CommandLineOptionPlugin, Command
 			if(previousConfigId == null)
 			{
 				previousConfigId = current.getConfig().getConfigObjectId();
-				Configuration config = configApi.getConfiguration(current.getConfig().getConfigId());
-				context.getTestCaseConfiguration().putAll(config.getConfigurationData());
+				// we need to retry
+				for(int i = 0; i < 3; i++)
+				{
+					try
+					{
+						Configuration config = configApi.getConfiguration(current.getConfig().getConfigId());
+						context.getTestCaseConfiguration().putAll(config.getConfigurationData());
+						if(current.getConfigurationOverride() != null && current.getConfigurationOverride().size() > 0)
+						{
+							for(ConfigurationOverride override : current.getConfigurationOverride())
+							{
+								context.getTestCaseConfiguration().put(override.getKey(), override.getValue());
+							}
+						}
+						i = 3;
+						break;
+					} catch(RuntimeException e)
+					{
+						if(i == 2)
+						{
+							System.out.println("Unable to retrieve configuration.");
+							return;
+						}
+						try
+						{
+							Thread.sleep(500);
+						} catch (InterruptedException ex)
+						{
+						}
+					} catch(Exception e)
+					{
+						if(i == 2)
+						{
+							System.out.println("Unable to retrieve configuration.");
+							return;
+						}
+						try
+						{
+							Thread.sleep(500);
+						} catch (InterruptedException ex)
+						{
+						}
+					}
+				}
 			}
 
 			if(!previousTestrunId.equals(current.getTestrun().getTestrunObjectId()))
@@ -250,17 +294,44 @@ public class SlickijTestRunnerPlugin implements CommandLineOptionPlugin, Command
 							StoredFile storedfile = new StoredFile();
 							storedfile.setFilename(name);
 							storedfile.setMimetype(mimeDetector.getMostSpecificMimeType(mimeDetector.getMimeTypes(file)).toString());
-							storedfile = filesApi.createStoredFile(storedfile);
+							for(int i = 0; i < 3; i++)
+							{
+								try
+								{
+									storedfile = filesApi.createStoredFile(storedfile);
+									i = 3;
+									break;
+								} catch(RuntimeException e)
+								{
+									Thread.sleep(500);
+								} catch(Exception e)
+								{
+									Thread.sleep(500);
+								}
+
+							}
+							if(storedfile.getId() == null)
+								continue;
 							byte[] data = new byte[(int) file.length()];
 							FileInputStream dataInputStream = new FileInputStream(file);
 							dataInputStream.read(data);
 							dataInputStream.close();
-							storedfile = filesApi.setFileContent(storedfile.getObjectId(), data);
-							storedfiles.add(storedfile);
-						} catch(ClientResponseFailure error)
-						{
-							s_logger.error("Error adding files.", error);
-							error.getResponse().releaseConnection();
+							for(int i = 0; i < 3; i++)
+							{
+								try
+								{
+									storedfile = filesApi.setFileContent(storedfile.getObjectId(), data);
+									storedfiles.add(storedfile);
+									i = 3;
+									break;
+								} catch(RuntimeException e)
+								{
+									Thread.sleep(500);
+								} catch(Exception e)
+								{
+									Thread.sleep(500);
+								}
+							}
 						} catch(RuntimeException e)
 						{
 							s_logger.error("Error adding files.", e);
@@ -271,13 +342,36 @@ public class SlickijTestRunnerPlugin implements CommandLineOptionPlugin, Command
 					}
 				}
 				updateToCurrent.setFiles(storedfiles);
-				try
+				for(int i = 0; i < 3; i++)
 				{
-					resultApi.updateResult(updateToCurrent.getId(), updateToCurrent);
-				} catch(ClientResponseFailure error)
-				{
-					s_logger.error("Unable to update the result status on slick.", error);
-					error.getResponse().releaseConnection();
+					try
+					{
+						resultApi.updateResult(updateToCurrent.getId(), updateToCurrent);
+						i = 3;
+						break;
+					} catch(ClientResponseFailure error)
+					{
+						s_logger.error("Unable to update the result status on slick.", error);
+						error.getResponse().releaseConnection();
+					} catch(RuntimeException e)
+					{
+						s_logger.error("Caught unknown exception while trying to update the result status on slick.", e);
+						try
+						{
+							Thread.sleep(500);
+						} catch (InterruptedException ex)
+						{
+						}
+					} catch(Exception e)
+					{
+						s_logger.error("Caught unknown exception while trying to update the result status on slick.", e);
+						try
+						{
+							Thread.sleep(500);
+						} catch (InterruptedException ex)
+						{
+						}
+					}
 				}
 
 			}
