@@ -222,7 +222,14 @@ public class Main
 		List<AfterTestCasePlugin> after_tc_plugins = plugin_manager.getPluginsFor(AfterTestCasePlugin.class);
 		logger.debug("There are '{}' before test case plugins and '{}' after test case plugins.", before_tc_plugins.size(), after_tc_plugins.size());
 		logger.info("Calling runTests on test list runner '{}' implemented by class '{}'.", list_runner.getPluginName(), list_runner.getClass().getCanonicalName());
-		list_runner.runTests(before_tc_plugins, after_tc_plugins);
+		try
+		{
+			list_runner.runTests(before_tc_plugins, after_tc_plugins);
+		} catch(RuntimeException e)
+		{
+			logger.error("Testlist runner {} threw an exception {}: {}.", new Object[] {list_runner.getClass().getCanonicalName(), e.getClass().getCanonicalName(), e.getMessage()});
+			logger.error(e.getMessage(), e);
+		}
 		logger.info("Done calling runTests on test list runner.");
 
 		List<AfterTestListRunnerPlugin> aftertlr_plugins = plugin_manager.getPluginsFor(AfterTestListRunnerPlugin.class);
