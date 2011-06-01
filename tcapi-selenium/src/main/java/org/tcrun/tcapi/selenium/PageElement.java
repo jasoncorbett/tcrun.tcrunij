@@ -79,8 +79,8 @@ public class PageElement
     {
 		if (lastCacheSave == null)
 			return true; // special case: if we have a cached element, and no save date we always want to use that element
-		if (((new Date()).getTime()) < (lastCacheSave.getTime() + PageElement.CACHE_VALID_FOR))
-			return true;
+		//if (((new Date()).getTime()) < (lastCacheSave.getTime() + PageElement.CACHE_VALID_FOR))
+			//return true;
 		return false;
     }
 
