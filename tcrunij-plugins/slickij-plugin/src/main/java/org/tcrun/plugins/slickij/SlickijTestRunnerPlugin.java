@@ -258,6 +258,8 @@ public class SlickijTestRunnerPlugin implements CommandLineOptionPlugin, Command
 				// get the configuration
 				Configuration config = configApi.getConfiguration(current.getConfig().getConfigId());
 				test.getTestRunner().getConfiguration().putAll(config.getConfigurationData());
+				if (current.getBuild() != null)
+					test.getTestRunner().getConfiguration().put("build.name", current.getBuild().getName());
 				s_logger.debug("Calling '{}' before test case plugins for test with id '{}'.", p_beforetcplugins.size(), test.getTestId());
 				for(BeforeTestCasePlugin plugin : p_beforetcplugins)
 				{
