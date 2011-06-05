@@ -13,19 +13,23 @@ import org.slf4j.ext.XLoggerFactory;
  */
 public class FrameContainer implements WebContainer
 {
+
 	private String frameId = null;
 	private PageElement framePageElement;
-        private WebElement frameWebElement = null;
- 	private static XLogger logger = XLoggerFactory.getXLogger("test." + FrameContainer.class.getName());
+	private WebElement frameWebElement = null;
+	private static XLogger logger = XLoggerFactory.getXLogger("test." + FrameContainer.class.getName());
+
 	public FrameContainer(String frameId)
 	{
 		this.frameId = frameId;
 	}
 	// leeard 2/15/11 - adding ability to accept a PageElement for dynamic frame ID support
+
 	public FrameContainer(PageElement framePageElement)
 	{
 		this.framePageElement = framePageElement;
 	}
+
 	@Override
 	public WebElement findElement(WebDriver browser, PageElement item) throws NoSuchElementException
 	{
@@ -36,30 +40,30 @@ public class FrameContainer implements WebContainer
 		// checking for the case of a PageElement being passed in
 		if(frameId == null)
 		{
-                        frameId = framePageElement.getElement(browser, 30).getAttribute("id");
-                        if (!frameId.equals(""))
-			    logger.debug("Found dynamic frame with id=\"{}\"", frameId);
-                        else
-                        {
-                            // If the frame does not have an id we will need to switch to it via the WebElement
-                            frameWebElement = framePageElement.getElement(browser, 30);
-                            logger.debug("Found frame without and id");
-                        }
+			frameId = framePageElement.getElement(browser, 30).getAttribute("id");
+			if(!frameId.equals(""))
+			{
+				logger.debug("Found dynamic frame with id=\"{}\"", frameId);
+			} else
+			{
+				// If the frame does not have an id we will need to switch to it via the WebElement
+				frameWebElement = framePageElement.getElement(browser, 30);
+				logger.debug("Found frame without and id");
+			}
 		}
 		try
 		{
-                        if (frameWebElement == null)
-                        {
-                                String[] frames = frameId.split("\\.");
-                                for(String frame : frames)
-                                {
-                                        browser.switchTo().frame(frame);
-                                }
-                        }
-                        else
-                        {
-                            browser.switchTo().frame(frameWebElement);
-                        }
+			if(frameWebElement == null)
+			{
+				String[] frames = frameId.split("\\.");
+				for(String frame : frames)
+				{
+					browser.switchTo().frame(frame);
+				}
+			} else
+			{
+				browser.switchTo().frame(frameWebElement);
+			}
 
 			element = browser.findElement(item.getFinder());
 		} finally
@@ -68,18 +72,12 @@ public class FrameContainer implements WebContainer
 		}
 
 		WebElement retval = null;
-		if(RenderedWebElement.class.isAssignableFrom(element.getClass()))
+		if(frameWebElement == null)
 		{
-                        if(frameWebElement == null)
-			    retval = new InFrameRenderedWebElement(element, browser, frameId);
-                        else
-                            retval = new InFrameRenderedWebElement(element, browser, frameWebElement);
+			retval = new InFrameWebElement(item.getFinder(), browser, frameId);
 		} else
 		{
-                        if (frameWebElement == null)
-			    retval = new InFrameWebElement(element, browser, frameId);
-                        else
-                            retval = new InFrameWebElement(element, browser, frameWebElement);
+			retval = new InFrameWebElement(item.getFinder(), browser, frameWebElement);
 		}
 
 		return retval;
@@ -88,11 +86,12 @@ public class FrameContainer implements WebContainer
 	@Override
 	public String getFindByDescription()
 	{
-		if (frameWebElement != null)
-                    return "In Frame '" + frameId + "'";
-                else
-                    return "In Frame 'frame without an id'";
+		if(frameWebElement != null)
+		{
+			return "In Frame '" + frameId + "'";
+		} else
+		{
+			return "In Frame 'frame without an id'";
+		}
 	}
-
-
 }

@@ -17,16 +17,35 @@ import org.openqa.selenium.WebElement;
 public class InFrameWebElement extends ProxyWebElement
 {
 	private String frameId;
-        private WebElement frameWebElement = null;
-	public InFrameWebElement(WebElement real, WebDriver driver, String frame)
+    private WebElement frameWebElement = null;
+	private By finder;
+
+	public InFrameWebElement(By finder, WebDriver driver, String frame)
 	{
-		super(real, driver);
+		super(null, driver);
 		this.frameId = frame;
+		this.finder = finder;
 	}
-        public InFrameWebElement(WebElement real, WebDriver driver, WebElement frame)
+
+    public InFrameWebElement(By finder, WebDriver driver, WebElement frame)
 	{
-		super(real, driver);
+		super(null, driver);
 		this.frameWebElement = frame;
+		this.finder = finder;
+	}
+
+	public InFrameWebElement(WebElement element, WebDriver driver, String frame)
+	{
+		super(element, driver);
+		this.frameId = frame;
+		this.finder = null;
+	}
+
+    public InFrameWebElement(WebElement element, WebDriver driver, WebElement frame)
+	{
+		super(element, driver);
+		this.frameWebElement = frame;
+		this.finder = null;
 	}
 
 	@Override
@@ -45,6 +64,8 @@ public class InFrameWebElement extends ProxyWebElement
                 {
                         driver.switchTo().frame(frameWebElement);
                 }
+				if(finder != null)
+					real = driver.findElement(finder);
 	}
 
 	@Override
@@ -62,10 +83,10 @@ public class InFrameWebElement extends ProxyWebElement
 
 		for(WebElement element : orig)
 		{
-                        if (frameWebElement == null)
+            if (frameWebElement == null)
 			    retval.add(new InFrameWebElement(element, driver, frameId));
-                        else
-                            retval.add(new InFrameWebElement(element, driver, frameWebElement));
+            else
+                retval.add(new InFrameWebElement(element, driver, frameWebElement));
 		}
 		return retval;
 	}
