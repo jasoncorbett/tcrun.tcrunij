@@ -6,14 +6,18 @@ package org.tcrun.tcapi.selenium;
 
 import java.util.List;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.internal.Coordinates;
+import org.openqa.selenium.internal.Locatable;
 
 /**
  *
  * @author jcorbett
  */
-public class ProxyWebElement implements WebElement
+public class ProxyWebElement implements WebElement, Locatable
 {
 	protected WebElement real;
 	protected WebDriver driver;
@@ -225,6 +229,96 @@ public class ProxyWebElement implements WebElement
 		{
 			beforeOperation();
 			retval = real.findElement(by);
+		} finally
+		{
+			afterOperation();
+		}
+		return retval;
+	}
+
+	@Override
+	public boolean isDisplayed()
+	{
+		boolean retval = false;
+		try
+		{
+			beforeOperation();
+			retval = real.isDisplayed();
+		} finally
+		{
+			afterOperation();
+		}
+		return retval;
+	}
+
+	@Override
+	public Point getLocation()
+	{
+		Point retval = null;
+		try
+		{
+			beforeOperation();
+			retval = real.getLocation();
+		} finally
+		{
+			afterOperation();
+		}
+		return retval;
+	}
+
+	@Override
+	public Dimension getSize()
+	{
+		Dimension retval = null;
+		try
+		{
+			beforeOperation();
+			retval = real.getSize();
+		} finally
+		{
+			afterOperation();
+		}
+		return retval;
+	}
+
+	@Override
+	public String getCssValue(String string)
+	{
+		String retval = null;
+		try
+		{
+			beforeOperation();
+			retval = real.getCssValue(string);
+		} finally
+		{
+			afterOperation();
+		}
+		return retval;
+	}
+
+	@Override
+	public Point getLocationOnScreenOnceScrolledIntoView()
+	{
+		Point retval = null;
+		try
+		{
+			beforeOperation();
+			retval = ((Locatable)real).getLocationOnScreenOnceScrolledIntoView();
+		} finally
+		{
+			afterOperation();
+		}
+		return retval;
+	}
+
+	@Override
+	public Coordinates getCoordinates()
+	{
+		Coordinates retval = null;
+		try
+		{
+			beforeOperation();
+			retval = ((Locatable)real).getCoordinates();
 		} finally
 		{
 			afterOperation();
