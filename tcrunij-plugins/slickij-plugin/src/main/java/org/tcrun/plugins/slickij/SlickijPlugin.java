@@ -359,6 +359,16 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 			try
 			{
 				testrun = testrunApi.createNewTestrun(testrun);
+				String slickbase = slickBaseUrl;
+				if (slickbase.endsWith("/"))
+				{
+					slickbase = slickbase.substring(0, slickbase.length() - 4);
+				} else
+				{
+					slickbase = slickbase.substring(0, slickbase.length() - 3);
+				}
+				System.out.println("Results available at " + slickbase + "reports/bytestrun?testrunid=" + testrun.getId());
+
 			} catch(ClientResponseFailure error)
 			{
 				error.getResponse().releaseConnection();
