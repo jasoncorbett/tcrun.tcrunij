@@ -201,8 +201,8 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	public void doubleClick(PageElement locator, int timeout)
 	{
 		WebElement element = getElement(locator, timeout);
-		/*
 		logger.debug("Double clicking element '{}' located by '{}'.", locator.getName(), locator.getFindByDescription());
+		/*
 		Actions builder = new Actions(driver);
 		Action dblclick = builder.doubleClick(element).build();
 		dblclick.perform();
