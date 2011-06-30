@@ -1,7 +1,6 @@
 package org.tcrun.tcapi.selenium;
 
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.slf4j.ext.XLogger;

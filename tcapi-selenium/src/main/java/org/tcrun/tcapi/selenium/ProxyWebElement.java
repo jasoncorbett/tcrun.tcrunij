@@ -63,21 +63,6 @@ public class ProxyWebElement implements WebElement, Locatable
 	}
 
 	@Override
-	public String getValue()
-	{
-		String retval = null;
-		try
-		{
-			beforeOperation();
-			retval = real.getValue();
-		} finally
-		{
-			afterOperation();
-		}
-		return retval;
-	}
-
-	@Override
 	public void sendKeys(CharSequence... keysToSend)
 	{
 		try
