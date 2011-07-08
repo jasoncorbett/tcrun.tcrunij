@@ -15,7 +15,7 @@ public class FrameContainer implements WebContainer
 
 	private String frameId = null;
 	private PageElement framePageElement;
-	private WebElement frameWebElement = null;
+	private boolean noFrameId = false;
 	private static XLogger logger = XLoggerFactory.getXLogger("test." + FrameContainer.class.getName());
 
 	public FrameContainer(String frameId)
@@ -34,6 +34,8 @@ public class FrameContainer implements WebContainer
 	{
 		//browser.switchTo().frame(frameId);
 		//browser.switchTo().defaultContent();
+		noFrameId = false;
+		WebElement frameWebElement = null;
 		WebElement element = null;
 
 		// checking for the case of a PageElement being passed in
@@ -47,6 +49,8 @@ public class FrameContainer implements WebContainer
 			{
 				// If the frame does not have an id we will need to switch to it via the WebElement
 				frameWebElement = framePageElement.getElement(browser, 30);
+				noFrameId = true;
+				frameId = null;
 				logger.debug("Found frame without and id");
 			}
 		}
@@ -61,7 +65,14 @@ public class FrameContainer implements WebContainer
 				}
 			} else
 			{
-				browser.switchTo().frame(frameWebElement);
+				if(InFrameWebElement.class.isAssignableFrom(frameWebElement.getClass()))
+				{
+					((InFrameWebElement)frameWebElement).beforeOperation();
+					browser.switchTo().frame(((InFrameWebElement)frameWebElement).real);
+				} else
+				{
+					browser.switchTo().frame(frameWebElement);
+				}
 			}
 
 			element = browser.findElement(item.getFinder());
@@ -85,12 +96,12 @@ public class FrameContainer implements WebContainer
 	@Override
 	public String getFindByDescription()
 	{
-		if(frameWebElement != null)
-		{
-			return "In Frame '" + frameId + "'";
-		} else
+		if(noFrameId)
 		{
 			return "In Frame 'frame without an id'";
+		} else
+		{
+			return "In Frame '" + frameId + "'";
 		}
 	}
 }

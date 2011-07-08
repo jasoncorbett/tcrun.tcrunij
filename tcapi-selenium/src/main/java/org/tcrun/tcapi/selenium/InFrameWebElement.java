@@ -9,6 +9,8 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.ext.XLogger;
+import org.slf4j.ext.XLoggerFactory;
 
 /**
  *
@@ -62,7 +64,14 @@ public class InFrameWebElement extends ProxyWebElement
                 }
                 else
                 {
+					if(InFrameWebElement.class.isAssignableFrom(frameWebElement.getClass()))
+					{
+						((InFrameWebElement)frameWebElement).beforeOperation();
+						driver.switchTo().frame(((InFrameWebElement)frameWebElement).real);
+					} else
+					{
                         driver.switchTo().frame(frameWebElement);
+					}
                 }
 				if(finder != null)
 					real = driver.findElement(finder);
