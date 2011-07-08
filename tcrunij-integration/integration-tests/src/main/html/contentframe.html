@@ -1,0 +1,29 @@
+<html>
+	<head>
+		<title>Content Frame for Ugly Test Page</title>
+		<style type="text/css">
+			body {
+				background-color:#AF9256;
+			}
+		</style>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$("#create-iframe-link").click(function() {
+					document.getElementById("iframe-container").innerHTML = "";
+					setTimeout('document.getElementById("iframe-container").innerHTML = \'<iframe name="contentiframe" src="contentiframe.html" />\'', 2000)
+				})
+			})
+		</script>
+	</head>
+	<body>
+		<h2 id="content-title">The main content!</h2>
+		<a href="#" id="create-iframe-link">Create an iFrame Below!</a>
+		<div id="iframe-container"></div>
+		<img src="http://code.google.com/p/selenium/logo?cct=1285861695" alt="Hello World"/>
+		<div id="image-parent">
+			<img src="http://www.wise-women.org/images/illus/bug.gif" alt="Hello World"/>
+		</div>
+	</body>
+</html>
