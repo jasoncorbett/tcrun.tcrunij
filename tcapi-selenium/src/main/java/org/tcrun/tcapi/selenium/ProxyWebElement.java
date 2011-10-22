@@ -119,21 +119,6 @@ public class ProxyWebElement implements WebElement, Locatable
 	}
 
 	@Override
-	public boolean toggle()
-	{
-		boolean retval = false;
-		try
-		{
-			beforeOperation();
-			retval = real.toggle();
-		} finally
-		{
-			afterOperation();
-		}
-		return retval;
-	}
-
-	@Override
 	public boolean isSelected()
 	{
 		boolean retval = false;
@@ -146,19 +131,6 @@ public class ProxyWebElement implements WebElement, Locatable
 			afterOperation();
 		}
 		return retval;
-	}
-
-	@Override
-	public void setSelected()
-	{
-		try
-		{
-			beforeOperation();
-			real.setSelected();
-		} finally
-		{
-			afterOperation();
-		}
 	}
 
 	@Override

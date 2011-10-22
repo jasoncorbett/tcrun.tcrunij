@@ -166,14 +166,14 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 			logger.debug("setting checkbox element state to true with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
 			if(!element.isSelected())
 			{
-				element.toggle();
+				element.click();
 			}
 		} else
 		{
 			logger.debug("setting checkbox element state to false with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
 			if(element.isSelected())
 			{
-				element.toggle();
+				element.click();
 			}
 		}
 	}
@@ -305,7 +305,9 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	public void setSelected(PageElement locator, int timeout)
 	{
 		logger.debug("Setting selected element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
-		getElement(locator, timeout).setSelected();
+		WebElement element = getElement(locator, timeout);
+		if(!element.isSelected())
+			element.click();
 	}
 
 	@Override
