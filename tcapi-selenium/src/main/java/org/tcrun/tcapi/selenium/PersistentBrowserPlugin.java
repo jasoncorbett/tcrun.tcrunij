@@ -9,6 +9,7 @@ import org.slf4j.ext.XLoggerFactory;
 import org.tcrun.api.ImplementsPlugin;
 import org.tcrun.api.TCRunContext;
 import org.tcrun.api.plugins.ShutdownTaskPlugin;
+import org.tcrun.selenium.WebDriverWrapper;
 
 /**
  *

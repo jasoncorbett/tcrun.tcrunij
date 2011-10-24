@@ -1,4 +1,4 @@
-package org.tcrun.tcapi.selenium.finders;
+package org.tcrun.selenium.finders;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,20 +9,20 @@ import org.openqa.selenium.WebElement;
  *
  * @author slambson
  */
-public class FindByHrefContains extends AbstractFindByParentBy
+public class FindByHref extends AbstractFindByParentBy
 {
-	private String hrefContainsText;
+	private String hrefText;
 
-	public FindByHrefContains(String hrefContainsText)
+	public FindByHref(String hrefText)
 	{
-		this.hrefContainsText = hrefContainsText;
+		this.hrefText = hrefText;
 	}
 
 	@Override
 	public boolean matches(WebElement e)
 	{
 		String attrValue = e.getAttribute("href");
-		return attrValue != null && attrValue.contains(hrefContainsText);
+		return attrValue != null && attrValue.equals(hrefText);
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public class FindByHrefContains extends AbstractFindByParentBy
 	@Override
 	public String toString()
 	{
-		return String.format("By href attribute containing '%s'.", hrefContainsText);
+		return String.format("By href attribute matching '%s'.", hrefText);
 	}
 
 }

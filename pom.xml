@@ -5,7 +5,7 @@
 	<groupId>org.tcrun</groupId>
 	<artifactId>tcrunij</artifactId>
 	<packaging>pom</packaging>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>2.0.0-SNAPSHOT</version>
 	<name>TCRunIJ</name>
 
 	<properties>
@@ -16,6 +16,7 @@
 	<modules>
 		<module>tcrunij-api</module>
 		<module>tcrunij-tcapi</module>
+		<module>selenium-wrapper</module>
 		<module>tcapi-selenium</module>
 		<module>tcrunij-plugins</module>
 		<module>tcrunij-cmd</module>

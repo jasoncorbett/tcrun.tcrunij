@@ -5,14 +5,14 @@
 	<parent>
 		<groupId>org.tcrun.integration</groupId>
 		<artifactId>tcrunij-integration</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>2.0.0-SNAPSHOT</version>
 	</parent>
 
 
 	<groupId>org.tcrun.integration.tests</groupId>
 	<artifactId>integration-tests</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>2.0.0-SNAPSHOT</version>
 	<name>TCRunIJ Integration Tests</name>
 
 	<repositories>
@@ -27,12 +27,12 @@
 		<dependency>
 			<groupId>org.tcrun</groupId>
 			<artifactId>tcrunij-tcapi</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>2.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.tcrun</groupId>
 			<artifactId>tcapi-selenium</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>2.0.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 

@@ -1,8 +1,4 @@
-package org.tcrun.tcapi.selenium;
-
-import org.tcrun.selenium.FrameContainer;
-import org.tcrun.selenium.ParentElementContainer;
-import org.tcrun.selenium.WebContainer;
+package org.tcrun.selenium;
 
 /**
  *
