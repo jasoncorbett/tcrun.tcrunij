@@ -2,7 +2,7 @@ package org.tcrun.integration.tests.tcapiselenium.pages;
 
 import org.tcrun.tcapi.selenium.PageElement;
 import org.tcrun.tcapi.selenium.SelfAwarePage;
-import org.tcrun.tcapi.selenium.WebDriverWrapper;
+import org.tcrun.selenium.WebDriverWrapper;
 import org.tcrun.tcapi.selenium.In;
 import org.openqa.selenium.By;
 import org.tcrun.tcapi.selenium.FindBy;

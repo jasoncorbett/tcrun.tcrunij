@@ -7,16 +7,12 @@
 		<artifactId>tcrunij</artifactId>
 		<version>2.0.0-SNAPSHOT</version>
 	</parent>
-	<properties>
-		<tcrunij.buildid>SNAPSHOT</tcrunij.buildid>
-	</properties>
-
 
 	<groupId>org.tcrun</groupId>
-	<artifactId>tcrunij-tcapi</artifactId>
+	<artifactId>selenium-wrapper</artifactId>
 	<packaging>jar</packaging>
 	<version>2.0.0-SNAPSHOT</version>
-	<name>TCRunIJ TC API</name>
+	<name>TCRun Selenium Wrapper</name>
 
 	<build>
 		<plugins>
@@ -59,29 +55,24 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.tcrun</groupId>
-			<artifactId>tcrunij-api</artifactId>
-			<version>2.0.0-SNAPSHOT</version>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-server</artifactId>
+			<version>2.9.0</version>
 		</dependency>
 		<dependency>
-			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest-core</artifactId>
-			<version>1.2</version>
+			<groupId>net.sourceforge.htmlunit</groupId>
+			<artifactId>htmlunit</artifactId>
+			<version>2.9</version>
 		</dependency>
 		<dependency>
-			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest-library</artifactId>
-			<version>1.2</version>
+			<groupId>net.sourceforge.htmlunit</groupId>
+			<artifactId>htmlunit-core-js</artifactId>
+			<version>2.9</version>
 		</dependency>
 		<dependency>
 			<groupId>rhino</groupId>
 			<artifactId>js</artifactId>
 			<version>1.7R2</version>
-		</dependency>
-		<dependency>
-			<groupId>jline</groupId>
-			<artifactId>jline</artifactId>
-			<version>0.9.94</version>
 		</dependency>
 	</dependencies>
 

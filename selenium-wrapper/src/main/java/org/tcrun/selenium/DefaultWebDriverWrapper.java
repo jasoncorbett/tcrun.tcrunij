@@ -1,4 +1,4 @@
-package org.tcrun.tcapi.selenium;
+package org.tcrun.selenium;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import java.io.BufferedWriter;
@@ -50,6 +50,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	private int screenshot_counter;
 	private int htmlsource_counter;
 	private static String original_browser_window_handle = "";
+	private OutputFileSupport debugSupport;
 
 	public static WebDriver getDriverFromCapabilities(Capabilities caps)
 	{
@@ -94,16 +95,17 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		}
 	}
 
-	protected DefaultWebDriverWrapper(WebDriver driver)
+	protected DefaultWebDriverWrapper(WebDriver driver, OutputFileSupport debugSupport)
 	{
 		this.driver = driver;
 		screenshot_counter = 0;
 		htmlsource_counter = 0;
+		this.debugSupport = debugSupport;
 	}
 
-	public DefaultWebDriverWrapper(Capabilities caps)
+	public DefaultWebDriverWrapper(Capabilities caps, OutputFileSupport debugSupport)
 	{
-		this(getDriverFromCapabilities(caps));
+		this(getDriverFromCapabilities(caps), debugSupport);
 		driver_capabilities = caps;
 		if(driver_capabilities.getBrowserName().equals(DesiredCapabilities.chrome().getBrowserName()) == false)
 		{
@@ -820,7 +822,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 				name = name + ".png";
 			}
 			name = ++screenshot_counter + "-" + name;
-			File ss_file = DebugSupport.getOutputFile(name);
+			File ss_file = debugSupport.getOutputFile(name);
 			logger.debug("Taking screenshot, output file will be {}", ss_file.getAbsolutePath());
 			File ss_tmp = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 
@@ -856,7 +858,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 			name = name + ".html";
 		}
 		name = ++htmlsource_counter + "-" + name;
-		File src_file = DebugSupport.getOutputFile(name);
+		File src_file = debugSupport.getOutputFile(name);
 		logger.debug("Saving current page HTML source, output file will be {}", src_file.getAbsolutePath());
 
 		try
@@ -911,12 +913,12 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	@Override
 	public void logToSessionFile(String filename, String logString)
 	{
-		String sessionOutputFileName = DebugSupport.getSessionOutputFile(filename).getAbsolutePath();
+		String sessionOutputFileName = debugSupport.getSessionOutputFile(filename).getAbsolutePath();
 		logger.info("Writing to session file, session file will be " + sessionOutputFileName);
 
 		try
 		{
-			OutputStream os = DebugSupport.getSessionOutputStream(filename);
+			OutputStream os = debugSupport.getSessionOutputStream(filename);
 			OutputStreamWriter osw = new OutputStreamWriter(os);
 			BufferedWriter bw = new BufferedWriter(osw);
 			bw.write(logString);

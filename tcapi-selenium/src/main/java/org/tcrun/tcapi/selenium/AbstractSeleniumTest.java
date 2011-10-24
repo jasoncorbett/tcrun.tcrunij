@@ -2,8 +2,9 @@ package org.tcrun.tcapi.selenium;
 
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.tools.shell.Global;
-import org.openqa.selenium.WebDriverException;
-import org.tcrun.api.TestCaseStep;
+import org.tcrun.selenium.CapabilitiesFactory;
+import org.tcrun.selenium.DefaultWebDriverWrapper;
+import org.tcrun.selenium.WebDriverWrapper;
 import org.tcrun.tcapi.AbstractSimpleTestCase;
 
 /**
@@ -20,10 +21,10 @@ public abstract class AbstractSeleniumTest extends AbstractSimpleTestCase
         if (tcinfo.containsKey("remote"))
         {
 			String remoteUrl = "http://" + configValue("remote") + ":4444/wd/hub";
-            browser = new DefaultWebDriverWrapper(CapabilitiesFactory.getCapabilitiesFor(configValue("browser", "ff"), remoteUrl));
+            browser = new DefaultWebDriverWrapper(CapabilitiesFactory.getCapabilitiesFor(configValue("browser", "ff"), remoteUrl), new DebugSupport());
         } else
         {
-            browser = new DefaultWebDriverWrapper(CapabilitiesFactory.getCapabilitiesFor(configValue("browser", "ff")));
+            browser = new DefaultWebDriverWrapper(CapabilitiesFactory.getCapabilitiesFor(configValue("browser", "ff")), new DebugSupport());
         }
         browser.setDefaultTimeout(Integer.parseInt(configValue("defaults.timeout", "30")));
 	}

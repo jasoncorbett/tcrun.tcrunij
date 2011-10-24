@@ -1,4 +1,4 @@
-package org.tcrun.tcapi.selenium;
+package org.tcrun.selenium;
 
 import java.net.MalformedURLException;
 import java.net.URL;

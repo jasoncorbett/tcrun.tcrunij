@@ -1,4 +1,4 @@
-package org.tcrun.tcapi.selenium;
+package org.tcrun.selenium;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import java.net.MalformedURLException;

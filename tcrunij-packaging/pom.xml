@@ -5,14 +5,14 @@
 	<parent>
 		<groupId>org.tcrun</groupId>
 		<artifactId>tcrunij</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>2.0.0-SNAPSHOT</version>
 	</parent>
 
 
 	<groupId>org.tcrun</groupId>
 	<artifactId>tcrunij-packaging</artifactId>
 	<packaging>pom</packaging>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>2.0.0-SNAPSHOT</version>
 	<name>TCRunIJ Packaging</name>
 	<description>Packaging of TCRunIJ for *NIX and Windows platforms.</description>
 
@@ -47,47 +47,47 @@
 		<dependency>
 			<groupId>org.tcrun</groupId>
 			<artifactId>tcrunij-api</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>2.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.tcrun</groupId>
 			<artifactId>tcrunij-cmd</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>2.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.tcrun.plugins</groupId>
 			<artifactId>cmd-option-plugin</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>2.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.tcrun.plugins</groupId>
 			<artifactId>tcapi-plugin</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>2.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.tcrun.plugins</groupId>
 			<artifactId>basic-plugins</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>2.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.tcrun.plugins</groupId>
 			<artifactId>htmlreport</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>2.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.tcrun.plugins</groupId>
 			<artifactId>junitxmlreport</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>2.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.tcrun.plugins</groupId>
 			<artifactId>slickij-plugin</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>2.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.tcrun</groupId>
 			<artifactId>tcapi-selenium</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>2.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>

@@ -1,4 +1,4 @@
-package org.tcrun.tcapi.selenium.finders;
+package org.tcrun.selenium.finders;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,22 +7,22 @@ import org.openqa.selenium.WebElement;
 
 /**
  *
- * @author jcorbett
+ * @author slambson
  */
-public class FindBySrc extends AbstractFindByParentBy
+public class FindBySrcContains extends AbstractFindByParentBy
 {
-	private String srcText;
+	private String srcContainsText;
 
-	public FindBySrc(String srcText)
+	public FindBySrcContains(String srcContainsText)
 	{
-		this.srcText = srcText;
+		this.srcContainsText = srcContainsText;
 	}
 
 	@Override
 	public boolean matches(WebElement e)
 	{
 		String attrValue = e.getAttribute("src");
-		return attrValue != null && attrValue.equals(srcText);
+		return attrValue != null && attrValue.contains(srcContainsText);
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public class FindBySrc extends AbstractFindByParentBy
 	@Override
 	public String toString()
 	{
-		return String.format("By src attribute matching '%s'.", srcText);
+		return String.format("By src attribute containing '%s'.", srcContainsText);
 	}
 
 }

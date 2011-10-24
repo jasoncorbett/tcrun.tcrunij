@@ -1,5 +1,5 @@
 
-package org.tcrun.tcapi.selenium.finders;
+package org.tcrun.selenium.finders;
 
 import java.util.ArrayList;
 import java.util.Arrays;

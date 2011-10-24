@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.tcrun.tcapi.selenium;
+package org.tcrun.selenium;
 
 import java.util.List;
 import org.openqa.selenium.By;

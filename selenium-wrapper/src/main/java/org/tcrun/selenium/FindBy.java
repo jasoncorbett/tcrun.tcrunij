@@ -1,4 +1,4 @@
-package org.tcrun.tcapi.selenium;
+package org.tcrun.selenium;
 
 import org.openqa.selenium.By;
 import org.tcrun.selenium.finders.FindByAlt;
