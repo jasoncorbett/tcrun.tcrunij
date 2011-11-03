@@ -190,6 +190,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	public void click(PageElement locator, int timeout)
 	{
 		logger.debug("Clicking on element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
+		waitForVisible(locator);
 		getElement(locator, timeout).click();
 	}
 
@@ -218,11 +219,17 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 				((InFrameWebElement) element).beforeOperation();
 				realElement = ((InFrameWebElement) element).real;
 			}
+			Actions builder = new Actions(driver);
+			Action dblclick = builder.doubleClick(realElement).build();
+			dblclick.perform();
 			//hoping we're firefox, because this won't work on IE
 			// no reliable way to tell the difference if running remote
+/*
 			((JavascriptExecutor) getDriver()).executeScript("var evt = document.createEvent('MouseEvents');"
 															 + "evt.initMouseEvent('dblclick',true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0,null);"
 															 + "arguments[0].dispatchEvent(evt);", realElement);
+ * 
+ */
 		} finally
 		{
 			if(InFrameWebElement.class.isAssignableFrom(element.getClass())) // if we're in a frame
