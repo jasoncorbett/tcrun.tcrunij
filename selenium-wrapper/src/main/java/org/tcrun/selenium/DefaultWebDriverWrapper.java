@@ -985,7 +985,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		Calendar end_time = Calendar.getInstance();
 		Date start_time = end_time.getTime();
 		end_time.add(Calendar.SECOND, timeout);
-		WebElement wdelement = getElement(element, timeout);
+		WebElement wdelement = getElement(element, timeOut);
 		logger.debug("Found element '{}' after {} seconds, waiting for it to become invisible.", element.getName(), ((new Date()).getTime() - start_time.getTime()) / 1000);
 
 		while(wdelement.isDisplayed() && (Calendar.getInstance().before(end_time)))
@@ -1019,7 +1019,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 				
 		Calendar end_time = Calendar.getInstance();
 		Date start_time = end_time.getTime();
-		end_time.add(Calendar.SECOND, timeout);
+		end_time.add(Calendar.SECOND, timeOut);
 		logger.debug("Waiting for element '{}' to no longer exist.", element.getName());
 
 		while(element.exists(driver, timeout) && (Calendar.getInstance().before(end_time)))
