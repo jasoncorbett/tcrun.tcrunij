@@ -578,4 +578,19 @@ public interface WebDriverWrapper
          * @param timeout The maximum amount of time to wait.
          */
         public void waitForNotVisible(PageElement element, int timeout);
+        
+        /**
+	 * Wait for an element to not exist.  Use the default timeout.
+	 *
+	 * @param element The element to wait for.
+	 */
+        public void waitForDoesNotExist(PageElement element);
+
+        /**
+         * Wait for an element to not exist.  Use the default timeout
+         *
+         * @param element The element to wait for.
+         * @param timeout The maximum amount of time to wait.
+         */
+        public void waitForDoesNotExist(PageElement element, int timeout);
 }

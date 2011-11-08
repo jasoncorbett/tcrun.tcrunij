@@ -1005,4 +1005,38 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 
 		logger.debug("Element '{}' was not found visible after {} seconds.", element.getName(), ((new Date()).getTime() - start_time.getTime()) / 1000);
 	}
+        
+        @Override
+	public void waitForDoesNotExist(PageElement element)
+	{
+		waitForDoesNotExist(element, timeout);
+	}
+
+	@Override
+	public void waitForDoesNotExist(PageElement element, int timeOut)
+	{
+		logger.debug("Waiting a max of {} seconds for element '{}' found by {} to no longer exist.", new Object[] {timeout, element.getName(), element.getFindByDescription()});
+				
+		Calendar end_time = Calendar.getInstance();
+		Date start_time = end_time.getTime();
+		end_time.add(Calendar.SECOND, timeout);
+		logger.debug("Waiting for element '{}' to no longer exist.", element.getName());
+
+		while(element.exists(driver, timeout) && (Calendar.getInstance().before(end_time)))
+		{
+			try
+			{
+				Thread.sleep(200);
+			} catch(InterruptedException e)
+			{
+				logger.debug("Caught interrupted exception, while waiting for element, but it shouldn't cause too much trouble: {}", e.getMessage());
+			}
+		}
+		if(element.exists(driver, timeout))
+		{
+			throw new NoSuchElementException(MessageFormatter.format("Waited {} seconds for element {} found by {} to no longer exist, and it never happened.", new Object[] {timeout, element.getName(), element.getFindByDescription()}).getMessage());
+		}
+
+		logger.debug("Element '{}' no longer exists after {} seconds.", element.getName(), ((new Date()).getTime() - start_time.getTime()) / 1000);
+	}
 }
