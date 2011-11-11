@@ -1,9 +1,9 @@
 package org.tcrun.integration.tests.tcapiselenium.pages;
 
-import org.tcrun.tcapi.selenium.PageElement;
-import org.tcrun.tcapi.selenium.SelfAwarePage;
+import org.tcrun.selenium.PageElement;
+import org.tcrun.selenium.SelfAwarePage;
 import org.tcrun.selenium.WebDriverWrapper;
-import org.tcrun.tcapi.selenium.In;
+import org.tcrun.selenium.In;
 import org.tcrun.tcapi.selenium.FindBy;
 
 /**

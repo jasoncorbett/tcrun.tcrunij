@@ -1,11 +1,11 @@
 package org.tcrun.integration.tests.tcapiselenium.pages;
 
-import org.tcrun.tcapi.selenium.PageElement;
-import org.tcrun.tcapi.selenium.SelfAwarePage;
+import org.tcrun.selenium.PageElement;
+import org.tcrun.selenium.SelfAwarePage;
 import org.tcrun.selenium.WebDriverWrapper;
-import org.tcrun.tcapi.selenium.In;
+import org.tcrun.selenium.In;
 import org.openqa.selenium.By;
-import org.tcrun.tcapi.selenium.FindBy;
+import org.tcrun.selenium.FindBy;
 
 /**
  *
@@ -23,6 +23,7 @@ public class UglyTestPage implements SelfAwarePage<Object>
 	public static PageElement BugImage = new PageElement("Image of a bug.", In.ParentElement(BugImageDiv), FindBy.alt("Hello World"));
 	public static PageElement DoubleClickTestLink = new PageElement("Link to Double click test page.", In.Frame("menuframe"), FindBy.linkText("Double Click Test"));
 	public static PageElement DynamicFrameTestLink = new PageElement("Link to Dynamic Frame test page.", In.Frame("menuframe"), FindBy.linkText("Dynamic Frame Test"));
+	public static PageElement DisappearingElementTestLink = new PageElement("Link to Disappearing Element test page.", In.Frame("menuframe"), FindBy.linkText("Disappearing Element Test"));
 
     @Override
     public boolean isCurrentPage(WebDriverWrapper browser)
