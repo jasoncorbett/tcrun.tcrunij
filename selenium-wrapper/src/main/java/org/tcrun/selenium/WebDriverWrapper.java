@@ -593,4 +593,18 @@ public interface WebDriverWrapper
          * @param timeout The maximum amount of time to wait.
          */
         public void waitForDoesNotExist(PageElement element, int timeout);
+
+		/**
+		 * Use actions on a PageWithActions.  Basically any class (page) that implements the interface
+		 * PageWithActions, and has a default no-arg constructor can be instantiated.  Example would look like
+		 * this:
+		 * <code>
+		 *     browser.on(MyExamplePage.class).doSomething("interesting");
+		 * </code>
+		 * 
+		 * @param <T> The java type that get's created.
+		 * @param page The page class.
+		 * @return an instance of the page initialized with the browser object.
+		 */
+		public <T extends PageWithActions> T on(Class<T> page);
 }

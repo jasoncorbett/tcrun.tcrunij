@@ -1022,7 +1022,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		end_time.add(Calendar.SECOND, timeOut);
 		logger.debug("Waiting for element '{}' to no longer exist.", element.getName());
 
-		while(element.exists(driver, timeout) && (Calendar.getInstance().before(end_time)))
+		while(element.exists(driver, 0) && (Calendar.getInstance().before(end_time)))
 		{
 			try
 			{
@@ -1038,5 +1038,27 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		}
 
 		logger.debug("Element '{}' no longer exists after {} seconds.", element.getName(), ((new Date()).getTime() - start_time.getTime()) / 1000);
+	}
+
+	@Override
+	public <T extends PageWithActions> T on(Class<T> page)
+	{
+		logger.debug("Creating instance of page '{}'.", page.getName());
+
+		try
+		{
+			PageWithActions page_instance = page.newInstance();
+			page_instance.initializePage(this);
+			logger.info("Returning instance of page '{}'.", page.getName());
+			return (T)page_instance;
+		} catch(InstantiationException ex)
+		{
+			logger.error("Unable to create instance of page class " + page.getName() + ".", ex);
+			throw new IllegalStateException("Unable to create instance of page class " + page.getName() + ".", ex);
+		} catch(IllegalAccessException ex)
+		{
+			logger.error("Unable to create instance of page class " + page.getName() + ".", ex);
+			throw new IllegalStateException("Unable to create instance of page class " + page.getName() + ".", ex);
+		}
 	}
 }
