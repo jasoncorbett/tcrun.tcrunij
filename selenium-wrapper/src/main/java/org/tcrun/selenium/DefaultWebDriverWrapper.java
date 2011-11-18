@@ -1,13 +1,17 @@
 package org.tcrun.selenium;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
+import com.gargoylesoftware.htmlunit.WebClient;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
+import java.security.GeneralSecurityException;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.NoSuchElementException;
@@ -58,7 +62,22 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		{
 			if(caps.getBrowserName().equals(DesiredCapabilities.htmlUnit().getBrowserName()))
 			{
-				HtmlUnitDriver driver = new HtmlUnitDriver(BrowserVersion.FIREFOX_3_6);
+				HtmlUnitDriver driver = new HtmlUnitDriver(BrowserVersion.FIREFOX_3_6) {
+					@Override
+					protected WebClient modifyWebClient(WebClient client)
+					{
+						client.setThrowExceptionOnScriptError(false);
+						client.setThrowExceptionOnFailingStatusCode(false);
+						try
+						{
+							client.setUseInsecureSSL(true);
+						} catch (GeneralSecurityException ex)
+						{
+							// oh well
+						}
+						return client;
+					}
+				};
 				driver.setJavascriptEnabled(true);
 				return driver;
 			} else if(caps.getBrowserName().equals(DesiredCapabilities.firefox().getBrowserName()))
