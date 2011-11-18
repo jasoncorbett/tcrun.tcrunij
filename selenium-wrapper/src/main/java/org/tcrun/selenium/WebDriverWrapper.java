@@ -137,8 +137,6 @@ public interface WebDriverWrapper
 	 * Get the value of an attribute, waiting a maximum of the default timeout for the element to exist.
 	 *
 	 * @param locator The page element instance that describes how to find the element to get the attribute value from.
-	 * @param attribute The name of the attribute to retrieve the value for.
-	 * @return The value of the attribute.
 	 */
         public void setSelected(PageElement locator);
 
@@ -153,7 +151,6 @@ public interface WebDriverWrapper
 	 * Select an input of type checkbox, waiting a maximum of the default timeout for the element to exist.
 	 *
 	 * @param locator The page element instance that describes how to find the element to select.
-	 * @param timeout The maximum amount of time to wait for the element to exist in seconds.
 	 */
         public boolean isSelected(PageElement locator);
 
@@ -200,7 +197,7 @@ public interface WebDriverWrapper
 	 * Check if an input of type checkbox is selected, waiting a maximum of the default timeout for the element to exist.
 	 *
 	 * @param locator The page element instance that describes how to find the element to check.
-	 * @param timeout The maximum amount of time to wait for the element to exist in seconds.
+	 * @param attribute The name of the attribute to retrieve the value for.
 	 */
 	public String getAttribute(PageElement locator, String attribute);
 
@@ -284,7 +281,6 @@ public interface WebDriverWrapper
 	/**
 	 * Get the url of the current page in the browser.
 	 *
-         * @param should_log Whether we should log what we are doing.
 	 * @return The url of the current page displayed in the browser.
 	 */
 	public String getPageUrl();
@@ -440,7 +436,7 @@ public interface WebDriverWrapper
 	/**
 	 * Switch to the browser window that contains the partial URL string.  Wait the specified timeout
 	 * for the switch to window to be successful
-	 * @param partialWindowURL Part of the url of the browser window you want to switch to.
+	 * @param windowURL Part of the url of the browser window you want to switch to.
 	 * @param timeout The maximum amount of time to wait for the element to exist in seconds.
 	 */
 	public void switchToWindowByURLContains(String windowURL, int timeout);
