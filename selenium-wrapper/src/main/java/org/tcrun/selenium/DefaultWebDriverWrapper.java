@@ -209,7 +209,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	public void click(PageElement locator, int timeout)
 	{
 		logger.debug("Clicking on element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
-		waitForVisible(locator);
+		//waitForVisible(locator);
 		getElement(locator, timeout).click();
 	}
 
