@@ -17,6 +17,7 @@
     <modules>
         <module>cmd-option-plugin</module>
         <module>tcapi-plugin</module>
+        <module>testng-plugin</module>
         <module>basic-plugins</module>
         <module>htmlreport</module>
         <module>junitxmlreport</module>
