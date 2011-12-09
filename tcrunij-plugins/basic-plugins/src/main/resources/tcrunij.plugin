@@ -5,6 +5,7 @@ org.tcrun.plugins.basic.BasicTestCaseEnvironment
 org.tcrun.plugins.basic.CommandLineOptionFilterListPlugin
 org.tcrun.plugins.basic.BasicTestPlanPlugin
 org.tcrun.plugins.basic.BasicListingTestListRunner
+org.tcrun.plugins.basic.InjectConfigurationPlugin
 org.tcrun.plugins.basic.filters.BasicExcludeFilterPlugin
 org.tcrun.plugins.basic.filters.BasicFilterPlugin
 org.tcrun.plugins.basic.attributeproviders.TestNameAttributeProvider
