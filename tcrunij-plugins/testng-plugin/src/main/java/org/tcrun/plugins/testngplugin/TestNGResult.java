@@ -42,7 +42,21 @@ public class TestNGResult implements Result
 	@Override
 	public String getReason()
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+        switch(testngResult.getStatus())
+        {
+            case ITestResult.FAILURE:
+                return "Exception thrown (" + testngResult.getThrowable().getClass().getName() + "): " + testngResult.getThrowable().getMessage();
+            case ITestResult.SUCCESS:
+                return "TestNG returned SUCCESS status";
+            case ITestResult.SUCCESS_PERCENTAGE_FAILURE:
+                return "TestNG reported that the test failed but the method has been annotated with successPercentage and this failure still keeps it within the success percentage requested.";
+            case ITestResult.SKIP:
+                return "TestNG returned SKIP status.";
+            case ITestResult.STARTED:
+                return "TestNG returned STARTED status.";
+            default:
+                return "TestNG returned an unknown result status: " + testngResult.getStatus();
+        }
 	}
 
 	@Override
