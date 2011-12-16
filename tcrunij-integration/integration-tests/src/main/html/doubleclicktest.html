@@ -1,0 +1,41 @@
+<html>
+	<head>
+		<title>Double Click Test</title>
+		<style type="text/css">
+			body {
+				background-color:#AF9256;
+			}
+            #result {
+                color: #555;
+                border: 1px solid black;
+                display: inline-block;
+            }
+            #result.PASS {
+                color: #0a0;
+            }
+            #result.FAIL {
+                color: #a00;
+            }
+
+		</style>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+                $("#double-click-result").hide()
+                $("#single-click-result").hide()
+				$("#dblclick-link").dblclick(function() {
+                    $("#result").removeClass("FAIL").addClass("PASS").html("PASS")
+				})
+				$("#dblclick-link").click(function() {
+                    $("#result").removeClass("PASS").addClass("FAIL").html("FAIL")
+				})
+			})
+		</script>
+	</head>
+	<body>
+		<h2 id="content-title">Double Click Test!</h2>
+		<p><a href="javascript:return false;" id="dblclick-link">Double Click This Link</a></p>
+		<div id="result">NOT TESTED</div>
+	</body>
+</html>
