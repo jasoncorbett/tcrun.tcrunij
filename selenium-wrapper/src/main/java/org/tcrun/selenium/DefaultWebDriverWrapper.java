@@ -135,6 +135,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		{
 			original_browser_window_handle = driver.getWindowHandle();
 		}
+		setDefaultTimeout(30); // default timeout is 30 seconds
 	}
 
 	@Override
