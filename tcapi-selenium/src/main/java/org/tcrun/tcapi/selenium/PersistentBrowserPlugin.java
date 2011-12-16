@@ -4,6 +4,7 @@
  */
 package org.tcrun.tcapi.selenium;
 
+import org.openqa.selenium.WebDriverException;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.tcrun.api.ImplementsPlugin;
@@ -29,7 +30,13 @@ public class PersistentBrowserPlugin implements ShutdownTaskPlugin
         if (persistentBrowser != null)
         {
             logger.debug("closing persistent browser");
-            persistentBrowser.getDriver().close();
+            try
+            {
+                persistentBrowser.getDriver().close();
+            } catch(WebDriverException e)
+            {
+                logger.warn("Error shutting down persistent browser.", e);
+            }
         }
     }
 
