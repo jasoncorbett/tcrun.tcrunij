@@ -87,13 +87,19 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 					FirefoxProfile profile = new FirefoxProfile();
 					profile.setPreference("general.useragent.override", "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2.10) Gecko/20100914 Firefox/3.6.10 (.NET CLR 2.0.40607)");
 					profile.setPreference("app.update.auto", false);
-					profile.setEnableNativeEvents(false);
+                    if(caps.getCapability("NativeEvents") == null || !((Boolean)caps.getCapability("NativeEvents")))
+                    {
+					    profile.setEnableNativeEvents(false);
+                    }
 					return new FirefoxDriver(profile);
 				} else
 				{
 					FirefoxProfile profile = new FirefoxProfile();
-					profile.setEnableNativeEvents(false);
-					profile.setPreference("app.update.auto", false);
+                    if(caps.getCapability("NativeEvents") == null || !((Boolean)caps.getCapability("NativeEvents")))
+                    {
+					    profile.setEnableNativeEvents(false);
+                    }
+                    profile.setPreference("app.update.auto", false);
 					return new FirefoxDriver(profile);
 				}
 			} else if(caps.getBrowserName().equals(DesiredCapabilities.internetExplorer().getBrowserName()))

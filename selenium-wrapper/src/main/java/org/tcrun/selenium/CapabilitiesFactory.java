@@ -39,6 +39,11 @@ public class CapabilitiesFactory
 			DesiredCapabilities caps = DesiredCapabilities.firefox();
 			caps.setPlatform(Platform.WINDOWS);
 			return caps;
+        } else if(browserName.equalsIgnoreCase("ffnative"))
+        {
+            DesiredCapabilities caps = DesiredCapabilities.firefox();
+            caps.setCapability("NativeEvents", true);
+            return caps;
 		} else if(browserName.equalsIgnoreCase("ie") ||
 		          browserName.equalsIgnoreCase("InternetExplorer"))
 		{
