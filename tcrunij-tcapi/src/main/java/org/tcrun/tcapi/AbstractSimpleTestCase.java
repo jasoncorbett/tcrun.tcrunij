@@ -96,8 +96,13 @@ public abstract class AbstractSimpleTestCase implements SimpleTestCase, TestWith
 	@Override
 	public final void tcCleanUp() throws Exception
 	{
-		cleanup();
-                frameworkCleanup();
+		try
+		{
+			cleanup();
+		} finally
+		{
+			frameworkCleanup();
+		}
 	}
 
 	public void frameworkCleanup() throws Exception
