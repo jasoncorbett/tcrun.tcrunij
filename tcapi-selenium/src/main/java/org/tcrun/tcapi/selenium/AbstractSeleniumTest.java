@@ -62,7 +62,7 @@ public abstract class AbstractSeleniumTest extends AbstractSimpleTestCase
             super.frameworkCleanup();
             if (browser != null && configValue("browser.persistent", "true").equalsIgnoreCase("false"))
             {
-                browser.getDriver().quit();
+                browser.getDriver().close();
             }
         }
         /**
@@ -70,7 +70,7 @@ public abstract class AbstractSeleniumTest extends AbstractSimpleTestCase
          */
         public void reopenBrowser() throws Exception
         {
-            browser.getDriver().quit();
+            browser.getDriver().close();
             if(configValue("browser.persistent", "true").equalsIgnoreCase("true"))
             {
                 PersistentBrowserPlugin.persistentBrowser = null;
