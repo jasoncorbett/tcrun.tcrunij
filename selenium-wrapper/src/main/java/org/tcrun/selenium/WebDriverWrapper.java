@@ -590,17 +590,38 @@ public interface WebDriverWrapper
          */
         public void waitForDoesNotExist(PageElement element, int timeout);
 
-		/**
-		 * Use actions on a PageWithActions.  Basically any class (page) that implements the interface
-		 * PageWithActions, and has a default no-arg constructor can be instantiated.  Example would look like
-		 * this:
-		 * <code>
-		 *     browser.on(MyExamplePage.class).doSomething("interesting");
-		 * </code>
-		 * 
-		 * @param <T> The java type that get's created.
-		 * @param page The page class.
-		 * @return an instance of the page initialized with the browser object.
-		 */
-		public <T extends PageWithActions> T on(Class<T> page);
+    /**
+     * Wait for an element's getText() to not be empty or null.  Use the default timeout.
+     * This method will also wait for the element to exist.
+     *
+     * An example usage for this method would be to wait for an ajax error message.
+     *
+     * @param element The element to wait for the text to be not empty.
+     */
+    public void waitForTextNotEmpty(PageElement element);
+
+    /**
+     * Wait for an element's getText() to not be empty or null.  Use the specified timeout.
+     * This method will also wait for the element to exist.
+     *
+     * An example usage for this method would be to wait for an ajax error message.
+     *
+     * @param element The element to wait for the text to be not empty.
+     * @param timeout The maximum wait time in seconds.
+     */
+    public void waitForTextNotEmpty(PageElement element, int timeout);
+
+    /**
+     * Use actions on a PageWithActions.  Basically any class (page) that implements the interface
+     * PageWithActions, and has a default no-arg constructor can be instantiated.  Example would look like
+     * this:
+     * <code>
+     *     browser.on(MyExamplePage.class).doSomething("interesting");
+     * </code>
+     *
+     * @param <T> The java type that get's created.
+     * @param page The page class.
+     * @return an instance of the page initialized with the browser object.
+     */
+    public <T extends PageWithActions> T on(Class<T> page);
 }

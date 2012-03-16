@@ -1070,6 +1070,32 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 
 		logger.debug("Element '{}' no longer exists after {} seconds.", element.getName(), ((new Date()).getTime() - start_time.getTime()) / 1000);
 	}
+    
+    @Override
+    public void waitForTextNotEmpty(PageElement element)
+    {
+        waitForTextNotEmpty(element, this.timeout);
+    }
+
+    @Override
+    public void waitForTextNotEmpty(PageElement element, int timeout)
+    {
+        logger.debug("Waiting a maximum of {} seconds for element '{}' found by {} to exist and for it's text to be not empty.", new Object[] {timeout, element.getName(), element.getFindByDescription()});
+        Date beginning = new Date();
+        Calendar endTime = Calendar.getInstance();
+        endTime.add(Calendar.SECOND, timeout);
+        do
+        {
+            String elementText = getText(element, timeout);
+            if(elementText != null && !elementText.isEmpty())
+            {
+                logger.info("Found element '{}' with text '{}' after {} seconds.", new Object[] {element.getName(), elementText, (((new Date()).getTime() - beginning.getTime()) / 1000)});
+                return;
+            }
+        } while(Calendar.getInstance().before(endTime));
+        logger.error("Waited {} seconds for the text of element '{}' found by {} to not be empty.", new Object[]{(((new Date()).getTime() - beginning.getTime()) / 1000), element.getName(), element.getFindByDescription()});
+        throw new TimeoutError("Timeout of " + timeout + " seconds exceeded while waiting for element '" + element.getName() + "' to provide non empty text.");
+    }
 
 	@Override
 	public <T extends PageWithActions> T on(Class<T> page)
