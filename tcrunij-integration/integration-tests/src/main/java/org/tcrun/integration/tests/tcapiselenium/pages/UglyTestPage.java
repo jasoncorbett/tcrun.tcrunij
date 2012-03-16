@@ -24,6 +24,7 @@ public class UglyTestPage implements SelfAwarePage<Object>
 	public static PageElement DoubleClickTestLink = new PageElement("Link to Double click test page.", In.Frame("menuframe"), FindBy.linkText("Double Click Test"));
 	public static PageElement DynamicFrameTestLink = new PageElement("Link to Dynamic Frame test page.", In.Frame("menuframe"), FindBy.linkText("Dynamic Frame Test"));
 	public static PageElement DisappearingElementTestLink = new PageElement("Link to Disappearing Element test page.", In.Frame("menuframe"), FindBy.linkText("Disappearing Element Test"));
+    public static PageElement DynamicTextTestLink = new PageElement("Link to Dynamic Text test page.", In.Frame("menuframe"), FindBy.linkText("Dynamic Text Test"));
 
     @Override
     public boolean isCurrentPage(WebDriverWrapper browser)
