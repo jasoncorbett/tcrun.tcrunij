@@ -6,6 +6,8 @@ import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.status.Status;
+
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -139,7 +141,15 @@ public class ResultLogAppender extends AppenderBase<ILoggingEvent> implements Ap
 					// push the logs back on the stack, retry
 					entryList.addAll(0, logentries);
 				}
-			}
+			} catch(RuntimeException re)
+            {
+                logger.error("Unable to upload logs to slickij", re);
+                synchronized(entryList)
+                {
+                    // push the logs back on the stack, retry
+                    entryList.addAll(0, logentries);
+                }
+            }
 		}
 	}
 
