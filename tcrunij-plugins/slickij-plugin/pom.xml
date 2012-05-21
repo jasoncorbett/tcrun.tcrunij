@@ -42,7 +42,7 @@
 		<dependency>
 			<groupId>org.tcrun.slickij</groupId>
 			<artifactId>slickij-data-api</artifactId>
-			<version>[1.0.0-42,1.1.0)</version>
+			<version>[1.0.0-216,1.1.0)</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
