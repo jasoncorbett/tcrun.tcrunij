@@ -238,17 +238,13 @@ public class SlickijTestRunnerPlugin implements CommandLineOptionPlugin, Command
 			{
 				// we don't have the test, log it on the server and then set the result
 				System.out.println("Could not find test with id: " + current.getTestcase().getAutomationId());
-				Result updateToCurrent = new Result();
-				updateToCurrent.setId(current.getObjectId());
-				updateToCurrent.setRunstatus(RunStatus.FINISHED);
-				updateToCurrent.setStatus(ResultStatus.SKIPPED);
-				updateToCurrent.setReason("Test with automation id '" + current.getTestcase().getAutomationId() + "' not found by tcrunij.");
 				try
 				{
-					resultApi.updateResult(updateToCurrent.getId(), updateToCurrent);
+					resultApi.deleteResult(current.getId());
+                    testcaseApi.deleteTestcase(current.getTestcase().getTestcaseId());
 				} catch(ClientResponseFailure error)
 				{
-					s_logger.error("Unable to update the result status on slick.", error);
+					s_logger.error("Unable to delete the result, and the test for an test that couldn't be found.", error);
 					error.getResponse().releaseConnection();
 				}
 				

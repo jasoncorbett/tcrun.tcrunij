@@ -367,7 +367,7 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 				{
 					slickbase = slickbase.substring(0, slickbase.length() - 3);
 				}
-				System.out.println("Results available at " + slickbase + "reports/bytestrun?testrunid=" + testrun.getId());
+				System.out.println("Results available at " + slickbase + "#/reports/testrunsummary/" + testrun.getId());
 
 			} catch(ClientResponseFailure error)
 			{
