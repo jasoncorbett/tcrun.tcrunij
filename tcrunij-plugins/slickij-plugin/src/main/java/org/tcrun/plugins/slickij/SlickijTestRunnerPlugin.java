@@ -151,14 +151,21 @@ public class SlickijTestRunnerPlugin implements CommandLineOptionPlugin, Command
 		mimeDetector = new MimeUtil2();
 		mimeDetector.registerMimeDetector("eu.medsea.mimeutil.detector.ExtensionMimeDetector");
 		String hostname = "unknown";
-		try
-		{
-			java.net.InetAddress addr = java.net.InetAddress.getLocalHost();
-			hostname = addr.getHostName();
-		} catch(UnknownHostException ex)
-		{
-			// do nothing
-		}
+        String envhostname = System.getenv("TCRUNIJHOSTNAME");
+        if(envhostname != null && !envhostname.isEmpty())
+        {
+            hostname = envhostname;
+        } else
+        {
+    		try
+    		{
+    			java.net.InetAddress addr = java.net.InetAddress.getLocalHost();
+    			hostname = addr.getHostName();
+    		} catch(UnknownHostException ex)
+    		{
+    			// do nothing
+    		}
+        }
 		TestRunParameter parameter = new TestRunParameter();
 		parameter.setAutomationTool("tcrunij");
 		parameter.setHostname(hostname);

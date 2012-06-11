@@ -455,14 +455,21 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 			result.setRunstatus(RunStatus.RUNNING);
 			result.setComponent(compref);
 			String hostname = "unknown";
-			try
-			{
-				java.net.InetAddress addr = java.net.InetAddress.getLocalHost();
-				hostname = addr.getHostName();
-			} catch(UnknownHostException ex)
-			{
-				// do nothing
-			}
+            String envhostname = System.getenv("TCRUNIJHOSTNAME");
+            if(envhostname != null && !envhostname.isEmpty())
+            {
+                hostname = envhostname;
+            } else
+            {
+    			try
+    			{
+    				java.net.InetAddress addr = java.net.InetAddress.getLocalHost();
+    				hostname = addr.getHostName();
+    			} catch(UnknownHostException ex)
+    			{
+    				// do nothing
+    			}
+            }
 			result.setHostname(hostname);
 
 			TestcaseReference testref = new TestcaseReference();
