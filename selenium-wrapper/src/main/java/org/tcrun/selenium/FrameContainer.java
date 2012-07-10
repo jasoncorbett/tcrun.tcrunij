@@ -41,18 +41,9 @@ public class FrameContainer implements WebContainer
 		// checking for the case of a PageElement being passed in
 		if(frameId == null)
 		{
-			frameId = framePageElement.getElement(browser, 30).getAttribute("id");
-			if(!frameId.equals(""))
-			{
-				logger.debug("Found dynamic frame with id=\"{}\"", frameId);
-			} else
-			{
-				// If the frame does not have an id we will need to switch to it via the WebElement
-				frameWebElement = framePageElement.getElement(browser, 30);
-				noFrameId = true;
-				frameId = null;
-				logger.debug("Found frame without and id");
-			}
+            frameWebElement = framePageElement.getElement(browser, 30);
+            noFrameId = true;
+            frameId = null;
 		}
 		try
 		{
