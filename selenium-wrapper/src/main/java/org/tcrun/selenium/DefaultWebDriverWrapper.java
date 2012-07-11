@@ -1063,7 +1063,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 				logger.debug("Caught interrupted exception, while waiting for element, but it shouldn't cause too much trouble: {}", e.getMessage());
 			}
 		}
-		if(element.exists(driver, timeout))
+		if(element.exists(driver, 1))
 		{
 			throw new NoSuchElementException(MessageFormatter.format("Waited {} seconds for element {} found by {} to no longer exist, and it never happened.", new Object[] {timeout, element.getName(), element.getFindByDescription()}).getMessage());
 		}
