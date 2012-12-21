@@ -1,0 +1,10 @@
+# Comments are allowed in plans, they must start the line with a '#' character
+# This is an example plan file
+
+# Blank lines are allowed also allowed
+# you should place any filters that are valid for the command line in the plan
+# below is an example of the id and package filters
+id:org.tcrun.example.ExampleTest
+
+# all sub packages are included as well
+pkg:org.tcrun
