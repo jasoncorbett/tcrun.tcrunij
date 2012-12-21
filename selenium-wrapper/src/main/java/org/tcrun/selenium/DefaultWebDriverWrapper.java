@@ -9,36 +9,34 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.security.GeneralSecurityException;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Set;
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.NoSuchWindowException;
+import org.openqa.selenium.NotFoundException;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.interactions.Action;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.Select;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.slf4j.helpers.MessageFormatter;
-import java.util.Set;
-import org.openqa.selenium.NoSuchWindowException;
-import java.util.Calendar;
-import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NotFoundException;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.interactions.Action;
-import org.openqa.selenium.interactions.Actions;
 
 /**
  *
@@ -145,22 +143,22 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	}
 
 	@Override
-	public void setDefaultTimeout(int timeout)
+	public void setDefaultTimeout(int p_timeout)
 	{
-		this.timeout = timeout;
+		this.timeout = p_timeout;
 	}
 
-	public WebElement getElement(PageElement locator, int timeout)
+	public WebElement getElement(PageElement locator, int p_timeout)
 	{
 		WebElement element = null;
 		try
 		{
-			element = locator.getElement(driver, timeout);
+			element = locator.getElement(driver, p_timeout);
 		} catch(NoSuchElementException ex)
 		{
 			logger.error("Element with name {} and found {} was not found after {} seconds.", new Object[]
 					{
-						locator.getName(), locator.getFindByDescription(), timeout
+						locator.getName(), locator.getFindByDescription(), p_timeout
 					});
 			logger.error("Current page URL: {}", driver.getCurrentUrl());
 			logger.error("Current page title: {}", driver.getTitle());
@@ -178,10 +176,10 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	}
 
 	@Override
-	public boolean isEnabled(PageElement locator, int timeout)
+	public boolean isEnabled(PageElement locator, int p_timeout)
 	{
 		logger.debug("Checking whether element is enabled with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
-		return getElement(locator, timeout).isEnabled();
+		return getElement(locator, p_timeout).isEnabled();
 	}
 
 	@Override
@@ -191,9 +189,9 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	}
 
 	@Override
-	public void setCheckboxState(PageElement locator, boolean checked, int timeout)
+	public void setCheckboxState(PageElement locator, boolean checked, int p_timeout)
 	{
-		WebElement element = getElement(locator, timeout);
+		WebElement element = getElement(locator, p_timeout);
 		if(checked)
 		{
 			logger.debug("setting checkbox element state to true with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
@@ -218,11 +216,11 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	}
 
 	@Override
-	public void click(PageElement locator, int timeout)
+	public void click(PageElement locator, int p_timeout)
 	{
 		logger.debug("Clicking on element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
 		//waitForVisible(locator);
-		getElement(locator, timeout).click();
+		getElement(locator, p_timeout).click();
 	}
 
 	@Override
@@ -232,9 +230,9 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	}
 
 	@Override
-	public void doubleClick(PageElement locator, int timeout)
+	public void doubleClick(PageElement locator, int p_timeout)
 	{
-		WebElement element = getElement(locator, timeout);
+		WebElement element = getElement(locator, p_timeout);
 		logger.debug("Double clicking element '{}' located by '{}'.", locator.getName(), locator.getFindByDescription());
 		/*
 		Actions builder = new Actions(driver);
@@ -277,10 +275,10 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	}
 
 	@Override
-	public void clear(PageElement locator, int timeout)
+	public void clear(PageElement locator, int p_timeout)
 	{
 		logger.debug("Clearing the text from element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
-		getElement(locator, timeout).clear();
+		getElement(locator, p_timeout).clear();
 	}
 
 	@Override
@@ -290,16 +288,16 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	}
 
 	@Override
-	public void submit(PageElement locator, int timeout)
+	public void submit(PageElement locator, int p_timeout)
 	{
 		logger.debug("Submitting an element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
-		getElement(locator, timeout).submit();
+		getElement(locator, p_timeout).submit();
 	}
 
 	@Override
-	public void type(PageElement locator, String text, int timeout, boolean should_log)
+	public void type(PageElement locator, String text, int p_timeout, boolean should_log)
 	{
-		clear(locator, timeout);
+		clear(locator, p_timeout);
 		if(should_log == true)
 		{
 			logger.debug("Typing text '{}' in element with name '{}' and found '{}'.", new Object[]
@@ -307,13 +305,13 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 						text, locator.getName(), locator.getFindByDescription()
 					});
 		}
-		getElement(locator, timeout).sendKeys(text);
+		getElement(locator, p_timeout).sendKeys(text);
 	}
 
 	@Override
-	public void type(PageElement locator, String text, int timeout)
+	public void type(PageElement locator, String text, int p_timeout)
 	{
-		type(locator, text, timeout, true);
+		type(locator, text, p_timeout, true);
 	}
 
 	@Override
@@ -336,16 +334,16 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	}
 
 	@Override
-	public String getText(PageElement locator, int timeout)
+	public String getText(PageElement locator, int p_timeout)
 	{
-		return getElement(locator, timeout).getText();
+		return getElement(locator, p_timeout).getText();
 	}
 
 	@Override
-	public void setSelected(PageElement locator, int timeout)
+	public void setSelected(PageElement locator, int p_timeout)
 	{
 		logger.debug("Setting selected element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
-		WebElement element = getElement(locator, timeout);
+		WebElement element = getElement(locator, p_timeout);
 		if(!element.isSelected())
 			element.click();
 	}
@@ -357,10 +355,10 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	}
 
 	@Override
-	public boolean isSelected(PageElement locator, int timeout)
+	public boolean isSelected(PageElement locator, int p_timeout)
 	{
 		logger.debug("Checking if is selected element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
-		return getElement(locator, timeout).isSelected();
+		return getElement(locator, p_timeout).isSelected();
 	}
 
 	@Override
@@ -376,10 +374,10 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	}
 
 	@Override
-	public String getAttribute(PageElement locator, int timeout, String attribute)
+	public String getAttribute(PageElement locator, int p_timeout, String attribute)
 	{
 		logger.debug("Getting attribute '" + attribute + "' from element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
-		return getElement(locator, timeout).getAttribute(attribute);
+		return getElement(locator, p_timeout).getAttribute(attribute);
 	}
 
 	@Override
@@ -464,15 +462,15 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	}
 
 	@Override
-	public void waitFor(Class<? extends SelfAwarePage> page, int timeout)
+	public void waitFor(Class<? extends SelfAwarePage> page, int p_timeout)
 	{
-		logger.debug("Waiting for page '{}' a max of {} seconds.", page.getName(), timeout);
+		logger.debug("Waiting for page '{}' a max of {} seconds.", page.getName(), p_timeout);
 		try
 		{
 			SelfAwarePage page_instance = page.newInstance();
 			Date start_time = new Date();
 			Calendar end_time = Calendar.getInstance();
-			end_time.add(Calendar.SECOND, timeout);
+			end_time.add(Calendar.SECOND, p_timeout);
 			while(Calendar.getInstance().before(end_time) && !page_instance.isCurrentPage(this))
 			{
 				try
@@ -484,12 +482,12 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 			}
 			if(!page_instance.isCurrentPage(this))
 			{
-				logger.error("Waited for page '{}' for {} seconds, but still is not here.", page.getName(), timeout);
+				logger.error("Waited for page '{}' for {} seconds, but still is not here.", page.getName(), p_timeout);
 				logger.error("Current page URL: {}", driver.getCurrentUrl());
 				logger.error("Current page title: {}", driver.getTitle());
 				saveHTMLSource();
 				takeScreenShot();
-				throw new NoSuchElementException("Couldn't find page '" + page.getName() + "' after " + timeout + " seconds.");
+				throw new NoSuchElementException("Couldn't find page '" + page.getName() + "' after " + p_timeout + " seconds.");
 			}
 			logger.info("Found page '{}' after {} seconds.", page.getName(), ((new Date()).getTime() - start_time.getTime()) / 1000);
 		} catch(InstantiationException ex)
@@ -546,10 +544,10 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	}
 
 	@Override
-	public void selectByOptionText(PageElement selectList, String option, int timeout)
+	public void selectByOptionText(PageElement selectList, String option, int p_timeout)
 	{
-		logger.debug("Selecting option with display text '{}' of select list '{}' found by '{}' waiting a max timeout of {} seconds.", new Object[] {option, selectList.getName(), selectList.getFinder(), timeout});
-		Select selectInput = new Select(getElement(selectList, timeout));
+		logger.debug("Selecting option with display text '{}' of select list '{}' found by '{}' waiting a max timeout of {} seconds.", new Object[] {option, selectList.getName(), selectList.getFinder(), p_timeout});
+		Select selectInput = new Select(getElement(selectList, p_timeout));
 		selectInput.selectByVisibleText(option);
 	}
 
@@ -560,10 +558,10 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	}
 
 	@Override
-	public void selectByOptionValue(PageElement selectList, String optionValue, int timeout)
+	public void selectByOptionValue(PageElement selectList, String optionValue, int p_timeout)
 	{
-		logger.debug("Selecting option with value '{}' of select list '{}' found by '{}' waiting a max timeout of {} seconds.", new Object[] {optionValue, selectList.getName(), selectList.getFinder(), timeout});
-		Select selectInput = new Select(getElement(selectList, timeout));
+		logger.debug("Selecting option with value '{}' of select list '{}' found by '{}' waiting a max timeout of {} seconds.", new Object[] {optionValue, selectList.getName(), selectList.getFinder(), p_timeout});
+		Select selectInput = new Select(getElement(selectList, p_timeout));
 		selectInput.selectByValue(optionValue);
 	}
 
@@ -574,11 +572,11 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	}
 
 	@Override
-	public void waitFor(PageElement element, int timeout)
+	public void waitFor(PageElement element, int p_timeout)
 	{
-		logger.debug("Waiting for element '{}' a max of {} seconds.", element.getName(), timeout);
+		logger.debug("Waiting for element '{}' a max of {} seconds.", element.getName(), p_timeout);
 		Date start_time = new Date();
-		getElement(element, timeout);
+		getElement(element, p_timeout);
 		logger.info("Found element '{}' after {} seconds.", element.getName(), ((new Date()).getTime() - start_time.getTime()) / 1000);
 	}
 
@@ -589,13 +587,13 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	}
 
 	@Override
-	public void waitForVisible(PageElement element, int timeout)
+	public void waitForVisible(PageElement element, int p_timeout)
 	{
-		logger.debug("Waiting a max of {} seconds for element '{}' found by {} to become visible.", new Object[] {timeout, element.getName(), element.getFindByDescription()});
+		logger.debug("Waiting a max of {} seconds for element '{}' found by {} to become visible.", new Object[] {p_timeout, element.getName(), element.getFindByDescription()});
 		Calendar end_time = Calendar.getInstance();
 		Date start_time = end_time.getTime();
-		end_time.add(Calendar.SECOND, timeout);
-		WebElement wdelement = getElement(element, timeout);
+		end_time.add(Calendar.SECOND, p_timeout);
+		WebElement wdelement = getElement(element, p_timeout);
 		logger.debug("Found element '{}' after {} seconds, waiting for it to become visible.", element.getName(), ((new Date()).getTime() - start_time.getTime()) / 1000);
 		while(!wdelement.isDisplayed() && (Calendar.getInstance().before(end_time)))
 		{
@@ -609,7 +607,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		}
 		if(!wdelement.isDisplayed())
 		{
-			throw new ElementNotVisibleException(MessageFormatter.format("Waited {} seconds for element {} found by {} to become visible, and it never happened.", new Object[] {timeout, element.getName(), element.getFindByDescription()}).getMessage());
+			throw new ElementNotVisibleException(MessageFormatter.format("Waited {} seconds for element {} found by {} to become visible, and it never happened.", new Object[] {p_timeout, element.getName(), element.getFindByDescription()}).getMessage());
 		}
 		logger.debug("Element '{}' was found visisble after {} seconds.", element.getName(), ((new Date()).getTime() - start_time.getTime()) / 1000);
 	}
@@ -684,10 +682,10 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	}
 
 	@Override
-	public void switchToWindowByURLContains(String partialWindowURL, int timeout)
+	public void switchToWindowByURLContains(String partialWindowURL, int p_timeout)
 	{
 		Calendar endTime = Calendar.getInstance();
-		endTime.add(Calendar.SECOND, timeout);
+		endTime.add(Calendar.SECOND, p_timeout);
 		String switchToHandle = "";
 		logger.debug("Looking for the window with the URL containing '{}'.", partialWindowURL);
 
@@ -741,10 +739,10 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	}
 
 	@Override
-	public void switchToWindowByURL(String windowURL, int timeout)
+	public void switchToWindowByURL(String windowURL, int p_timeout)
 	{
 		Calendar endTime = Calendar.getInstance();
-		endTime.add(Calendar.SECOND, timeout);
+		endTime.add(Calendar.SECOND, p_timeout);
 		String switchToHandle = "";
 		logger.debug("Looking for the window with the URL matching '{}'.", windowURL);
 
@@ -978,10 +976,10 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	}
 
 	@Override
-	public String getFirstSelectOptionText(PageElement selectList, int timeout)
+	public String getFirstSelectOptionText(PageElement selectList, int p_timeout)
 	{
-		logger.debug("Getting first selected option as text from of select list '{}' found by '{}' waiting a max timeout of {} seconds.", new Object[] {selectList.getName(), selectList.getFinder(), timeout});
-		Select selectInput = new Select(getElement(selectList, timeout));
+		logger.debug("Getting first selected option as text from of select list '{}' found by '{}' waiting a max timeout of {} seconds.", new Object[] {selectList.getName(), selectList.getFinder(), p_timeout});
+		Select selectInput = new Select(getElement(selectList, p_timeout));
 		return selectInput.getFirstSelectedOption().getText();
 	}
 
@@ -992,9 +990,9 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	}
 
 	@Override
-	public void hover(PageElement locator, int timeout)
+	public void hover(PageElement locator, int p_timeout)
 	{
-		WebElement element = getElement(locator, timeout);
+		WebElement element = getElement(locator, p_timeout);
 		logger.debug("Hovering mouse over element '{}' located by '{}'.", locator.getName(), locator.getFindByDescription());
 		Actions builder = new Actions(driver);
 		Action hover = builder.moveToElement(element, 2, 2).build();
@@ -1008,30 +1006,40 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	}
 
 	@Override
-	public void waitForNotVisible(PageElement element, int timeOut)
+	public void waitForNotVisible(PageElement element, int p_timeout)
 	{
-		//New code added.
-		logger.debug("Waiting a max of {} seconds for element '{}' found by {} to become invisible.", new Object[] {timeout, element.getName(), element.getFindByDescription()});
+		logger.debug("Waiting a max of {} seconds for element '{}' found by {} to become invisible.", new Object[] {p_timeout, element.getName(), element.getFindByDescription()});
 				
 		Calendar end_time = Calendar.getInstance();
 		Date start_time = end_time.getTime();
-		end_time.add(Calendar.SECOND, timeout);
-		WebElement wdelement = getElement(element, timeOut);
+		end_time.add(Calendar.SECOND, p_timeout);
+		WebElement wdelement = getElement(element, p_timeout);
 		logger.debug("Found element '{}' after {} seconds, waiting for it to become invisible.", element.getName(), ((new Date()).getTime() - start_time.getTime()) / 1000);
 
-		while(wdelement.isDisplayed() && (Calendar.getInstance().before(end_time)))
+		while(Calendar.getInstance().before(end_time))
 		{
+                    try
+                    {
+                        if (!wdelement.isDisplayed())
+                        {
+                            break;
+                        }
 			try
 			{
 				Thread.sleep(200);
-			} catch(InterruptedException e)
+			} 
+                        catch(InterruptedException e)
 			{
 				logger.debug("Caught interrupted exception, while waiting for element, but it shouldn't cause too much trouble: {}", e.getMessage());
 			}
+                    }
+                    catch (StaleElementReferenceException e)
+                    {
+                    }
 		}
 		if(wdelement.isDisplayed())
 		{
-			throw new ElementNotVisibleException(MessageFormatter.format("Waited {} seconds for element {} found by {} to become invisible, and it never happened.", new Object[] {timeout, element.getName(), element.getFindByDescription()}).getMessage());
+			throw new ElementNotVisibleException(MessageFormatter.format("Waited {} seconds for element {} found by {} to become invisible, and it never happened.", new Object[] {p_timeout, element.getName(), element.getFindByDescription()}).getMessage());
 		}
 
 		logger.debug("Element '{}' was not found visible after {} seconds.", element.getName(), ((new Date()).getTime() - start_time.getTime()) / 1000);
@@ -1044,13 +1052,13 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 	}
 
 	@Override
-	public void waitForDoesNotExist(PageElement element, int timeOut)
+	public void waitForDoesNotExist(PageElement element, int p_timeout)
 	{
-		logger.debug("Waiting a max of {} seconds for element '{}' found by {} to no longer exist.", new Object[] {timeout, element.getName(), element.getFindByDescription()});
+		logger.debug("Waiting a max of {} seconds for element '{}' found by {} to no longer exist.", new Object[] {p_timeout, element.getName(), element.getFindByDescription()});
 				
 		Calendar end_time = Calendar.getInstance();
 		Date start_time = end_time.getTime();
-		end_time.add(Calendar.SECOND, timeOut);
+		end_time.add(Calendar.SECOND, p_timeout);
 		logger.debug("Waiting for element '{}' to no longer exist.", element.getName());
 
 		while(element.exists(driver, 0) && (Calendar.getInstance().before(end_time)))
@@ -1065,7 +1073,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
 		}
 		if(element.exists(driver, 1))
 		{
-			throw new NoSuchElementException(MessageFormatter.format("Waited {} seconds for element {} found by {} to no longer exist, and it never happened.", new Object[] {timeout, element.getName(), element.getFindByDescription()}).getMessage());
+			throw new NoSuchElementException(MessageFormatter.format("Waited {} seconds for element {} found by {} to no longer exist, and it never happened.", new Object[] {p_timeout, element.getName(), element.getFindByDescription()}).getMessage());
 		}
 
 		logger.debug("Element '{}' no longer exists after {} seconds.", element.getName(), ((new Date()).getTime() - start_time.getTime()) / 1000);
@@ -1078,15 +1086,15 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
     }
 
     @Override
-    public void waitForTextNotEmpty(PageElement element, int timeout)
+    public void waitForTextNotEmpty(PageElement element, int p_timeout)
     {
-        logger.debug("Waiting a maximum of {} seconds for element '{}' found by {} to exist and for it's text to be not empty.", new Object[] {timeout, element.getName(), element.getFindByDescription()});
+        logger.debug("Waiting a maximum of {} seconds for element '{}' found by {} to exist and for it's text to be not empty.", new Object[] {p_timeout, element.getName(), element.getFindByDescription()});
         Date beginning = new Date();
         Calendar endTime = Calendar.getInstance();
-        endTime.add(Calendar.SECOND, timeout);
+        endTime.add(Calendar.SECOND, p_timeout);
         do
         {
-            String elementText = getText(element, timeout);
+            String elementText = getText(element, p_timeout);
             if(elementText != null && !elementText.isEmpty())
             {
                 logger.info("Found element '{}' with text '{}' after {} seconds.", new Object[] {element.getName(), elementText, (((new Date()).getTime() - beginning.getTime()) / 1000)});
@@ -1094,7 +1102,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper
             }
         } while(Calendar.getInstance().before(endTime));
         logger.error("Waited {} seconds for the text of element '{}' found by {} to not be empty.", new Object[]{(((new Date()).getTime() - beginning.getTime()) / 1000), element.getName(), element.getFindByDescription()});
-        throw new TimeoutError("Timeout of " + timeout + " seconds exceeded while waiting for element '" + element.getName() + "' to provide non empty text.");
+        throw new TimeoutError("Timeout of " + p_timeout + " seconds exceeded while waiting for element '" + element.getName() + "' to provide non empty text.");
     }
 
 	@Override
