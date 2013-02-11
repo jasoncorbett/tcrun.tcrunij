@@ -6,10 +6,7 @@ import eu.medsea.mimeutil.MimeUtil2;
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.OptionBuilder;
@@ -43,13 +40,7 @@ import org.tcrun.slickij.api.ResultResource;
 import org.tcrun.slickij.api.StoredFileResource;
 import org.tcrun.slickij.api.TestcaseResource;
 import org.tcrun.slickij.api.TestrunResource;
-import org.tcrun.slickij.api.data.Configuration;
-import org.tcrun.slickij.api.data.ConfigurationOverride;
-import org.tcrun.slickij.api.data.Result;
-import org.tcrun.slickij.api.data.ResultStatus;
-import org.tcrun.slickij.api.data.RunStatus;
-import org.tcrun.slickij.api.data.StoredFile;
-import org.tcrun.slickij.api.data.TestRunParameter;
+import org.tcrun.slickij.api.data.*;
 
 /**
  *
@@ -239,6 +230,51 @@ public class SlickijTestRunnerPlugin implements CommandLineOptionPlugin, Command
 				break;
 			if(!previousConfigId.equals(current.getConfig().getConfigId()))
 				break;
+
+            for(int i = 0; i < 3; i++)
+            {
+                try
+                {
+                    Testrun run = testrunApi.getTestrun(current.getTestrun().getTestrunId());
+                    if(run.getState() == RunStatus.TO_BE_RUN)
+                    {
+                        Testrun newrun = new Testrun();
+                        newrun.setState(RunStatus.RUNNING);
+                        newrun.setRunStarted(new Date());
+                        testrunApi.updateTestrun(current.getTestrun().getTestrunId(), newrun);
+                    }
+                    i = 3;
+                    break;
+                } catch(RuntimeException e)
+                {
+                    if(i == 2)
+                    {
+                        System.out.println("Unable to set testrun state to RUNNING.");
+                        s_logger.warn("Error occurred trying to set testrun state to RUNNING: ", e);
+                        return;
+                    }
+                    try
+                    {
+                        Thread.sleep(500);
+                    } catch (InterruptedException ex)
+                    {
+                    }
+                } catch(Exception e)
+                {
+                    if(i == 2)
+                    {
+                        System.out.println("Unable to set testrun state to RUNNING.");
+                        s_logger.warn("Error occurred trying to set testrun state to RUNNING: ", e);
+                        return;
+                    }
+                    try
+                    {
+                        Thread.sleep(500);
+                    } catch (InterruptedException ex)
+                    {
+                    }
+                }
+            }
 
 			RunnableTest test = testCatalog.get(current.getTestcase().getAutomationId());
 			if(test == null)
