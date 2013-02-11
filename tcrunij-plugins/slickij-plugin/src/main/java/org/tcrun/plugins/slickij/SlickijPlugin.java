@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,14 +36,7 @@ import org.tcrun.api.TestWithName;
 import org.tcrun.api.TestWithSteps;
 import org.tcrun.api.TestWithUUID;
 import org.tcrun.api.annotations.TestGroup;
-import org.tcrun.api.plugins.BeforeTestCasePlugin;
-import org.tcrun.api.plugins.CommandLineOptionPlugin;
-import org.tcrun.api.plugins.CommandLineConsumerPlugin;
-import org.tcrun.api.plugins.ResultWatcherPlugin;
-import org.tcrun.api.plugins.BeforeTestListRunnerPlugin;
-import org.tcrun.api.plugins.ShutdownTaskPlugin;
-import org.tcrun.api.plugins.StartupError;
-import org.tcrun.api.plugins.TestListRunnerPlugin;
+import org.tcrun.api.plugins.*;
 import org.tcrun.slickij.api.ConfigurationResource;
 import org.tcrun.slickij.api.ProjectResource;
 import org.tcrun.slickij.api.ResultResource;
@@ -70,9 +64,9 @@ import org.tcrun.slickij.api.data.Testrun;
  */
 @ImplementsPlugin(
 {
-	CommandLineOptionPlugin.class, CommandLineConsumerPlugin.class, ResultWatcherPlugin.class, BeforeTestListRunnerPlugin.class, BeforeTestCasePlugin.class, ShutdownTaskPlugin.class
+	CommandLineOptionPlugin.class, CommandLineConsumerPlugin.class, ResultWatcherPlugin.class, BeforeTestListRunnerPlugin.class, BeforeTestCasePlugin.class, ShutdownTaskPlugin.class, AfterTestListRunnerPlugin.class
 })
-public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsumerPlugin, ResultWatcherPlugin, BeforeTestListRunnerPlugin, BeforeTestCasePlugin, ShutdownTaskPlugin
+public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsumerPlugin, ResultWatcherPlugin, BeforeTestListRunnerPlugin, BeforeTestCasePlugin, ShutdownTaskPlugin, AfterTestListRunnerPlugin
 {
 
 	private static XLogger logger = XLoggerFactory.getXLogger(SlickijPlugin.class);
@@ -356,6 +350,8 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 				ref.setFilename(config.getFilename());
 				testrun.setConfig(ref);
 			}
+            testrun.setState(RunStatus.RUNNING);
+            testrun.setRunStarted(new Date());
 			try
 			{
 				testrun = testrunApi.createNewTestrun(testrun);
@@ -599,4 +595,16 @@ public class SlickijPlugin implements CommandLineOptionPlugin, CommandLineConsum
 			this.logAppender.setStop(true);
 		}
 	}
+
+    @Override
+    public void afterTestListRunnerHasExecuted(TCRunContext p_context, TestListRunnerPlugin p_testlistrunner)
+    {
+        if(report && testrun != null && testrun.getId() != null)
+        {
+            Testrun update = new Testrun();
+            update.setState(RunStatus.FINISHED);
+            update.setRunFinished(new Date());
+            testrunApi.updateTestrun(testrun.getId(), update);
+        }
+    }
 }
