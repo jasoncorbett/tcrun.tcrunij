@@ -253,14 +253,13 @@ public class ProxyWebElement implements WebElement, Locatable
 		return retval;
 	}
 
-	@Override
 	public Point getLocationOnScreenOnceScrolledIntoView()
 	{
 		Point retval = null;
 		try
 		{
 			beforeOperation();
-			retval = ((Locatable)real).getLocationOnScreenOnceScrolledIntoView();
+			retval = ((Locatable)real).getCoordinates().onScreen();
 		} finally
 		{
 			afterOperation();
