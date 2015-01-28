@@ -33,6 +33,7 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.Select;
 import org.slf4j.ext.XLogger;
@@ -84,7 +85,10 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
             } else if (caps.getBrowserName().equals(DesiredCapabilities.chrome().getBrowserName())) {
                 return new ChromeDriver();
             } else if (caps.getBrowserName().equals(DesiredCapabilities.phantomjs().getBrowserName())) {
-                return new PhantomJSDriver();
+                DesiredCapabilities phantomcaps = new DesiredCapabilities();
+                phantomcaps.merge(caps);
+                phantomcaps.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[] {"--web-security=no", "--ignore-ssl-errors=yes"});
+                return new PhantomJSDriver(phantomcaps);
             } else {
                 return new FirefoxDriver();
             }
