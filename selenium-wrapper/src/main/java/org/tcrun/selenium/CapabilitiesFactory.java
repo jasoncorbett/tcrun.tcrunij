@@ -57,11 +57,14 @@ public class CapabilitiesFactory
 			DesiredCapabilities caps = DesiredCapabilities.chrome();
 			caps.setPlatform(Platform.WINDOWS);
 			return caps;
-		}
-                else if(browserName.equalsIgnoreCase("headless") ||
+		} else if(
 		          browserName.equalsIgnoreCase("htmlunit"))
 		{
 			return DesiredCapabilities.htmlUnit();
+		} else if (browserName.equalsIgnoreCase("headless") ||
+				   browserName.equalsIgnoreCase("phantomjs"))
+		{
+			return DesiredCapabilities.phantomjs();
 		} else
 		{
 			logger.error("Unknown or invalid browser name {}, returning headless as a default.", browserName);
