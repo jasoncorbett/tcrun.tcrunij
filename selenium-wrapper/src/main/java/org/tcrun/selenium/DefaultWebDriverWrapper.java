@@ -32,6 +32,7 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.Select;
 import org.slf4j.ext.XLogger;
@@ -56,19 +57,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
     public static WebDriver getDriverFromCapabilities(Capabilities caps) {
         if (caps.getCapability(RemoteDriverWithScreenshots.REMOTE_URL) == null) {
             if (caps.getBrowserName().equals(DesiredCapabilities.htmlUnit().getBrowserName())) {
-                HtmlUnitDriver driver = new HtmlUnitDriver(BrowserVersion.FIREFOX_3_6) {
-                    @Override
-                    protected WebClient modifyWebClient(WebClient client) {
-                        client.setThrowExceptionOnScriptError(false);
-                        client.setThrowExceptionOnFailingStatusCode(false);
-                        try {
-                            client.setUseInsecureSSL(true);
-                        } catch (GeneralSecurityException ex) {
-                            // oh well
-                        }
-                        return client;
-                    }
-                };
+                HtmlUnitDriver driver = new HtmlUnitDriver(BrowserVersion.FIREFOX_24);
                 driver.setJavascriptEnabled(true);
                 return driver;
             } else if (caps.getBrowserName().equals(DesiredCapabilities.firefox().getBrowserName())) {
@@ -94,6 +83,8 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
                 return new InternetExplorerDriver();
             } else if (caps.getBrowserName().equals(DesiredCapabilities.chrome().getBrowserName())) {
                 return new ChromeDriver();
+            } else if (caps.getBrowserName().equals(DesiredCapabilities.phantomjs().getBrowserName())) {
+                return new PhantomJSDriver();
             } else {
                 return new FirefoxDriver();
             }

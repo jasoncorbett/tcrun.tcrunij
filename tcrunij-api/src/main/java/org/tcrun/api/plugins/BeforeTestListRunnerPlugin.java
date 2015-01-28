@@ -14,7 +14,7 @@ public interface BeforeTestListRunnerPlugin extends Plugin
 	 * These plugins get executed before a test list runner begins it's execution.
 	 * 
 	 * @param p_context The tcrun context containing configuration data.
-	 * @param p_testplan The test plan that is about to be executed.
+	 * @param p_testlistrunner The test plan that is about to be executed.
 	 * @throws StartupError You can throw a StartupError to stop execution, please provide a simple end user reason.
 	 */
 	public void beforTestListRunnerExecutes(TCRunContext p_context, TestListRunnerPlugin p_testlistrunner) throws StartupError;
