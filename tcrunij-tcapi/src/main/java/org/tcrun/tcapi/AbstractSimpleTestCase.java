@@ -60,7 +60,7 @@ public abstract class AbstractSimpleTestCase implements SimpleTestCase, TestWith
 	 * setup for a test case.  This should only be implemented by the test case, frameworks should override the
 	 * frameworkSetup method.
 	 *
-	 * @throws Exception
+	 * @throws Exception if an error occurs during setup
 	 */
 	public void setup() throws Exception
 	{
@@ -85,8 +85,8 @@ public abstract class AbstractSimpleTestCase implements SimpleTestCase, TestWith
 	/**
 	 * Perform the actual test.
 	 *
-	 * @return
-	 * @throws Exception
+	 * @return a result for the test
+	 * @throws Exception if an error occurs during the test run
 	 */
 	public abstract TestResult test() throws Exception;
 

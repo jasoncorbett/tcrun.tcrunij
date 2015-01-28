@@ -20,7 +20,7 @@ public interface TestListRunnerPlugin extends Plugin
 	/**
 	 * Initialize the test list runner plugin.
 	 *
-	 * @param p_context
+	 * @param p_context The context to use for initialization
 	 */
 	public void initialize(TCRunContext p_context);
 
@@ -36,7 +36,7 @@ public interface TestListRunnerPlugin extends Plugin
 	/**
 	 * Add tests to the final list of tests to be run.
 	 *
-	 * @param p_tests
+	 * @param p_tests The tests to add.
 	 */
 	public void addTests(List<RunnableTest> p_tests);
 
@@ -50,6 +50,9 @@ public interface TestListRunnerPlugin extends Plugin
 
 	/**
 	 * Run all the tests that are a part of the test plan.
+	 *
+	 * @param p_beforetcplugins List of usable BeforeTestCasePlugin instances that should be used.
+	 * @param p_aftertcplugins List of usable AfterTestCasePlugin instances that should be used.
 	 */
 	public void runTests(List<BeforeTestCasePlugin> p_beforetcplugins, List<AfterTestCasePlugin> p_aftertcplugins);
 }
