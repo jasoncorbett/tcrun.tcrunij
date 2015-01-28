@@ -38,7 +38,7 @@ public class AbstractSeleniumTestTests
 			}
 		};
 		Map<String, String> config = new HashMap<String, String>();
-		config.put("browser", "headless");
+		config.put("browser", "htmlunit");
 		test.tcSetup(config);
 	}
 }
