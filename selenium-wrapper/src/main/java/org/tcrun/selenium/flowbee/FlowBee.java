@@ -64,6 +64,7 @@ public class FlowBee {
                 if (currentPage.getClass() != endPage.getClass()) {
                     try {
                         currentPage.handlePage(m_browser, context);
+                        Thread.sleep(200); // wait a little big after handling the page
                     } catch (KnownErrorPageFoundException e) {
                         throw new KnownErrorPageFoundException(e.getMessage());
                     } catch (NullPointerException e) {
