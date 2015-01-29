@@ -181,7 +181,15 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
     public void click(PageElement locator, int p_timeout) {
         logger.debug("Clicking on element with name '{}' and found '{}'.", locator.getName(), locator.getFindByDescription());
         //waitForVisible(locator);
-        getElement(locator, p_timeout).click();
+
+        for(int tries = 0; tries < 3; tries++) {
+            try {
+                getElement(locator, p_timeout).click();
+                break;
+            } catch (StaleElementReferenceException e) {
+                logger.warn("Got a stale element exception trying to click, retrying.", e);
+            }
+        }
     }
 
     @Override
