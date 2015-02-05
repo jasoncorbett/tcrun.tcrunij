@@ -13,18 +13,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Set;
 import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ElementNotVisibleException;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.NoSuchWindowException;
-import org.openqa.selenium.NotFoundException;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
@@ -88,7 +77,9 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
                 DesiredCapabilities phantomcaps = new DesiredCapabilities();
                 phantomcaps.merge(caps);
                 phantomcaps.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[] {"--web-security=no", "--ignore-ssl-errors=yes"});
-                return new PhantomJSDriver(phantomcaps);
+                PhantomJSDriver driver = new PhantomJSDriver(phantomcaps);
+                driver.manage().window().setSize(new Dimension(1920, 1080));
+                return driver;
             } else {
                 return new FirefoxDriver();
             }
