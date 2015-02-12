@@ -93,7 +93,7 @@ public class DefaultWebDriverWrapper implements WebDriverWrapper {
         }
     }
 
-    protected DefaultWebDriverWrapper(WebDriver driver, OutputFileSupport debugSupport) {
+    public DefaultWebDriverWrapper(WebDriver driver, OutputFileSupport debugSupport) {
         this.driver = driver;
         screenshot_counter = 0;
         htmlsource_counter = 0;
